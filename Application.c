@@ -308,6 +308,16 @@ DMA_Normal_DataIn_Cb (
         case CY_U3P_DMA_CB_CONS_EVENT:	/* normal mode */
             break;
 
+#if PACKET_SUSPEND == 1
+	   case CY_U3P_DMA_CB_PROD_SUSP:
+	   CyU3PDmaChannelResume(handle,CyTrue,CyTrue);
+		   break;
+
+	   case CY_U3P_DMA_CB_CONS_SUSP:
+	   CyU3PDmaChannelResume(handle,CyTrue,CyTrue);
+		   break;
+#endif
+
         default:
             break;
     }
@@ -443,6 +453,9 @@ void DMA_Normal_mode(void)
     	dmaCfg.consSckId = CY_U3P_UIB_SOCKET_CONS_2;
     	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
     	dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT;
+#if PACKET_SUSPEND == 1
+    dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT | CY_U3P_DMA_CB_PROD_SUSP | CY_U3P_DMA_CB_CONS_SUSP;
+#endif
     	dmaCfg.cb = DMA_Normal_DataIn_Cb;
     	dmaCfg.prodHeader = 0;
     	dmaCfg.prodFooter = 0;
@@ -456,6 +469,11 @@ void DMA_Normal_mode(void)
 #endif
     		CyFxAppErrorHandler(apiRetStatus);
     	}
+
+#if PACKET_SUSPEND == 1
+    CyU3PDmaChannelSetSuspend(&glDMADataIn,CY_U3P_DMA_SCK_SUSP_EOP,CY_U3P_DMA_SCK_SUSP_EOP);
+#endif
+
         /* Set DMA Channel transfer size to INFINITE */
         apiRetStatus = CyU3PDmaChannelSetXfer (&glDMADataIn, 0);
         if (apiRetStatus != CY_U3P_SUCCESS)
@@ -1303,6 +1321,9 @@ void ApplicationThread(uint32_t Value)
     CyU3PDebugPrint(4,"----------------------------------------------------------------\r\n");
 #endif
 
+
+    //tmp
+    Status = CY_U3P_SUCCESS;
 
     if (Status == CY_U3P_SUCCESS)
     {

@@ -48,6 +48,17 @@ CyU3PReturnStatus_t Zing_Init(void)
 //	Zing_RegRead(0x802C,(uint8_t*)&rt_reg_val,4);
 //	Zing_RegRead(0x802D,(uint8_t*)&rt_reg_val,4);
 
+	reg_val = 0x0001DFFF;
+	Zing_RegWrite(0x8028,(uint8_t*)&reg_val,4);
+	reg_val = 0x00FE011F;
+	Zing_RegWrite(0x8027,(uint8_t*)&reg_val,4);
+	reg_val = 0x000AA666;
+	Zing_RegWrite(0x8024,(uint8_t*)&reg_val,4);
+	reg_val = 0x0003FF59;
+	Zing_RegWrite(0x8025,(uint8_t*)&reg_val,4);
+	reg_val = 0x000000EF;
+	Zing_RegWrite(0x8026,(uint8_t*)&reg_val,4);
+
 	reg_val = 0x00000000;
 	Zing_RegWrite(0x8009,(uint8_t*)&reg_val,4); Zing_RegRead(0x8009,(uint8_t*)&rt_reg_val,4);
 	reg_val = 0x00000008;
@@ -65,6 +76,8 @@ CyU3PReturnStatus_t Zing_Init(void)
 	reg_val = 0x788F73;
 	Zing_RegWrite(0x802E,(uint8_t*)&reg_val,4);
 
+
+
 	// AFC
 #if DBG_LEVEL >= DBG_TYPE_ZING
 	CyU3PDebugPrint (4, "[init/Zing/AFC] start\r\n");
@@ -78,8 +91,8 @@ CyU3PReturnStatus_t Zing_Init(void)
 	reg_val = 0x88C8A3BF; // serdes path
 	Zing_RegWrite(0x802C,(uint8_t*)&reg_val,4);
 #elif ZING_RF_SERDES_PATH == 1
-//	reg_val = 0x88C8A3DF; // rf path
-//	Zing_RegWrite(0x802C,(uint8_t*)&reg_val,4);
+	reg_val = 0x88C8A3DF; // rf path
+	Zing_RegWrite(0x802C,(uint8_t*)&reg_val,4);
 #endif
 
 #if DBG_LEVEL >= DBG_TYPE_ZING
