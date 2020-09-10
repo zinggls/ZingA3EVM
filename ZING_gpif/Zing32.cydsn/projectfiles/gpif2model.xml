@@ -1,0 +1,392 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<GPIFIIModel version="3">
+  <InterfaceDefination>
+    <InterfaceSetting>
+      <I2SEnabled>False</I2SEnabled>
+      <I2CEnabled>True</I2CEnabled>
+      <SPIEnabled>False</SPIEnabled>
+      <I2SEnabled>False</I2SEnabled>
+      <ADMuxedEnabled>False</ADMuxedEnabled>
+      <InterfaceType>Master</InterfaceType>
+      <CommunicationType>Synchronous</CommunicationType>
+      <ClockSource>External</ClockSource>
+      <ClockEdge>Negative</ClockEdge>
+      <Endianness>LittleEndian</Endianness>
+      <DataBusWidth>Bit32</DataBusWidth>
+      <AddressBuswidth>0</AddressBuswidth>
+    </InterfaceSetting>
+  </InterfaceDefination>
+  <Signals>
+    <Signal ElementId="INPUT0" SignalType="Input" SpecialFunction="None">
+      <DisplayName>SL_WR</DisplayName>
+      <GPIOPinNumber>GPIO_18</GPIOPinNumber>
+      <Polarity>ActiveLow</Polarity>
+    </Signal>
+    <Signal ElementId="INPUT1" SignalType="Input" SpecialFunction="None">
+      <DisplayName>SL_END</DisplayName>
+      <GPIOPinNumber>GPIO_24</GPIOPinNumber>
+      <Polarity>ActiveLow</Polarity>
+    </Signal>
+    <Signal ElementId="INPUT2" SignalType="Input" SpecialFunction="None">
+      <DisplayName>FLAG_A</DisplayName>
+      <GPIOPinNumber>GPIO_21</GPIOPinNumber>
+      <Polarity>ActiveHigh</Polarity>
+    </Signal>
+    <Signal ElementId="INPUT3" SignalType="Input" SpecialFunction="None">
+      <DisplayName>FLAG_B</DisplayName>
+      <GPIOPinNumber>GPIO_22</GPIOPinNumber>
+      <Polarity>ActiveHigh</Polarity>
+    </Signal>
+    <Signal ElementId="INPUT4" SignalType="Input" SpecialFunction="None">
+      <DisplayName>FLAG_C</DisplayName>
+      <GPIOPinNumber>GPIO_23</GPIOPinNumber>
+      <Polarity>ActiveHigh</Polarity>
+    </Signal>
+    <Signal ElementId="INPUT5" SignalType="Input" SpecialFunction="None">
+      <DisplayName>FLAG_D</DisplayName>
+      <GPIOPinNumber>GPIO_25</GPIOPinNumber>
+      <Polarity>ActiveHigh</Polarity>
+    </Signal>
+    <Signal ElementId="INPUT6" SignalType="Input" SpecialFunction="None">
+      <DisplayName>K_BOUNDARY</DisplayName>
+      <GPIOPinNumber>GPIO_27</GPIOPinNumber>
+      <Polarity>ActiveHigh</Polarity>
+    </Signal>
+    <Signal ElementId="OUTPUT0" SignalType="Output" SpecialFunction="None">
+      <DisplayName>MA_WR</DisplayName>
+      <GPIOPinNumber>GPIO_19</GPIOPinNumber>
+      <IntialValue>High</IntialValue>
+      <Polarity>ActiveLow</Polarity>
+      <Delay>Alpha</Delay>
+      <AssetionType>Assert</AssetionType>
+    </Signal>
+    <Signal ElementId="OUTPUT1" SignalType="Output" SpecialFunction="None">
+      <DisplayName>MA_END</DisplayName>
+      <GPIOPinNumber>GPIO_20</GPIOPinNumber>
+      <IntialValue>High</IntialValue>
+      <Polarity>ActiveLow</Polarity>
+      <Delay>Beta</Delay>
+      <AssetionType>Assert</AssetionType>
+    </Signal>
+    <Signal ElementId="OUTPUT2" SignalType="Output" SpecialFunction="None">
+      <DisplayName>MA_A0</DisplayName>
+      <GPIOPinNumber>GPIO_29</GPIOPinNumber>
+      <IntialValue>Low</IntialValue>
+      <Polarity>ActiveHigh</Polarity>
+      <Delay>Beta</Delay>
+      <AssetionType>Assert</AssetionType>
+    </Signal>
+    <Signal ElementId="OUTPUT3" SignalType="Output" SpecialFunction="None">
+      <DisplayName>MA_A1</DisplayName>
+      <GPIOPinNumber>GPIO_28</GPIOPinNumber>
+      <IntialValue>Low</IntialValue>
+      <Polarity>ActiveHigh</Polarity>
+      <Delay>Beta</Delay>
+      <AssetionType>Assert</AssetionType>
+    </Signal>
+    <Signal ElementId="OUTPUT4" SignalType="Output" SpecialFunction="None">
+      <DisplayName>SL_EN</DisplayName>
+      <GPIOPinNumber>GPIO_17</GPIOPinNumber>
+      <IntialValue>High</IntialValue>
+      <Polarity>ActiveLow</Polarity>
+      <Delay>Beta</Delay>
+      <AssetionType>Assert</AssetionType>
+    </Signal>
+    <Signal ElementId="FLAG0" SignalType="Flags" SpecialFunction="None">
+      <DisplayName>FLAG_WM_TH1</DisplayName>
+      <GPIOPinNumber>GPIO_26</GPIOPinNumber>
+      <IntialValue>Low</IntialValue>
+      <Polarity>ActiveLow</Polarity>
+      <Flags>Thread_3_DMA_Ready</Flags>
+    </Signal>
+  </Signals>
+  <StateMachine>
+    <AddressCounter />
+    <DataCounter />
+    <ControlCounter />
+    <AddressComparator />
+    <DataComparator />
+    <ControlComparator />
+    <DRQ />
+    <AddrData />
+    <State ElementId="STARTSTATE0" StateType="StartState">
+      <DisplayName>START</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+    </State>
+    <State ElementId="STATE0" StateType="NormalState">
+      <DisplayName>CTRL_OUT</DisplayName>
+      <RepeatUntillNextTransition>False</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+    </State>
+    <State ElementId="STATE1" StateType="NormalState">
+      <DisplayName>CTRL_OUT_DATA</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_WR</ControlPinName>
+      </Action>
+      <Action ElementId="DR_DATA0" ActionType="DR_DATA">
+        <IsDataCounterConnected>False</IsDataCounterConnected>
+        <DataSourceSink>Socket</DataSourceSink>
+        <ThreadNumber>Thread0</ThreadNumber>
+        <SyncBurstMode>Enable</SyncBurstMode>
+        <DriveNewData>DriveNewData</DriveNewData>
+        <UpdateSource>True</UpdateSource>
+      </Action>
+    </State>
+    <State ElementId="STATE2" StateType="NormalState">
+      <DisplayName>CTRL_OUT_END</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_END</ControlPinName>
+      </Action>
+    </State>
+    <State ElementId="STATE3" StateType="NormalState">
+      <DisplayName>CTRL_IN</DisplayName>
+      <RepeatUntillNextTransition>False</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_A0</ControlPinName>
+      </Action>
+    </State>
+    <State ElementId="STATE4" StateType="NormalState">
+      <DisplayName>DATA_OUT</DisplayName>
+      <RepeatUntillNextTransition>False</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_A1</ControlPinName>
+      </Action>
+    </State>
+    <State ElementId="STATE5" StateType="NormalState">
+      <DisplayName>DATA_IN</DisplayName>
+      <RepeatUntillNextTransition>False</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_A0</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO1" ActionType="DR_GPIO">
+        <ControlPinName>MA_A1</ControlPinName>
+      </Action>
+    </State>
+    <State ElementId="STATE6" StateType="NormalState">
+      <DisplayName>CTRL_IN_RDY</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_A0</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO1" ActionType="DR_GPIO">
+        <ControlPinName>SL_EN</ControlPinName>
+      </Action>
+    </State>
+    <State ElementId="STATE7" StateType="NormalState">
+      <DisplayName>CTRL_IN_DATA</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="IN_DATA0" ActionType="IN_DATA">
+        <DataSourceSink>Socket</DataSourceSink>
+        <ThreadNumber>Thread1</ThreadNumber>
+        <SampleData>True</SampleData>
+        <WriteDataIntoDataSink>True</WriteDataIntoDataSink>
+      </Action>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_A0</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO1" ActionType="DR_GPIO">
+        <ControlPinName>SL_EN</ControlPinName>
+      </Action>
+    </State>
+    <State ElementId="STATE8" StateType="NormalState">
+      <DisplayName>CTRL_IN_END</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="COMMIT0" ActionType="COMMIT">
+        <ThreadNumber>Thread1</ThreadNumber>
+      </Action>
+      <Action ElementId="IN_DATA0" ActionType="IN_DATA">
+        <DataSourceSink>Socket</DataSourceSink>
+        <ThreadNumber>Thread1</ThreadNumber>
+        <SampleData>True</SampleData>
+        <WriteDataIntoDataSink>True</WriteDataIntoDataSink>
+      </Action>
+    </State>
+    <State ElementId="STATE9" StateType="NormalState">
+      <DisplayName>CTRL_IN_INVALID</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_A0</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO1" ActionType="DR_GPIO">
+        <ControlPinName>SL_EN</ControlPinName>
+      </Action>
+    </State>
+    <State ElementId="STATE10" StateType="NormalState">
+      <DisplayName>DATA_OUT_DATA</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_A1</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO1" ActionType="DR_GPIO">
+        <ControlPinName>MA_WR</ControlPinName>
+      </Action>
+      <Action ElementId="DR_DATA0" ActionType="DR_DATA">
+        <IsDataCounterConnected>False</IsDataCounterConnected>
+        <DataSourceSink>Socket</DataSourceSink>
+        <ThreadNumber>Thread2</ThreadNumber>
+        <SyncBurstMode>Enable</SyncBurstMode>
+        <DriveNewData>DriveNewData</DriveNewData>
+        <UpdateSource>True</UpdateSource>
+      </Action>
+    </State>
+    <State ElementId="STATE11" StateType="NormalState">
+      <DisplayName>DATA_OUT_END</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_END</ControlPinName>
+      </Action>
+    </State>
+    <State ElementId="STATE12" StateType="NormalState">
+      <DisplayName>DATA_IN_RDY</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_A0</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO1" ActionType="DR_GPIO">
+        <ControlPinName>MA_A1</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO2" ActionType="DR_GPIO">
+        <ControlPinName>SL_EN</ControlPinName>
+      </Action>
+    </State>
+    <State ElementId="STATE13" StateType="NormalState">
+      <DisplayName>DATA_IN_DATA</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_A0</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO1" ActionType="DR_GPIO">
+        <ControlPinName>MA_A1</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO2" ActionType="DR_GPIO">
+        <ControlPinName>SL_EN</ControlPinName>
+      </Action>
+      <Action ElementId="IN_DATA0" ActionType="IN_DATA">
+        <DataSourceSink>Socket</DataSourceSink>
+        <ThreadNumber>Thread3</ThreadNumber>
+        <SampleData>True</SampleData>
+        <WriteDataIntoDataSink>True</WriteDataIntoDataSink>
+      </Action>
+    </State>
+    <State ElementId="STATE14" StateType="NormalState">
+      <DisplayName>DATA_IN_INVALID</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_A0</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO1" ActionType="DR_GPIO">
+        <ControlPinName>MA_A1</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO2" ActionType="DR_GPIO">
+        <ControlPinName>SL_EN</ControlPinName>
+      </Action>
+    </State>
+    <State ElementId="STATE15" StateType="NormalState">
+      <DisplayName>DATA_IN_END</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_A0</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO1" ActionType="DR_GPIO">
+        <ControlPinName>MA_A1</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO2" ActionType="DR_GPIO">
+        <ControlPinName>SL_EN</ControlPinName>
+      </Action>
+      <Action ElementId="IN_DATA0" ActionType="IN_DATA">
+        <DataSourceSink>Socket</DataSourceSink>
+        <ThreadNumber>Thread3</ThreadNumber>
+        <SampleData>True</SampleData>
+        <WriteDataIntoDataSink>True</WriteDataIntoDataSink>
+      </Action>
+      <Action ElementId="COMMIT0" ActionType="COMMIT">
+        <ThreadNumber>Thread3</ThreadNumber>
+      </Action>
+    </State>
+    <State ElementId="STATE16" StateType="NormalState">
+      <DisplayName>WAIT_OTHER_BUF</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_A0</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO1" ActionType="DR_GPIO">
+        <ControlPinName>MA_A1</ControlPinName>
+      </Action>
+    </State>
+    <State ElementId="STATE17" StateType="NormalState">
+      <DisplayName>WAIT_BUF_READY</DisplayName>
+      <RepeatUntillNextTransition>True</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_A0</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO1" ActionType="DR_GPIO">
+        <ControlPinName>MA_A1</ControlPinName>
+      </Action>
+    </State>
+    <State ElementId="STATE18" StateType="NormalState">
+      <DisplayName>ADD_ZLP</DisplayName>
+      <RepeatUntillNextTransition>False</RepeatUntillNextTransition>
+      <RepeatCount>0</RepeatCount>
+      <Action ElementId="DR_GPIO0" ActionType="DR_GPIO">
+        <ControlPinName>MA_A0</ControlPinName>
+      </Action>
+      <Action ElementId="DR_GPIO1" ActionType="DR_GPIO">
+        <ControlPinName>MA_A1</ControlPinName>
+      </Action>
+      <Action ElementId="COMMIT0" ActionType="COMMIT">
+        <ThreadNumber>Thread3</ThreadNumber>
+      </Action>
+    </State>
+    <Transition ElementId="TRANSITION16" SourceState="STARTSTATE0" DestinationState="STATE0" Equation="LOGIC_ONE" />
+    <Transition ElementId="TRANSITION1" SourceState="STATE0" DestinationState="STATE1" Equation="FLAG_A&amp;DMA_RDY_TH0" />
+    <Transition ElementId="TRANSITION2" SourceState="STATE1" DestinationState="STATE2" Equation="!FLAG_A|!DMA_RDY_TH0" />
+    <Transition ElementId="TRANSITION3" SourceState="STATE2" DestinationState="STATE0" Equation="LOGIC_ONE" />
+    <Transition ElementId="TRANSITION4" SourceState="STATE0" DestinationState="STATE3" Equation="!FLAG_A|!DMA_RDY_TH0" />
+    <Transition ElementId="TRANSITION5" SourceState="STATE3" DestinationState="STATE4" Equation="!FLAG_B|!DMA_RDY_TH1" />
+    <Transition ElementId="TRANSITION6" SourceState="STATE4" DestinationState="STATE5" Equation="!FLAG_C|!DMA_RDY_TH2" />
+    <Transition ElementId="TRANSITION7" SourceState="STATE5" DestinationState="STATE0" Equation="!FLAG_D|!DMA_RDY_TH3" />
+    <Transition ElementId="TRANSITION8" SourceState="STATE3" DestinationState="STATE6" Equation="FLAG_B&amp;DMA_RDY_TH1" />
+    <Transition ElementId="TRANSITION9" SourceState="STATE6" DestinationState="STATE7" Equation="!SL_WR&amp;SL_END" />
+    <Transition ElementId="TRANSITION10" SourceState="STATE7" DestinationState="STATE8" Equation="!SL_END" />
+    <Transition ElementId="TRANSITION11" SourceState="STATE8" DestinationState="STATE3" Equation="LOGIC_ONE" />
+    <Transition ElementId="TRANSITION12" SourceState="STATE9" DestinationState="STATE8" Equation="!SL_END" />
+    <Transition ElementId="TRANSITION13" SourceState="STATE7" DestinationState="STATE9" Equation="SL_WR&amp;SL_END" />
+    <Transition ElementId="TRANSITION14" SourceState="STATE9" DestinationState="STATE7" Equation="!SL_WR&amp;SL_END" />
+    <Transition ElementId="TRANSITION15" SourceState="STATE6" DestinationState="STATE8" Equation="!SL_END" />
+    <Transition ElementId="TRANSITION17" SourceState="STATE4" DestinationState="STATE10" Equation="FLAG_C&amp;DMA_RDY_TH2" />
+    <Transition ElementId="TRANSITION18" SourceState="STATE10" DestinationState="STATE11" Equation="!FLAG_C|!DMA_RDY_TH2" />
+    <Transition ElementId="TRANSITION19" SourceState="STATE11" DestinationState="STATE4" Equation="LOGIC_ONE" />
+    <Transition ElementId="TRANSITION20" SourceState="STATE5" DestinationState="STATE12" Equation="FLAG_D&amp;DMA_RDY_TH3" />
+    <Transition ElementId="TRANSITION21" SourceState="STATE12" DestinationState="STATE13" Equation="!SL_WR&amp;SL_END" />
+    <Transition ElementId="TRANSITION22" SourceState="STATE13" DestinationState="STATE14" Equation="SL_WR&amp;SL_END" />
+    <Transition ElementId="TRANSITION23" SourceState="STATE13" DestinationState="STATE15" Equation="!SL_END" />
+    <Transition ElementId="TRANSITION24" SourceState="STATE14" DestinationState="STATE15" Equation="!SL_END" />
+    <Transition ElementId="TRANSITION25" SourceState="STATE12" DestinationState="STATE15" Equation="!SL_END" />
+    <Transition ElementId="TRANSITION26" SourceState="STATE14" DestinationState="STATE13" Equation="!SL_WR&amp;SL_END" />
+    <Transition ElementId="TRANSITION27" SourceState="STATE15" DestinationState="STATE5" Equation="K_BOUNDARY" />
+    <Transition ElementId="TRANSITION28" SourceState="STATE15" DestinationState="STATE16" Equation="!K_BOUNDARY" />
+    <Transition ElementId="TRANSITION29" SourceState="STATE16" DestinationState="STATE17" Equation="!DMA_RDY_TH3" />
+    <Transition ElementId="TRANSITION30" SourceState="STATE17" DestinationState="STATE18" Equation="DMA_RDY_TH3" />
+    <Transition ElementId="TRANSITION31" SourceState="STATE18" DestinationState="STATE5" Equation="LOGIC_ONE" />
+  </StateMachine>
+</GPIFIIModel>

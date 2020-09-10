@@ -14,3 +14,6 @@
 # version : 1.23
 - gpio57 test code 제거 (usb c type flippable mux)
 - ZING_EVMA3_V1.1 보드에서 동작 확인
+
+# version : 1.24
+- AFC 수정

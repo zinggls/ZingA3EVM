@@ -82,7 +82,8 @@ CyU3PReturnStatus_t Zing_Init(void)
 #if DBG_LEVEL >= DBG_TYPE_ZING
 	CyU3PDebugPrint (4, "[init/Zing/AFC] start\r\n");
 #endif
-    Zing_AFC(); // AFC : Automatic Frequency Controller
+    //Zing_AFC(); // AFC : Automatic Frequency Controller
+	Zing_AFC2(1.25*1000000000); // AFC : Automatic Frequency Controller
 #if DBG_LEVEL >= DBG_TYPE_ZING
     CyU3PDebugPrint (4, "[init/Zing/AFC] end\r\n");
 #endif
@@ -528,6 +529,123 @@ void Zing_AFC(void)
 #endif
 
 }
+
+// f_tg : Hz
+void Zing_AFC2(float f_tg)
+{
+	 uint32_t	reg_value, reg_val, rt_reg_val;
+	 uint32_t CntArr[AFC_N] = {0,};
+	 int i;
+	 float f_ref = 25000000;
+	 uint32_t ref_cnt = 32768;
+	 uint8_t selected_idx = 0;
+	 int min_dif_cnt=0;
+	 int DifCntArr[AFC_N] = {0,};
+	 uint32_t reg_value2[AFC_N] ={
+			 0x12218091,
+			 0x12228091,
+			 0x12238091,
+			 0x12248091,
+			 0x12258091,
+			 0x12268091,
+			 0x12278091,
+			 0x12288091
+	 };
+	 uint32_t data;
+	 float f_set;
+
+	 uint32_t t1,t2;
+	 t1 = CyU3PGetTime();
+
+
+	 // calc ref_cnt
+	 ref_cnt = (uint32_t)(f_ref/f_tg*50*pow(2,15));
+
+	 // set reg_value2
+	 for(i=0;i<AFC_N;i++) {
+		 reg_value2[i] = (0x12008091) | (i<<16);
+	 }
+
+
+	// init
+	reg_value=0x0000001F;
+	Zing_RegWrite(0x802C,(uint8_t*)&reg_value,4);
+
+	reg_value=0x00000088;
+	Zing_RegWrite(0x802F,(uint8_t*)&reg_value,4);
+
+	reg_value=0x1221809B;
+	Zing_RegWrite(0x802D,(uint8_t*)&reg_value,4);
+
+	// measure full mode AFC
+	for(i=0; i<AFC_N; i++) {
+		reg_value = reg_value2[i];
+		Zing_RegWrite(0x802D,(uint8_t*)&reg_value,4);
+
+		reg_value=0x00000000;
+		Zing_RegWrite(0x802B,(uint8_t*)&reg_value,4);
+
+		reg_value=0x00010000;
+		Zing_RegWrite(0x802B,(uint8_t*)&reg_value,4);
+
+		CyU3PThreadSleep (10);
+
+		Zing_RegRead(0x802B,(uint8_t*)&data,4);
+		CntArr[i] = data & 0x0000ffff;
+	}
+
+	// select vco tb
+	for(i=0; i<AFC_N; i++) {
+		DifCntArr[i] = abs((int)CntArr[i]-(int)ref_cnt);
+	}
+	min_dif_cnt = DifCntArr[0];
+	selected_idx = 0;
+	for(i=1; i<AFC_N; i++) {
+		if(DifCntArr[i] < min_dif_cnt) {
+			min_dif_cnt = DifCntArr[i];
+			selected_idx = i;
+		}
+	}
+
+	// write reg
+	reg_val = 0x00000000;
+	Zing_RegWrite(0x8009,(uint8_t*)&reg_val,4);
+	reg_val = 0x00000008;
+	Zing_RegWrite(0x802C,(uint8_t*)&reg_val,4);
+	reg_val = 0x00000001;
+	Zing_RegWrite(0x800E,(uint8_t*)&reg_val,4);
+	reg_val = 0x88C8A33D;
+	Zing_RegWrite(0x802C,(uint8_t*)&reg_val,4);
+	reg_val = 0xFF888888;
+	Zing_RegWrite(0x802F,(uint8_t*)&reg_val,4);
+
+	reg_value=(0x9224F0F5 & 0xFF00FFFF) | (reg_value2[selected_idx] & 0x00FF0000);
+	Zing_RegWrite(0x802D,(uint8_t*)&reg_value,4);
+	Zing_RegRead(0x802D,(uint8_t*)&data,4);
+
+	reg_val = 0x488F73;
+	Zing_RegWrite(0x802E,(uint8_t*)&reg_val,4);
+	reg_val = 0x788F73;
+	Zing_RegWrite(0x802E,(uint8_t*)&reg_val,4);
+
+	t2 = CyU3PGetTime();
+	// print dbg
+	CyU3PDebugPrint (4, "elapsed time :%d ms\r\n", t2-t1);
+
+#if DBG_LEVEL >= DBG_TYPE_ZING
+	for(i=0;i<AFC_N;i++) {
+		CyU3PDebugPrint (4, "cnt[%d] :%d\r\n", i, CntArr[i]);
+	}
+	CyU3PDebugPrint (4, "set reg 802D :0x%x\r\n", reg_value);
+	f_set = (f_ref/((float)CntArr[selected_idx])*50*pow(2,15));
+	CyU3PDebugPrint (4, "vco freq :%d Hz\r\n", (int)f_set);
+
+#endif
+
+}
+
+
+
 
 // val = 1 (PPC), val = 0 (DEV)
 void Zing_SetHRCP(uint32_t val)

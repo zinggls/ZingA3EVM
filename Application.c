@@ -994,6 +994,11 @@ void USBEP0RxThread(uint32_t Value)
 								memcpy(glHostTxData,(uint8_t*)&glMngtData,4);
 				            	glHostTxData_idx = 4;
 							}
+							else if(strcmp(str_tk, "AFC")==0) {  // cmd : ZING AFC 1250000000
+								str_tk = strtok(NULL, " ");
+								arg[0] = (uint32_t)strtoul(str_tk, NULL, 10);   /* first argument */
+								Zing_AFC2((float)arg[0]);
+							}
 
 						}
 
@@ -1300,8 +1305,8 @@ void ApplicationThread(uint32_t Value)
     Status = ControlChThread_Create();
     Status = Zing_Init();
     //Zing_AutoHRCP();
-    Zing_SetHRCP(PPC);
-    //Zing_SetHRCP(DEV);
+    //Zing_SetHRCP(PPC);
+    Zing_SetHRCP(DEV);
 #if DBG_LEVEL >= DBG_TYPE_INIT
     CyU3PDebugPrint(4,"[init] Zing\r\n");
 #endif
