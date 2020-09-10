@@ -1,4 +1,4 @@
-#include "PIB.h"
+#include "gpif/PIB.h"
 #include "cyu3pib.h"
 #include "cyu3error.h"
 #include "cyu3gpif.h"
@@ -6,21 +6,21 @@
 #if ZING_BUG_WM3 == 0
 
 #if ZING_GPIF_BUSWIDTH == 32
-	#include "GpifZing32bit.h"
+	#include "gpif/GpifZing32bit.h"
 #elif ZING_GPIF_BUSWIDTH == 16
-	#include "GpifZing16bit.h"
+	#include "gpif/GpifZing16bit.h"
 #elif ZING_GPIF_BUSWIDTH == 8
-	#include "GpifZing8bit.h"
+	#include "gpif/GpifZing8bit.h"
 #endif
 
 #else
 
 #if ZING_GPIF_BUSWIDTH == 32
-	#include "GpifZing32bit_NoZLP.h"
+	#include "gpif/GpifZing32bit_NoZLP.h"
 #elif ZING_GPIF_BUSWIDTH == 16
-	#include "GpifZing16bit_NoZLP.h"
+	#include "gpif/GpifZing16bit_NoZLP.h"
 #elif ZING_GPIF_BUSWIDTH == 8
-	#include "GpifZing8bit_NoZLP.h"
+	#include "gpif/GpifZing8bit_NoZLP.h"
 #endif
 
 #endif

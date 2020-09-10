@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>ZingA3EVM_FX3</name>
+	<name>ZingA3</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -23,4 +23,17 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src</name>
+			<type>2</type>
+			<locationURI>ZING_A3_SRC</locationURI>
+		</link>
+	</linkedResources>
+	<variableList>
+		<variable>
+			<name>ZING_A3_SRC</name>
+			<value>$%7BPARENT-2-PROJECT_LOC%7D/src</value>
+		</variable>
+	</variableList>
 </projectDescription>
