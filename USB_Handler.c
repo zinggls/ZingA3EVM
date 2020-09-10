@@ -396,7 +396,7 @@ CyU3PReturnStatus_t USB_Init(void)
         CyFxAppErrorHandler(apiRetStatus);
     }
 
-    USB_Connect();
+    //USB_Connect();
 
     return apiRetStatus;
 }

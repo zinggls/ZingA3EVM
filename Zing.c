@@ -204,7 +204,7 @@ CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len)
 
 	apiRetStatus = Zing_Header(glZingControlOutBuffer,len,addr,ZING_HDR_ACTION_WRITE);
 	memcpy(glZingControlOutBuffer+ZING_HDR_SIZE, buf, len);
-	apiRetStatus = Zing_Transfer_Send(&glDMAControlOut,glZingControlOutBuffer,len+ZING_HDR_SIZE);
+	apiRetStatus = Zing_Transfer_Send2(&glDMAControlOut,glZingControlOutBuffer,len+ZING_HDR_SIZE);
 #if DBG_LEVEL >= DBG_TYPE_ZING_TR
 	{
 		int i;
@@ -240,6 +240,41 @@ CyU3PReturnStatus_t Zing_Header(
 //    p_hdr->fr_type = 0;                 /* invalid for Register */
     p_hdr->addr = addr;
     p_hdr->length = payload_size;
+
+
+	return apiRetStatus;
+}
+
+CyU3PReturnStatus_t Zing_Header2(
+        uint8_t *pt,            /* pt : buffer pointer */
+        uint16_t dir,
+        uint16_t interrupt,
+        uint16_t target,
+        uint16_t type,
+        uint16_t req_resp,
+        uint16_t fr_type,
+        uint16_t intr_flags,
+        uint16_t addr,
+        uint16_t payload_size)
+{
+	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
+
+	ZingHdr_t  *p_hdr;
+
+	memset(pt,0,ZING_HDR_SIZE);
+
+	p_hdr = (ZingHdr_t *)pt;
+
+    p_hdr->dir = dir;
+    p_hdr->interrupt = interrupt;
+    p_hdr->target = target;
+    p_hdr->type = type;
+    p_hdr->req_resp = req_resp;
+    p_hdr->fr_type = fr_type;
+    p_hdr->intr_flags = intr_flags;
+    p_hdr->addr = addr;
+    p_hdr->length = payload_size;
+
 
 	return apiRetStatus;
 }
@@ -317,9 +352,7 @@ CyU3PReturnStatus_t Zing_Transfer_Recv (
 CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
 {
 	CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
-
-
-	Zing_RegReadFlush();
+	uint32_t	evStat;
 
     if(len < 4)
     {
@@ -338,12 +371,11 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
     }
 
     status = Zing_Header(glZingControlOutBuffer,len,addr,ZING_HDR_ACTION_READ);
-    status = Zing_Transfer_Send(&glDMAControlOut,glZingControlOutBuffer,ZING_HDR_SIZE);
-    status = Zing_Transfer_Recv(&glDMAControlIn,glZingControlInBuffer,len+ZING_HDR_SIZE);
+    status = Zing_Transfer_Send2(&glDMAControlOut,glZingControlOutBuffer,ZING_HDR_SIZE);
 
+    status = CyU3PEventGet (&glControlChEvent, EVT_CTLCH0, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_WAIT_FOREVER);
 	// copy data only (except zing header(8Byte))
-	memcpy(buf,glZingControlInBuffer+8,len);
-
+	memcpy(buf,glControlChData+8,glControlChData_idx-8);
 
 #if DBG_LEVEL >= DBG_TYPE_ZING_TR
 	{
@@ -998,4 +1030,50 @@ void Zing_Test_DataSink2 (uint32_t cnt, uint32_t timeout)
 #endif
 }
 
+CyU3PReturnStatus_t Zing_Transfer_Recv3 (
+	CyU3PDmaChannel* dma_ch,
+    uint8_t     *data,		/* pointer to msg */
+    uint32_t*    length_pt	 	/* msg size in bytes */
+    )
+{
+	CyU3PReturnStatus_t status;
+	CyU3PDmaBuffer_t Buf;
 
+
+	/* Wait for a free buffer to transmit the received data. The failure cases are same as above. */
+	status = CyU3PDmaChannelGetBuffer (dma_ch, &Buf, CYU3P_WAIT_FOREVER);
+	if (status != CY_U3P_SUCCESS)
+	{
+#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
+		CyU3PDebugPrint (4, "CyU3PDmaChannelGetBuffer failed, Error code = %d\n", status);
+#endif
+	}
+	else {
+		CyU3PMemCopy (data, Buf.buffer, Buf.count);
+		*length_pt = Buf.count;
+
+		status = CyU3PDmaChannelDiscardBuffer (dma_ch);
+		if (status != CY_U3P_SUCCESS)
+		{
+#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
+			CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
+#endif
+		}
+	}
+
+	return status;
+}
+
+CyU3PReturnStatus_t Zing_Management_Send (
+    uint8_t     *data,		/* pointer to msg */
+    uint32_t    length	 	/* msg size in bytes */
+    )
+{
+	CyU3PReturnStatus_t status=CY_U3P_SUCCESS;
+
+	status = Zing_Header2(glZingControlOutBuffer,0,0,0,1,0,1,0,0,length);
+	memcpy(glZingControlOutBuffer+ZING_HDR_SIZE, data, length);
+	status = Zing_Transfer_Send2(&glDMAControlOut,glZingControlOutBuffer,length+ZING_HDR_SIZE);
+
+	return status;
+}

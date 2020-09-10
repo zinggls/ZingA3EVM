@@ -55,4 +55,33 @@ extern void Zing_Test_DataTx (uint32_t repeat, uint32_t length, uint32_t pattern
 extern void Zing_Test_DataTx2 (uint32_t repeat, uint32_t length, uint32_t pattern);
 extern void Zing_Test_DataSink2 (uint32_t cnt, uint32_t timeout);
 
+extern CyU3PReturnStatus_t Zing_Transfer_Recv3 (
+		CyU3PDmaChannel* dma_ch,
+	    uint8_t     *data,		/* pointer to msg */
+	    uint32_t*    length_pt	 	/* msg size in bytes */
+	    );
+
+extern CyU3PReturnStatus_t Zing_Management_Send (
+	    uint8_t     *data,		/* pointer to msg */
+	    uint32_t    length	 	/* msg size in bytes */
+	    );
+
+extern CyU3PReturnStatus_t Zing_Header2(
+        uint8_t *pt,            /* pt : buffer pointer */
+        uint16_t dir,
+        uint16_t interrupt,
+        uint16_t target,
+        uint16_t type,
+        uint16_t req_resp,
+        uint16_t fr_type,
+        uint16_t intr_flags,
+        uint16_t addr,
+        uint16_t payload_size);
+
+// DMA override mode buffers
+extern uint8_t *glZingControlInBuffer;
+extern uint8_t *glZingControlOutBuffer;
+extern uint8_t *glZingDataInBuffer;
+extern uint8_t *glZingDataOutBuffer;
+
 #endif   /* _INCLUDED__ */

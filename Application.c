@@ -17,6 +17,8 @@ CyU3PDmaChannel glDMAControlIn;    /* DMA channel : USB to GPIF, Control IN */
 CyU3PDmaChannel glDMADataOut;      /* DMA channel : USB to GPIF, Data OUT */
 CyU3PDmaChannel glDMADataIn;       /* DMA channel : USB to GPIF, Data IN */
 
+dma_mode_t glDMA_mode = DMA_NORMAL;
+
 // Ep0 vendor ch
 CyU3PEvent      glEp0Event;                 /* Event group used to signal the thread. */
 uint32_t glHostReqNum;
@@ -30,6 +32,16 @@ uint32_t glDataOutInjected=0;
 uint32_t glDataInInjected=0;
 uint32_t glControlOutInjected=0;
 uint32_t glControlInInjected=0;
+
+// zing control ch thread
+CyU3PThread ControlChThreadHandle;	// Handle to my Application Thread
+CyU3PEvent      glControlChEvent;
+uint8_t glControlChData[512];
+uint32_t glControlChData_idx;
+
+uint32_t glMngtData;
+
+
 
 
 /* App Error Handler */
@@ -102,13 +114,13 @@ void DMA_Sync_mode(void)
 #endif
 		CyFxAppErrorHandler(apiRetStatus);
 	}
-//    /* Set DMA Channel transfer size to INFINITE */
-//    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMAControlOut, 0);
-//    if (apiRetStatus != CY_U3P_SUCCESS)
-//    {
-//        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-//        CyFxAppErrorHandler(apiRetStatus);
-//    }
+    /* Set DMA Channel transfer size to INFINITE */
+    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMAControlOut, 0);
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
 
 	/* Control IN channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
@@ -132,13 +144,13 @@ void DMA_Sync_mode(void)
 #endif
 		CyFxAppErrorHandler(apiRetStatus);
 	}
-//    /* Set DMA Channel transfer size to INFINITE */
-//    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMAControlIn, 0);
-//    if (apiRetStatus != CY_U3P_SUCCESS)
-//    {
-//        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-//        CyFxAppErrorHandler(apiRetStatus);
-//    }
+    /* Set DMA Channel transfer size to INFINITE */
+    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMAControlIn, 0);
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
 
 	/* Data OUT Channel
 	 * Create a DMA Auto channel for U Port -> P Port transfer. */
@@ -202,7 +214,7 @@ void DMA_Sync_mode(void)
             CyFxAppErrorHandler(apiRetStatus);
         }
 
-
+        glDMA_mode = DMA_SYNC;
 }
 
 void
@@ -454,7 +466,7 @@ void DMA_Normal_mode(void)
             CyFxAppErrorHandler(apiRetStatus);
         }
 
-
+        glDMA_mode = DMA_NORMAL;
 }
 
 
@@ -551,6 +563,7 @@ void DMA_LoopBack_mode(void)
         CyFxAppErrorHandler(apiRetStatus);
     }
 
+    glDMA_mode = DMA_LP;
 }
 
 
@@ -817,7 +830,7 @@ void DMA_SinkSource_mode(void)
         //
         DMASrcSinkFillInBuffers();
 
-
+        glDMA_mode = DMA_SINKSOURCE;
 }
 
 
@@ -954,7 +967,15 @@ void USBEP0RxThread(uint32_t Value)
 
 							    Zing_Test_DataSink2(arg[0],arg[1]);
 							}
-
+							else if(strcmp(str_tk, "MNGT_TX4B")==0) { // cmd : ZING MNGT_TX4B 12345678
+								str_tk = strtok(NULL, " ");
+								arg[0] = (uint32_t)strtoul(str_tk, NULL, 16);   /* first argument */
+								Zing_Management_Send((uint8_t*)&arg[0],4);
+							}
+							else if(strcmp(str_tk, "MNGT_RX4B")==0) { // cmd : ZING MNGT_RX4B
+								memcpy(glHostTxData,(uint8_t*)&glMngtData,4);
+				            	glHostTxData_idx = 4;
+							}
 
 						}
 
@@ -985,7 +1006,88 @@ void USBEP0RxThread(uint32_t Value)
 
 }
 
+void ControlChThread(uint32_t Value)
+{
+	CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
+	REG_Resp_t* resp_pt;
+	uint32_t rt_len, i;
 
+	uint8_t * buf = (uint8_t *)CyU3PDmaBufferAlloc (512);
+
+	while(1) {
+		if(glDMA_mode == DMA_SYNC) {
+			status = Zing_Transfer_Recv3(&glDMAControlIn,buf,&rt_len); // wait forever...
+
+			if(status == CY_U3P_SUCCESS) {
+				resp_pt = (REG_Resp_t*)buf;
+				if(resp_pt->hdr.dir == 1 && resp_pt->hdr.interrupt == 1) { // Zing Interrupt Event -----------------
+					// no act
+#if DBG_LEVEL >= DBG_TYPE_ZING
+						CyU3PDebugPrint (4, "[Zing/ControlCh] discarded interrupt event pk\r\n");
+						CyU3PDebugPrint (4, "[Zing/ControlCh] pk header :(MSB-LSB) 0x%x\r\n",*((uint64_t*)resp_pt));
+#endif
+				}
+				else if(resp_pt->hdr.target == 1) { // Reg ---------------------------------------------------------
+					memcpy(glControlChData,buf,rt_len);
+					glControlChData_idx = rt_len;
+					// evt
+					CyU3PEventSet (&glControlChEvent, EVT_CTLCH0, CYU3P_EVENT_OR);
+				}
+				else if(resp_pt->hdr.dir == 1 && resp_pt->hdr.fr_type == 1) { // Management Frame ------------------
+#if DBG_LEVEL >= DBG_TYPE_ZING
+					CyU3PDebugPrint (4, "[Zing/ControlCh] rx management frame\r\n");
+					CyU3PDebugPrint (4, "[Zing/ControlCh] frame header :(MSB-LSB) 0x%x\r\n",*((uint64_t*)resp_pt));
+					CyU3PDebugPrint (4, "[Zing/ControlCh] frame data : ");
+					for(i=0;i<rt_len-ZING_HDR_SIZE;i++) {
+						CyU3PDebugPrint (4, "0x%X, ",buf[i+ZING_HDR_SIZE]);
+					}
+					CyU3PDebugPrint (4, "\r\n");
+
+					if(0) {
+
+					}
+					else {
+						if(rt_len-ZING_HDR_SIZE == 4) { // EP0 : ZING MNGT_TX4B 12345678 --> ZING MNGT_RX4B
+							glMngtData = *(uint32_t*)(buf+ZING_HDR_SIZE);
+						}
+					}
+#endif
+				}
+			}
+		}
+		else {
+			CyU3PThreadSleep(10);
+		}
+
+//		CyU3PThreadSleep(1000);
+//		CyU3PDebugPrint(4,"Control Ch Thread...\r\n");
+
+	}
+	CyU3PDmaBufferFree(buf);
+}
+
+CyU3PReturnStatus_t ControlChThread_Create(void)
+{
+    void *StackPtr = NULL;
+    CyU3PReturnStatus_t Status;
+
+    CyU3PEventCreate (&glControlChEvent);
+
+    StackPtr = CyU3PMemAlloc(APPLICATION_THREAD_STACK);
+    Status = CyU3PThreadCreate(&ControlChThreadHandle,	// Handle to my Application Thread
+            "22:tmp2",                		// Thread ID and name
+            ControlChThread,     					// Thread entry function
+            0,                             		// Parameter passed to Thread
+            StackPtr,                       		// Pointer to the allocated thread stack
+            APPLICATION_THREAD_STACK,               // Allocated thread stack size
+            APPLICATION_THREAD_PRIORITY,            // Thread priority
+            APPLICATION_THREAD_PRIORITY,            // = Thread priority so no preemption
+            CYU3P_NO_TIME_SLICE,            		// Time slice no supported
+            CYU3P_AUTO_START                		// Start the thread immediately
+            );
+
+    return Status;
+}
 
 
 /* This function starts the application. This is called
@@ -1167,32 +1269,34 @@ void ApplicationThread(uint32_t Value)
 #if DBG_LEVEL >= DBG_TYPE_INIT
     CyU3PDebugPrint(4,"[init] EP0 Vendor Ch\r\n");
 #endif
-
     Status = SetupGPIO();
     Status = I2C_Init();
     Status = USB_Init();
     Status = PIB_Init();
+
 #if DBG_LEVEL >= DBG_TYPE_INIT
     CyU3PDebugPrint(4,"[init] GPIO, I2C, USB, PIB\r\n");
 #endif
 
     DMA_Sync_mode();
+    Status = ControlChThread_Create();
     Status = Zing_Init();
-    Zing_AutoHRCP();
-    //Zing_SetHRCP(PPC);
+    //Zing_AutoHRCP();
+    Zing_SetHRCP(PPC);
     //Zing_SetHRCP(DEV);
 #if DBG_LEVEL >= DBG_TYPE_INIT
     CyU3PDebugPrint(4,"[init] Zing\r\n");
 #endif
 
+    USB_Connect();
+    while(glIsApplnActive == 0) {
+    	CyU3PThreadSleep(100);
+    }
+
     DMA_Normal_mode();
 #if DBG_LEVEL >= DBG_TYPE_INIT
     CyU3PDebugPrint(4,"[init] DMA\r\n");
 #endif
-
-    while(glIsApplnActive == 0) {
-    	CyU3PThreadSleep(100);
-    }
 
 #if DBG_LEVEL >= DBG_TYPE_INIT
     CyU3PDebugPrint(4,"[init] Completed\r\n");
