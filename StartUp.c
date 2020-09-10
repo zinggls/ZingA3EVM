@@ -62,14 +62,14 @@ int main (void)
 		if (Status == CY_U3P_SUCCESS)
 		{
 			CyU3PMemSet((uint8_t *)&io_cfg, 0, sizeof(io_cfg));
-			io_cfg.isDQ32Bit = CyFalse;
+			io_cfg.isDQ32Bit = CyTrue;
 //r			io_cfg.s0Mode 	 = CY_U3P_SPORT_INACTIVE;
 //r			io_cfg.s1Mode	 = CY_U3P_SPORT_INACTIVE;
 			io_cfg.useUart   = CyTrue;
 			io_cfg.useI2C    = CyTrue;
 //r			io_cfg.useI2S    = CyFalse;
 //r			io_cfg.useSpi    = CyFalse;
-			io_cfg.lppMode   = CY_U3P_IO_MATRIX_LPP_UART_ONLY;
+			io_cfg.lppMode   = CY_U3P_IO_MATRIX_LPP_DEFAULT;
 			io_cfg.gpioSimpleEn[0]  = 0;
 			io_cfg.gpioSimpleEn[1]  = 1<<(GPIO57-32); // TP2 in schematic
 //r			io_cfg.gpioComplexEn[0] = 0;

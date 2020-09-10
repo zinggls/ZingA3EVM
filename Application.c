@@ -1327,10 +1327,10 @@ void ApplicationThread(uint32_t Value)
 
     if (Status == CY_U3P_SUCCESS)
     {
-        // test GPIO
-        CyU3PGpioSetValue(GPIO57, 1);
-        CyU3PThreadSleep(10);
-        CyU3PGpioSetValue(GPIO57, 0);
+//        // test GPIO
+//        CyU3PGpioSetValue(GPIO57, 1);
+//        CyU3PThreadSleep(10);
+//        CyU3PGpioSetValue(GPIO57, 0);
 
         // Now run forever
     	while (1)
