@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "DebugConsole.h"
+#include "i2c_test.h"
 
 CyU3PThread ApplicationThreadHandle;
 
@@ -8,12 +9,9 @@ void ApplicationThread(uint32_t Value)
 	CyU3PReturnStatus_t Status = InitializeDebugConsole(6);
 	CheckStatus("[App] InitializeDebugConsole", Status);
 
-	uint32_t loop=0;
-    while (1)
-    {
-    	CyU3PThreadSleep(1000);
-    	CyU3PDebugPrint(4, "%d ", loop++);
-    }
+	test_i2c_init();
+
+    CyU3PDebugPrint(4, "All tests are done\n");
 }
 
 void CyFxApplicationDefine(void)
