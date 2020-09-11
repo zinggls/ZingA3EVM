@@ -12,10 +12,10 @@
 #include <math.h>
 
 // DMA override mode buffers
-uint8_t *glZingControlInBuffer;
-uint8_t *glZingControlOutBuffer;
-uint8_t *glZingDataInBuffer;
-uint8_t *glZingDataOutBuffer;
+static uint8_t *ZingControlInBuffer;
+static uint8_t *ZingControlOutBuffer;
+static uint8_t *ZingDataInBuffer;
+static uint8_t *ZingDataOutBuffer;
 
 // ZING mode
 uint32_t zing_hrcp = PPC;
@@ -43,10 +43,10 @@ CyU3PReturnStatus_t Zing_PLLConfig(void)
 void Zing_AllocBuffer(void)
 {
     /* DMA override mode buffers */
-    glZingControlInBuffer = (uint8_t *)CyU3PDmaBufferAlloc (512);
-    glZingControlOutBuffer = (uint8_t *)CyU3PDmaBufferAlloc (512);
-    glZingDataInBuffer = (uint8_t *)CyU3PDmaBufferAlloc (8192);
-    glZingDataOutBuffer = (uint8_t *)CyU3PDmaBufferAlloc (8192);
+    ZingControlInBuffer = (uint8_t *)CyU3PDmaBufferAlloc (512);
+    ZingControlOutBuffer = (uint8_t *)CyU3PDmaBufferAlloc (512);
+    ZingDataInBuffer = (uint8_t *)CyU3PDmaBufferAlloc (8192);
+    ZingDataOutBuffer = (uint8_t *)CyU3PDmaBufferAlloc (8192);
 }
 
 
@@ -71,9 +71,9 @@ CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len)
         return CY_U3P_ERROR_BAD_SIZE;
     }
 
-	Zing_Header(glZingControlOutBuffer,len,addr,ZING_HDR_ACTION_WRITE);
-	memcpy(glZingControlOutBuffer+ZING_HDR_SIZE, buf, len);
-	apiRetStatus = Zing_Transfer_Send2(&Dma.ControlOut_,glZingControlOutBuffer,len+ZING_HDR_SIZE);
+	Zing_Header(ZingControlOutBuffer,len,addr,ZING_HDR_ACTION_WRITE);
+	memcpy(ZingControlOutBuffer+ZING_HDR_SIZE, buf, len);
+	apiRetStatus = Zing_Transfer_Send2(&Dma.ControlOut_,ZingControlOutBuffer,len+ZING_HDR_SIZE);
 #if DBG_LEVEL >= DBG_TYPE_ZING_TR
 	{
 		int i;
@@ -153,8 +153,8 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
         return CY_U3P_ERROR_BAD_SIZE;
     }
 
-    Zing_Header(glZingControlOutBuffer,len,addr,ZING_HDR_ACTION_READ);
-    status = Zing_Transfer_Send2(&Dma.ControlOut_,glZingControlOutBuffer,ZING_HDR_SIZE);
+    Zing_Header(ZingControlOutBuffer,len,addr,ZING_HDR_ACTION_READ);
+    status = Zing_Transfer_Send2(&Dma.ControlOut_,ZingControlOutBuffer,ZING_HDR_SIZE);
 
     status = CyU3PEventGet (&CcCtx.Event_, EVT_CTLCH0, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_WAIT_FOREVER);
 	// copy data only (except zing header(8Byte))
@@ -409,8 +409,8 @@ CyU3PReturnStatus_t Zing_DataWrite(uint8_t* buf, uint32_t len)
 {
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 
-	memcpy(glZingDataOutBuffer, buf, len);
-	apiRetStatus = Zing_Transfer_Send2(&Dma.DataOut_,glZingDataOutBuffer,len);
+	memcpy(ZingDataOutBuffer, buf, len);
+	apiRetStatus = Zing_Transfer_Send2(&Dma.DataOut_,ZingDataOutBuffer,len);
 #if DBG_LEVEL >= DBG_TYPE_ZING_TR
 	if(apiRetStatus==CY_U3P_SUCCESS) {
 		{
@@ -470,10 +470,10 @@ CyU3PReturnStatus_t Zing_DataRead(uint8_t* buf, uint32_t* len_pt)
 {
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 
-	apiRetStatus = Zing_Transfer_Recv2(&Dma.DataIn_,glZingDataInBuffer,len_pt);
+	apiRetStatus = Zing_Transfer_Recv2(&Dma.DataIn_,ZingDataInBuffer,len_pt);
 
 	if(apiRetStatus==CY_U3P_SUCCESS)
-		memcpy(buf,glZingDataInBuffer,*len_pt);
+		memcpy(buf,ZingDataInBuffer,*len_pt);
 	else
 		*len_pt = 0;
 
@@ -817,9 +817,9 @@ CyU3PReturnStatus_t Zing_Management_Send (
 {
 	CyU3PReturnStatus_t status=CY_U3P_SUCCESS;
 
-	Zing_Header2(glZingControlOutBuffer,0,0,0,1,0,1,0,0,length);
-	memcpy(glZingControlOutBuffer+ZING_HDR_SIZE, data, length);
-	status = Zing_Transfer_Send2(&Dma.ControlOut_,glZingControlOutBuffer,length+ZING_HDR_SIZE);
+	Zing_Header2(ZingControlOutBuffer,0,0,0,1,0,1,0,0,length);
+	memcpy(ZingControlOutBuffer+ZING_HDR_SIZE, data, length);
+	status = Zing_Transfer_Send2(&Dma.ControlOut_,ZingControlOutBuffer,length+ZING_HDR_SIZE);
 
 	return status;
 }
