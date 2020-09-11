@@ -16,7 +16,7 @@ CyU3PReturnStatus_t Zing_SendMsg(uint8_t* buf, uint32_t len);
 CyU3PReturnStatus_t Zing_RecvMsg(uint8_t* buf, uint32_t* len_pt);
 void Zing_Reset(uint8_t type);
 CyU3PReturnStatus_t Zing_AutoHRCP(void);
-uint32_t Zing_GetVersion(void);
+CyU3PReturnStatus_t Zing_GetVersion(uint8_t *version);
 void Zing_Test_DataTx2 (uint32_t repeat, uint32_t length, uint32_t pattern);
 void Zing_Test_DataSink2 (uint32_t cnt, uint32_t timeout);
 CyU3PReturnStatus_t Zing_Transfer_Recv3(CyU3PDmaChannel *dma_ch,uint8_t *data,uint32_t *length_pt);

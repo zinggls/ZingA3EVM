@@ -655,12 +655,9 @@ CyU3PDebugPrint (4, "[Zing] HRCP : %s\r\n",rt_reg_val&0x00000010 ? "PPC" : "DEV"
 }
 
 // in DMA Sync mode
-uint32_t Zing_GetVersion(void)
+CyU3PReturnStatus_t Zing_GetVersion(uint8_t *version)
 {
-	uint32_t rt_reg_val;
-	Zing_RegRead(REG_RTL_VERSION,(uint8_t*)&rt_reg_val,4);
-
-	return rt_reg_val;
+	return Zing_RegRead(REG_RTL_VERSION,(uint8_t*)version,4);
 }
 
 void Zing_SetGPIFBusWidth(uint8_t width)
