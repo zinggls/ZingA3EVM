@@ -7,4 +7,6 @@
 #define APPLICATION_THREAD_STACK	(0x1000)
 #define APPLICATION_THREAD_PRIORITY	(8)
 
+void assert(const char *str,int nExpression);
+
 #include "cyu3externcend.h"

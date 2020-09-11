@@ -2,6 +2,11 @@
 #include "DebugConsole.h"
 #include "i2c_test.h"
 
+void assert(const char *str,int nExpression)
+{
+	nExpression? CyU3PDebugPrint(4,"%s: ok\n",str) : CyU3PDebugPrint(4,"%s: fail\n",str);
+}
+
 CyU3PThread ApplicationThreadHandle;
 
 void ApplicationThread(uint32_t Value)
