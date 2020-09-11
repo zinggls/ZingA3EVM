@@ -4,5 +4,6 @@
 #include "Application.h"
 
 void test_i2c_init();
+void test_i2c_write_read();
 
 #endif

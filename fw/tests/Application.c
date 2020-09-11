@@ -15,6 +15,7 @@ void ApplicationThread(uint32_t Value)
 	CheckStatus("[App] InitializeDebugConsole", Status);
 
 	test_i2c_init();
+	test_i2c_write_read();
 
     CyU3PDebugPrint(4, "All tests are done\n");
 }
