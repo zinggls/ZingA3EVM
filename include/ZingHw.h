@@ -45,10 +45,23 @@ typedef struct zing_header
 #define REG_PLL_CTRL_110        0x8007          /* ASIC only, 110MHz PLL */
 #define REG_PHY_CTRL            0x8006
 #define REG_PLL_CTRL_SERDES     0x8008          /* PLL in SERDES, both FPGA and ASIC */
+#define REG_SERDES_TEST_PATTERN 0x8009
 #define REG_MAC_TIMEOUT_CFG     0x800a
 #define REG_PHY_TIMEOUT_CFG     0x800b
 #define REG_MAC_RETX_LIMIT      0x800c
-#define REG_RTL_VERSION      	0x801f
+#define REG_SERDES_TEST_CONFIG  0x800e
+#define REG_RTL_VERSION         0x801f
+#define REG_RF_RX_CONTROL_0     0x8024
+#define REG_RF_RX_CONTROL_1     0x8025
+#define REG_RF_TX_CONTROL_0     0x8026
+#define REG_RF_CONTROL_0        0x8027
+#define REG_RF_CONTROL_1        0x8028
+#define REG_PLL_CONTROL_MONITOR 0x802a
+#define REG_SERDES_PLL_AFC      0x802b
+#define REG_SERDES_TRIM_1       0x802c
+#define REG_SERDES_TRIM_2       0x802d
+#define REG_SERDES_TRIM_3       0x802e
+#define REG_SERDES_TRIM_4       0x802f
 #define REGISTER_START_ADDR		0x8000
 #define REGISTER_END_ADDR		0x83FF
 
