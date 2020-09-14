@@ -213,28 +213,28 @@ void Zing_AFC2(float f_tg)
 
 	// init
 	reg_value=0x0000001F;
-	Zing_RegWrite(0x802C,(uint8_t*)&reg_value,4);
+	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_value,4);
 
 	reg_value=0x00000088;
-	Zing_RegWrite(0x802F,(uint8_t*)&reg_value,4);
+	Zing_RegWrite(REG_SERDES_TRIM_4,(uint8_t*)&reg_value,4);
 
 	reg_value=0x1221809B;
-	Zing_RegWrite(0x802D,(uint8_t*)&reg_value,4);
+	Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_value,4);
 
 	// measure full mode AFC
 	for(i=0; i<AFC_N; i++) {
 		reg_value = reg_value2[i];
-		Zing_RegWrite(0x802D,(uint8_t*)&reg_value,4);
+		Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_value,4);
 
 		reg_value=0x00000000;
-		Zing_RegWrite(0x802B,(uint8_t*)&reg_value,4);
+		Zing_RegWrite(REG_SERDES_PLL_AFC,(uint8_t*)&reg_value,4);
 
 		reg_value=0x00010000;
-		Zing_RegWrite(0x802B,(uint8_t*)&reg_value,4);
+		Zing_RegWrite(REG_SERDES_PLL_AFC,(uint8_t*)&reg_value,4);
 
 		CyU3PThreadSleep (10);
 
-		Zing_RegRead(0x802B,(uint8_t*)&data,4);
+		Zing_RegRead(REG_SERDES_PLL_AFC,(uint8_t*)&data,4);
 		CntArr[i] = data & 0x0000ffff;
 	}
 
@@ -253,24 +253,24 @@ void Zing_AFC2(float f_tg)
 
 	// write reg
 	reg_val = 0x00000000;
-	Zing_RegWrite(0x8009,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TEST_PATTERN,(uint8_t*)&reg_val,4);
 	reg_val = 0x00000008;
-	Zing_RegWrite(0x802C,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4);
 	reg_val = 0x00000001;
-	Zing_RegWrite(0x800E,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TEST_CONFIG,(uint8_t*)&reg_val,4);
 	reg_val = 0x88C8A33D;
-	Zing_RegWrite(0x802C,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4);
 	reg_val = 0xFF888888;
-	Zing_RegWrite(0x802F,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_4,(uint8_t*)&reg_val,4);
 
 	reg_value=(0x9224F0F5 & 0xFF00FFFF) | (reg_value2[selected_idx] & 0x00FF0000);
-	Zing_RegWrite(0x802D,(uint8_t*)&reg_value,4);
-	Zing_RegRead(0x802D,(uint8_t*)&data,4);
+	Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_value,4);
+	Zing_RegRead(REG_SERDES_TRIM_2,(uint8_t*)&data,4);
 
 	reg_val = 0x488F73;
-	Zing_RegWrite(0x802E,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4);
 	reg_val = 0x788F73;
-	Zing_RegWrite(0x802E,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4);
 
 	t2 = CyU3PGetTime();
 	// print dbg
@@ -329,7 +329,7 @@ void Zing_SetPath(uint32_t val)
 	//DMA_Sync_mode();
 
 	// PPC/DEV
-	Zing_RegRead(0x802c,(uint8_t*)&rt_reg_val,4);
+	Zing_RegRead(REG_SERDES_TRIM_1,(uint8_t*)&rt_reg_val,4);
 	rt_reg_val &= 0xFFFFFF9F;
 	if(val==1) { //rf path
 		rt_reg_val |= 0x00000040;
@@ -337,7 +337,7 @@ void Zing_SetPath(uint32_t val)
 	else if(val ==0) { //serdes path
 		rt_reg_val |= 0x00000020;
 	}
-	Zing_RegWrite(0x802c,(uint8_t*)&rt_reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&rt_reg_val,4);
 
 	//DMA_Normal_mode();
 }
@@ -845,40 +845,40 @@ CyU3PReturnStatus_t Zing_Init(void)
 	// init rf/serdes
 	CyU3PDebugPrint (4, "[init/Zing/RF,Serdes]...\r\n");
 	reg_val = 0x00000000;
-	Zing_RegWrite(0x8009,(uint8_t*)&reg_val,4);
-	Zing_RegWrite(0x8024,(uint8_t*)&reg_val,4);
-	Zing_RegWrite(0x8025,(uint8_t*)&reg_val,4);
-	Zing_RegWrite(0x8026,(uint8_t*)&reg_val,4);
-	Zing_RegWrite(0x802C,(uint8_t*)&reg_val,4);
-	Zing_RegWrite(0x802D,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TEST_PATTERN,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_RF_RX_CONTROL_0,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_RF_RX_CONTROL_1,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_RF_TX_CONTROL_0,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_val,4);
 
 	reg_val = 0x0001DFFF;
-	Zing_RegWrite(0x8028,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_RF_CONTROL_1,(uint8_t*)&reg_val,4);
 	reg_val = 0x00FE011F;
-	Zing_RegWrite(0x8027,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_RF_CONTROL_0,(uint8_t*)&reg_val,4);
 	reg_val = 0x000AA666;
-	Zing_RegWrite(0x8024,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_RF_RX_CONTROL_0,(uint8_t*)&reg_val,4);
 	reg_val = 0x0003FF59;
-	Zing_RegWrite(0x8025,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_RF_RX_CONTROL_1,(uint8_t*)&reg_val,4);
 	reg_val = 0x000000EF;
-	Zing_RegWrite(0x8026,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_RF_TX_CONTROL_0,(uint8_t*)&reg_val,4);
 
 	reg_val = 0x00000000;
-	Zing_RegWrite(0x8009,(uint8_t*)&reg_val,4); Zing_RegRead(0x8009,(uint8_t*)&rt_reg_val,4);
+	Zing_RegWrite(REG_SERDES_TEST_PATTERN,(uint8_t*)&reg_val,4); Zing_RegRead(REG_SERDES_TEST_PATTERN,(uint8_t*)&rt_reg_val,4);
 	reg_val = 0x00000008;
-	Zing_RegWrite(0x802C,(uint8_t*)&reg_val,4); Zing_RegRead(0x802C,(uint8_t*)&rt_reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4); Zing_RegRead(REG_SERDES_TRIM_1,(uint8_t*)&rt_reg_val,4);
 	reg_val = 0x00000001;
-	Zing_RegWrite(0x800E,(uint8_t*)&reg_val,4); Zing_RegRead(0x800E,(uint8_t*)&rt_reg_val,4);
+	Zing_RegWrite(REG_SERDES_TEST_CONFIG,(uint8_t*)&reg_val,4); Zing_RegRead(REG_SERDES_TEST_CONFIG,(uint8_t*)&rt_reg_val,4);
 	reg_val = 0x88C8A33D;
-	Zing_RegWrite(0x802C,(uint8_t*)&reg_val,4); Zing_RegRead(0x802C,(uint8_t*)&rt_reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4); Zing_RegRead(REG_SERDES_TRIM_1,(uint8_t*)&rt_reg_val,4);
 	reg_val = 0xFF888888;
-	Zing_RegWrite(0x802F,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_4,(uint8_t*)&reg_val,4);
 	reg_val = 0x9224F0F5;
-	Zing_RegWrite(0x802D,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_val,4);
 	reg_val = 0x488F73;
-	Zing_RegWrite(0x802E,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4);
 	reg_val = 0x788F73;
-	Zing_RegWrite(0x802E,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4);
 
 	// AFC
 	CyU3PDebugPrint (4, "[init/Zing/AFC]...\r\n");
@@ -888,10 +888,10 @@ CyU3PReturnStatus_t Zing_Init(void)
 
 #if ZING_RF_SERDES_PATH == 0
 	reg_val = 0x88C8A3BF; // serdes path
-	Zing_RegWrite(0x802C,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4);
 #elif ZING_RF_SERDES_PATH == 1
 	reg_val = 0x88C8A3DF; // rf path
-	Zing_RegWrite(0x802C,(uint8_t*)&reg_val,4);
+	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4);
 #endif
 	CyU3PDebugPrint (4, "[init/Zing/RF,Serdes] done\r\n");
 
