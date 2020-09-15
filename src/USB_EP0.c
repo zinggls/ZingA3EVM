@@ -58,14 +58,14 @@ void USBEP0RxThread(uint32_t Value)
 					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "ZING TEST SENDMSG") == 0) {
 						{
 							char* msg = "Hey Hi~!";
-							Zing_SendMsg((uint8_t*)msg, strlen(msg));
+							Zing_DataWrite((uint8_t*)msg, strlen(msg));
 						}
 					}
 					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "ZING TEST RECVMSG") == 0) {
 						{
 							char msg[100] = {0,};
 							uint32_t len;
-							Zing_RecvMsg((uint8_t*)msg, &len);
+							Zing_DataRead((uint8_t*)msg, &len);
 						}
 					}
 					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "ZING RST") == 0) {

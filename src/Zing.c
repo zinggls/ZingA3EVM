@@ -342,41 +342,6 @@ void Zing_SetPath(uint32_t val)
 	//DMA_Normal_mode();
 }
 
-
-
-
-// in DMA_Sync_mode
-CyU3PReturnStatus_t Zing_SendMsg(uint8_t* buf, uint32_t len)
-{
-	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
-
-	apiRetStatus = Zing_DataWrite(buf,len);
-#if DBG_LEVEL >= DBG_TYPE_ZING_TR
-	if (apiRetStatus == CY_U3P_SUCCESS) {
-		CyU3PDebugPrint(4,"[Zing] (send) %s \r\n",buf);
-	} else {
-		CyU3PDebugPrint(4,"[Zing] (send : failed) \r\n",buf);
-	}
-#endif
-	return apiRetStatus;
-}
-
-// in DMA_Sync_mode
-CyU3PReturnStatus_t Zing_RecvMsg(uint8_t* buf, uint32_t* len_pt)
-{
-	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
-
-	apiRetStatus = Zing_DataRead(buf,len_pt);
-#if DBG_LEVEL >= DBG_TYPE_ZING_TR
-	if (apiRetStatus == CY_U3P_SUCCESS) {
-		CyU3PDebugPrint(4,"[Zing] (recv) %s \r\n",buf);
-	} else {
-		CyU3PDebugPrint(4,"[Zing] (recv : failed) \r\n",buf);
-	}
-#endif
-	return apiRetStatus;
-}
-
 // type = 0 (S/W reset), type = 1 (H/W reset)
 void Zing_Reset(uint8_t type)
 {
@@ -565,8 +530,8 @@ STATE1 :
 CyU3PDebugPrint (4, "STATE1\r\n");
 #endif
 	for(i=0;i<4;i++) {
-		status = Zing_SendMsg((uint8_t*)tx_msg, strlen(tx_msg));
-		status = Zing_RecvMsg((uint8_t*)rx_msg, &rx_len);
+		status = Zing_DataWrite((uint8_t*)tx_msg, strlen(tx_msg));
+		status = Zing_DataRead((uint8_t*)rx_msg, &rx_len);
 		if(status == CY_U3P_SUCCESS) {
 			goto STATE3;
 		}
@@ -603,8 +568,8 @@ CyU3PDebugPrint (4, "STATE3\r\n");
 	Zing_Reset(0);
 	CyU3PThreadSleep(500);
 	for(i=0;i<4;i++) {
-		status = Zing_SendMsg((uint8_t*)tx_msg, strlen(tx_msg));
-		status = Zing_RecvMsg((uint8_t*)rx_msg, &rx_len);
+		status = Zing_DataWrite((uint8_t*)tx_msg, strlen(tx_msg));
+		status = Zing_DataRead((uint8_t*)rx_msg, &rx_len);
 		if(status != CY_U3P_SUCCESS) {
 			goto STATE4;
 		}
