@@ -17,11 +17,6 @@ CyU3PReturnStatus_t Zing_Transfer_Send2 (
 	    );
 
 CyU3PReturnStatus_t Zing_DataRead(uint8_t* buf, uint32_t* len_pt);
-CyU3PReturnStatus_t Zing_Transfer_Recv2 (
-		CyU3PDmaChannel* dma_ch,
-	    uint8_t     *data,		/* pointer to msg */
-	    uint32_t*    length_pt	/* msg size in bytes */
-	    );
 
 void Zing_DataReadFlush(void);
 void Zing_SetGPIFBusWidth(uint8_t width);
