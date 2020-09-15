@@ -73,7 +73,7 @@ CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len)
 
 	Zing_Header(ZingControlOutBuffer,len,addr,ZING_HDR_ACTION_WRITE);
 	memcpy(ZingControlOutBuffer+ZING_HDR_SIZE, buf, len);
-	apiRetStatus = Zing_Transfer_Send2(&Dma.ControlOut_,ZingControlOutBuffer,len+ZING_HDR_SIZE);
+	apiRetStatus = Zing_Transfer_Send(&Dma.ControlOut_,ZingControlOutBuffer,len+ZING_HDR_SIZE);
 #if DBG_LEVEL >= DBG_TYPE_ZING_TR
 	{
 		int i;
@@ -154,7 +154,7 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
     }
 
     Zing_Header(ZingControlOutBuffer,len,addr,ZING_HDR_ACTION_READ);
-    status = Zing_Transfer_Send2(&Dma.ControlOut_,ZingControlOutBuffer,ZING_HDR_SIZE);
+    status = Zing_Transfer_Send(&Dma.ControlOut_,ZingControlOutBuffer,ZING_HDR_SIZE);
 
     status = CyU3PEventGet (&CcCtx.Event_, EVT_CTLCH0, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_WAIT_FOREVER);
 	// copy data only (except zing header(8Byte))
@@ -375,7 +375,7 @@ CyU3PReturnStatus_t Zing_DataWrite(uint8_t* buf, uint32_t len)
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 
 	memcpy(ZingDataOutBuffer, buf, len);
-	apiRetStatus = Zing_Transfer_Send2(&Dma.DataOut_,ZingDataOutBuffer,len);
+	apiRetStatus = Zing_Transfer_Send(&Dma.DataOut_,ZingDataOutBuffer,len);
 #if DBG_LEVEL >= DBG_TYPE_ZING_TR
 	if(apiRetStatus==CY_U3P_SUCCESS) {
 		{
@@ -392,7 +392,7 @@ CyU3PReturnStatus_t Zing_DataWrite(uint8_t* buf, uint32_t len)
 		return apiRetStatus;
 }
 
-CyU3PReturnStatus_t Zing_Transfer_Send2 (
+CyU3PReturnStatus_t Zing_Transfer_Send(
 	CyU3PDmaChannel* dma_ch,
     uint8_t     *data,		/* pointer to msg */
     uint32_t    length	 	/* msg size in bytes */
@@ -406,7 +406,7 @@ CyU3PReturnStatus_t Zing_Transfer_Send2 (
     status = CyU3PDmaChannelGetBuffer (dma_ch, &Buf, ZING_HW_TIMEOUT);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (4, "Zing_Transfer_Send2,CyU3PDmaChannelGetBuffer failed(0x%x)\n", status);
+        CyU3PDebugPrint (4, "Zing_Transfer_Send,CyU3PDmaChannelGetBuffer failed(0x%x)\n", status);
     }
     else {
 		CyU3PMemCopy (Buf.buffer, data, length);
@@ -415,7 +415,7 @@ CyU3PReturnStatus_t Zing_Transfer_Send2 (
 		status = CyU3PDmaChannelCommitBuffer (dma_ch, Buf.count, 0);
 		if (status != CY_U3P_SUCCESS)
 		{
-			CyU3PDebugPrint (4, "Zing_Transfer_Send2,CyU3PDmaChannelCommitBuffer failed(0x%x)\n", status);
+			CyU3PDebugPrint (4, "Zing_Transfer_Send,CyU3PDmaChannelCommitBuffer failed(0x%x)\n", status);
 		}
     }
 
@@ -746,7 +746,7 @@ CyU3PReturnStatus_t Zing_Management_Send (
 
 	Zing_Header2(ZingControlOutBuffer,0,0,0,1,0,1,0,0,length);
 	memcpy(ZingControlOutBuffer+ZING_HDR_SIZE, data, length);
-	status = Zing_Transfer_Send2(&Dma.ControlOut_,ZingControlOutBuffer,length+ZING_HDR_SIZE);
+	status = Zing_Transfer_Send(&Dma.ControlOut_,ZingControlOutBuffer,length+ZING_HDR_SIZE);
 
 	return status;
 }
