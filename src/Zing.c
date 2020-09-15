@@ -1,5 +1,4 @@
 #include "Zing.h"
-#include "Zing_internal.h"
 #include "Support.h"
 #include "gpif/PIB.h"
 #include "i2c.h"
@@ -20,7 +19,7 @@ static uint8_t *ZingDataOutBuffer;
 // ZING mode
 uint32_t zing_hrcp = PPC;
 
-CyU3PReturnStatus_t Zing_PLLConfig(void)
+static CyU3PReturnStatus_t Zing_PLLConfig(void)
 {
 	CyU3PReturnStatus_t apiRetStatus;
 	uint8_t buffer[] = {0x6F,0x00,0x00,0x00,0x00,0x90,0x01,0x00,0x00,0x00,0x00};
@@ -40,7 +39,7 @@ CyU3PReturnStatus_t Zing_PLLConfig(void)
 	return apiRetStatus;
 }
 
-void Zing_AllocBuffer(void)
+static void Zing_AllocBuffer(void)
 {
     /* DMA override mode buffers */
     ZingControlInBuffer = (uint8_t *)CyU3PDmaBufferAlloc (512);
@@ -49,7 +48,91 @@ void Zing_AllocBuffer(void)
     ZingDataOutBuffer = (uint8_t *)CyU3PDmaBufferAlloc (8192);
 }
 
+static void Zing_Header(
+        uint8_t *pt,            /* pt : buffer pointer */
+        uint16_t payload_size,  /* payload_size : memory size in bytes */
+        uint16_t addr,          /* addr : zing internal address , address unit = 32bit */
+        uint16_t type           /* type : Read/write */)
+{
+	ZingHdr_t *p_hdr;
+	memset(pt,0,ZING_HDR_SIZE);
 
+	p_hdr = (ZingHdr_t *)pt;
+	p_hdr->dir = ZING_HDR_DIR_EGRESS;
+	p_hdr->target = ZING_HDR_TARGET_REG;
+	p_hdr->type = type;
+	p_hdr->addr = addr;
+	p_hdr->length = payload_size;
+}
+
+static void Zing_Header2(
+        uint8_t *pt,            /* pt : buffer pointer */
+        uint16_t dir,
+        uint16_t interrupt,
+        uint16_t target,
+        uint16_t type,
+        uint16_t req_resp,
+        uint16_t fr_type,
+        uint16_t intr_flags,
+        uint16_t addr,
+        uint16_t payload_size)
+{
+	ZingHdr_t *p_hdr;
+	memset(pt,0,ZING_HDR_SIZE);
+	p_hdr = (ZingHdr_t *)pt;
+
+	p_hdr->dir = dir;
+	p_hdr->interrupt = interrupt;
+	p_hdr->target = target;
+	p_hdr->type = type;
+	p_hdr->req_resp = req_resp;
+	p_hdr->fr_type = fr_type;
+	p_hdr->intr_flags = intr_flags;
+	p_hdr->addr = addr;
+	p_hdr->length = payload_size;
+}
+
+static void Zing_DataReadFlush(void)
+{
+	CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
+    uint8_t  *in_buffer;
+    uint32_t len;
+
+    in_buffer = (uint8_t *)CyU3PDmaBufferAlloc (8192);
+
+	while(1) {
+		status = Zing_DataRead(in_buffer,&len);
+		if(status != CY_U3P_SUCCESS) {
+			break;
+		} else {
+			CyU3PDebugPrint (4, "data flushed \r\n");
+		}
+		CyU3PThreadSleep(500);
+	}
+    CyU3PDmaBufferFree(in_buffer);
+}
+
+static void Zing_SetGPIFBusWidth(uint8_t width)
+{
+	switch(width) {
+	case 8 :
+	    CyU3PGpioSetValue(GPIF_BUSWIDTH_CTL0, CyFalse);
+	    CyU3PGpioSetValue(GPIF_BUSWIDTH_CTL1, CyTrue);
+	    break;
+	case 16 :
+	    CyU3PGpioSetValue(GPIF_BUSWIDTH_CTL0, CyTrue);
+	    CyU3PGpioSetValue(GPIF_BUSWIDTH_CTL1, CyFalse);
+		break;
+	case 32 :
+	    CyU3PGpioSetValue(GPIF_BUSWIDTH_CTL0, CyFalse);
+	    CyU3PGpioSetValue(GPIF_BUSWIDTH_CTL1, CyFalse);
+		break;
+	}
+
+#if DBG_LEVEL >= DBG_TYPE_ZING
+	CyU3PDebugPrint (4, "[Zing/BusWidth] %d\r\n", width);
+#endif
+}
 
 CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len)
 {
@@ -86,50 +169,6 @@ CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len)
 #endif
 
 	return apiRetStatus;
-}
-
-void Zing_Header(
-        uint8_t *pt,            /* pt : buffer pointer */
-        uint16_t payload_size,  /* payload_size : memory size in bytes */
-        uint16_t addr,          /* addr : zing internal address , address unit = 32bit */
-        uint16_t type           /* type : Read/write */)
-{
-	ZingHdr_t *p_hdr;
-	memset(pt,0,ZING_HDR_SIZE);
-
-	p_hdr = (ZingHdr_t *)pt;
-	p_hdr->dir = ZING_HDR_DIR_EGRESS;
-	p_hdr->target = ZING_HDR_TARGET_REG;
-	p_hdr->type = type;
-	p_hdr->addr = addr;
-	p_hdr->length = payload_size;
-}
-
-void Zing_Header2(
-        uint8_t *pt,            /* pt : buffer pointer */
-        uint16_t dir,
-        uint16_t interrupt,
-        uint16_t target,
-        uint16_t type,
-        uint16_t req_resp,
-        uint16_t fr_type,
-        uint16_t intr_flags,
-        uint16_t addr,
-        uint16_t payload_size)
-{
-	ZingHdr_t *p_hdr;
-	memset(pt,0,ZING_HDR_SIZE);
-	p_hdr = (ZingHdr_t *)pt;
-
-	p_hdr->dir = dir;
-	p_hdr->interrupt = interrupt;
-	p_hdr->target = target;
-	p_hdr->type = type;
-	p_hdr->req_resp = req_resp;
-	p_hdr->fr_type = fr_type;
-	p_hdr->intr_flags = intr_flags;
-	p_hdr->addr = addr;
-	p_hdr->length = payload_size;
 }
 
 CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
@@ -449,26 +488,6 @@ CyU3PReturnStatus_t Zing_DataRead(uint8_t* buf, uint32_t* len_pt)
 	return apiRetStatus;
 }
 
-void Zing_DataReadFlush(void)
-{
-	CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
-    uint8_t  *in_buffer;
-    uint32_t len;
-
-    in_buffer = (uint8_t *)CyU3PDmaBufferAlloc (8192);
-
-	while(1) {
-		status = Zing_DataRead(in_buffer,&len);
-		if(status != CY_U3P_SUCCESS) {
-			break;
-		} else {
-			CyU3PDebugPrint (4, "data flushed \r\n");
-		}
-		CyU3PThreadSleep(500);
-	}
-    CyU3PDmaBufferFree(in_buffer);
-}
-
 CyU3PReturnStatus_t Zing_AutoHRCP(void)
 {
 	CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
@@ -584,28 +603,6 @@ CyU3PDebugPrint (4, "[Zing] HRCP : %s\r\n",rt_reg_val&0x00000010 ? "PPC" : "DEV"
 CyU3PReturnStatus_t Zing_GetVersion(uint8_t *version)
 {
 	return Zing_RegRead(REG_RTL_VERSION,(uint8_t*)version,4);
-}
-
-void Zing_SetGPIFBusWidth(uint8_t width)
-{
-	switch(width) {
-	case 8 :
-	    CyU3PGpioSetValue(GPIF_BUSWIDTH_CTL0, CyFalse);
-	    CyU3PGpioSetValue(GPIF_BUSWIDTH_CTL1, CyTrue);
-	    break;
-	case 16 :
-	    CyU3PGpioSetValue(GPIF_BUSWIDTH_CTL0, CyTrue);
-	    CyU3PGpioSetValue(GPIF_BUSWIDTH_CTL1, CyFalse);
-		break;
-	case 32 :
-	    CyU3PGpioSetValue(GPIF_BUSWIDTH_CTL0, CyFalse);
-	    CyU3PGpioSetValue(GPIF_BUSWIDTH_CTL1, CyFalse);
-		break;
-	}
-
-#if DBG_LEVEL >= DBG_TYPE_ZING
-	CyU3PDebugPrint (4, "[Zing/BusWidth] %d\r\n", width);
-#endif
 }
 
 void Zing_Test_DataTx2 (uint32_t repeat, uint32_t length, uint32_t pattern)
