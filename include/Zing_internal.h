@@ -9,9 +9,6 @@ void Zing_Header(
         uint16_t addr,          /* addr : zing internal address , address unit = 32bit */
         uint16_t type           /* type : Read/write */);
 
-CyU3PReturnStatus_t Zing_DataWrite(uint8_t* buf, uint32_t len);
-CyU3PReturnStatus_t Zing_DataRead(uint8_t* buf, uint32_t* len_pt);
-
 void Zing_DataReadFlush(void);
 void Zing_SetGPIFBusWidth(uint8_t width);
 
