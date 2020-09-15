@@ -3,7 +3,6 @@
 #include "cyu3error.h"
 #include "cyfx3_api.h"
 #include "cyu3system.h"
-#include "AppThread.h"
 
 CyU3PThread ApplicationThreadHandle;
 

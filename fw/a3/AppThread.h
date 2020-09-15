@@ -1,7 +1,0 @@
-#ifndef __APP_THREAD_H__
-#define __APP_THREAD_H__
-
-#define APPLICATION_THREAD_STACK	(0x1000)
-#define APPLICATION_THREAD_PRIORITY	(8)
-
-#endif
