@@ -10,7 +10,6 @@ void Zing_Header(
         uint16_t type           /* type : Read/write */);
 
 CyU3PReturnStatus_t Zing_DataWrite(uint8_t* buf, uint32_t len);
-CyU3PReturnStatus_t Zing_DataWrite2(uint8_t* buf, uint32_t len);
 CyU3PReturnStatus_t Zing_Transfer_Send2 (
 		CyU3PDmaChannel* dma_ch,
 	    uint8_t     *data,		/* pointer to msg */

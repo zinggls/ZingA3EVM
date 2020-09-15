@@ -392,15 +392,6 @@ CyU3PReturnStatus_t Zing_DataWrite(uint8_t* buf, uint32_t len)
 		return apiRetStatus;
 }
 
-CyU3PReturnStatus_t Zing_DataWrite2(uint8_t* buf, uint32_t len)
-{
-	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
-
-	apiRetStatus = Zing_Transfer_Send2(&Dma.DataOut_,buf,len);
-
-	return apiRetStatus;
-}
-
 CyU3PReturnStatus_t Zing_Transfer_Send2 (
 	CyU3PDmaChannel* dma_ch,
     uint8_t     *data,		/* pointer to msg */
