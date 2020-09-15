@@ -17,7 +17,7 @@ static uint8_t *ZingDataInBuffer;
 static uint8_t *ZingDataOutBuffer;
 
 // ZING mode
-uint32_t zing_hrcp = PPC;
+static uint32_t zing_hrcp = PPC;
 
 static CyU3PReturnStatus_t Zing_PLLConfig(void)
 {
