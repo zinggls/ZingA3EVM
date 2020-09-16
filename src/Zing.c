@@ -338,8 +338,6 @@ void Zing_SetHRCP(uint32_t val)
 	uint32_t rt_reg_val, reg_val;
 	HW_CFG *TempReg_pt;
 
-	//DMA_Sync_mode();
-
 	// PPC/DEV
 	Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4);
 	TempReg_pt = (HW_CFG*)&rt_reg_val;
@@ -355,11 +353,7 @@ void Zing_SetHRCP(uint32_t val)
 		Zing_RegWrite(REG_IFS,(uint8_t*)&reg_val,4);
 	}
 
-#ifdef DEBUG
 	CyU3PDebugPrint (4, "[Zing] HRCP : %s\r\n",val ? "PPC" : "DEV");
-#endif
-
-	//DMA_Normal_mode();
 }
 
 // val = 1 (RF), val = 0 (SERDES)
