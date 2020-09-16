@@ -24,8 +24,10 @@ void ControlChThread(uint32_t Value)
 				if(resp_pt->hdr.dir == 1 && resp_pt->hdr.interrupt == 1) { //Zing Interrupt Event
 					// no act
 					intEvt++;
+#ifdef DEBUG
 					CyU3PDebugPrint (4, "[ZCH] discarded interrupt event pk\r\n");
 					CyU3PDebugPrint (4, "[ZCH] pk header :(MSB-LSB) 0x%x\r\n",*((uint64_t*)resp_pt));
+#endif
 				}
 				else if(resp_pt->hdr.target == 1) { //Reg
 					regRead++;
@@ -35,17 +37,21 @@ void ControlChThread(uint32_t Value)
 				}
 				else if(resp_pt->hdr.dir == 1 && resp_pt->hdr.fr_type == 1) { //Management Frame
 					manFrame++;
+#ifdef DEBUG
 					CyU3PDebugPrint (4, "[ZCH] rx management frame\r\n");
 					CyU3PDebugPrint (4, "[ZCH] frame header :(MSB-LSB) 0x%x\r\n",*((uint64_t*)resp_pt));
 					CyU3PDebugPrint (4, "[ZCH] frame data : ");
 					for(uint32_t i=0;i<rt_len-ZING_HDR_SIZE;i++) CyU3PDebugPrint (4, "0x%X, ",buf[i+ZING_HDR_SIZE]);
 					CyU3PDebugPrint (4, "\r\n");
+#endif
 
 					if(rt_len-ZING_HDR_SIZE == 4) { //EP0 : ZING MNGT_TX4B 12345678 --> ZING MNGT_RX4B
 						CcCtx.MngtData_ = *(uint32_t*)(buf+ZING_HDR_SIZE);
 					}
 				}
+#ifdef DEBUG
 				CyU3PDebugPrint(4,"[ZCH] Recv:%d Interrupt:%d RegRead:%d ManFrame:%d\n",recv,intEvt,regRead,manFrame);
+#endif
 			}
 		}
 		else {
