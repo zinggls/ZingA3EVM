@@ -32,16 +32,16 @@ void USBEP0RxThread(uint32_t Value)
 					CyU3PDebugPrint (4, "[EP0] HostRxData:%s\n",UsbEp0Ctx.HostRxData_);
 
 					if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "DMA MODE LP") == 0) {
-						DMA_LoopBack_mode(CY_FX_EP_CONSUMER,CY_FX_EP_PRODUCER,CY_FX_EP_CONSUMER_2,CY_FX_EP_PRODUCER_2,CY_FX_DATA_BURST_LENGTH);
+						DMA_LoopBack_mode(CY_FX_EP_CONTROL_IN,CY_FX_EP_CONTROL_OUT,CY_FX_EP_DATA_IN,CY_FX_EP_DATA_OUT,CY_FX_DATA_BURST_LENGTH);
 					}
 					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "DMA MODE SINKSOURCE") == 0) {
-						DMA_SinkSource_mode(CY_FX_EP_CONSUMER,CY_FX_EP_PRODUCER,CY_FX_EP_CONSUMER_2,CY_FX_EP_PRODUCER_2,CY_FX_DATA_BURST_LENGTH);
+						DMA_SinkSource_mode(CY_FX_EP_CONTROL_IN,CY_FX_EP_CONTROL_OUT,CY_FX_EP_DATA_IN,CY_FX_EP_DATA_OUT,CY_FX_DATA_BURST_LENGTH);
 					}
 					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "DMA MODE NORMAL") == 0) {
-						DMA_Normal_mode(CY_FX_EP_CONSUMER,CY_FX_EP_PRODUCER,CY_FX_EP_CONSUMER_2,CY_FX_EP_PRODUCER_2,CY_FX_DATA_BURST_LENGTH);
+						DMA_Normal_mode(CY_FX_EP_CONTROL_IN,CY_FX_EP_CONTROL_OUT,CY_FX_EP_DATA_IN,CY_FX_EP_DATA_OUT,CY_FX_DATA_BURST_LENGTH);
 					}
 					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "DMA MODE SYNC") == 0) {
-						DMA_Sync_mode(CY_FX_EP_CONSUMER,CY_FX_EP_PRODUCER,CY_FX_EP_CONSUMER_2,CY_FX_EP_PRODUCER_2,CY_FX_DATA_BURST_LENGTH);
+						DMA_Sync_mode(CY_FX_EP_CONTROL_IN,CY_FX_EP_CONTROL_OUT,CY_FX_EP_DATA_IN,CY_FX_EP_DATA_OUT,CY_FX_DATA_BURST_LENGTH);
 					}
 					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "ZING MODE PPC") == 0) {
 						Zing_SetHRCP(1);

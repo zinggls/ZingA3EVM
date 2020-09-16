@@ -60,53 +60,53 @@ CyBool_t USBSetupCB(uint32_t setupdat0,uint32_t setupdat1)
 		{
             if (IsApplnActive)
             {
-                if (Setup.Index == CY_FX_EP_PRODUCER)
+                if (Setup.Index == CY_FX_EP_CONTROL_OUT)
                 {
-                    CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER, CyTrue);
+                    CyU3PUsbSetEpNak (CY_FX_EP_CONTROL_OUT, CyTrue);
                     CyU3PBusyWait (125);
 
                     CyU3PDmaChannelReset (&Dma.ControlOut_);
-                    CyU3PUsbFlushEp(CY_FX_EP_PRODUCER);
-                    CyU3PUsbResetEp (CY_FX_EP_PRODUCER);
+                    CyU3PUsbFlushEp(CY_FX_EP_CONTROL_OUT);
+                    CyU3PUsbResetEp (CY_FX_EP_CONTROL_OUT);
                     CyU3PDmaChannelSetXfer (&Dma.ControlOut_, 0);
 
-                    CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER, CyFalse);
+                    CyU3PUsbSetEpNak (CY_FX_EP_CONTROL_OUT, CyFalse);
                 }
-                else if (Setup.Index == CY_FX_EP_CONSUMER)
+                else if (Setup.Index == CY_FX_EP_CONTROL_IN)
                 {
-                    CyU3PUsbSetEpNak (CY_FX_EP_CONSUMER, CyTrue);
+                    CyU3PUsbSetEpNak (CY_FX_EP_CONTROL_IN, CyTrue);
                     CyU3PBusyWait (125);
 
                     CyU3PDmaChannelReset (&Dma.ControlIn_);
-                    CyU3PUsbFlushEp(CY_FX_EP_CONSUMER);
-                    CyU3PUsbResetEp (CY_FX_EP_CONSUMER);
+                    CyU3PUsbFlushEp(CY_FX_EP_CONTROL_IN);
+                    CyU3PUsbResetEp (CY_FX_EP_CONTROL_IN);
                     CyU3PDmaChannelSetXfer (&Dma.ControlIn_, 0);
 
-                    CyU3PUsbSetEpNak (CY_FX_EP_CONSUMER, CyFalse);
+                    CyU3PUsbSetEpNak (CY_FX_EP_CONTROL_IN, CyFalse);
                 }
-                else if (Setup.Index == CY_FX_EP_PRODUCER_2)
+                else if (Setup.Index == CY_FX_EP_DATA_OUT)
                 {
-                    CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER_2, CyTrue);
+                    CyU3PUsbSetEpNak (CY_FX_EP_DATA_OUT, CyTrue);
                     CyU3PBusyWait (125);
 
                     CyU3PDmaChannelReset (&Dma.DataOut_);
-                    CyU3PUsbFlushEp(CY_FX_EP_PRODUCER_2);
-                    CyU3PUsbResetEp (CY_FX_EP_PRODUCER_2);
+                    CyU3PUsbFlushEp(CY_FX_EP_DATA_OUT);
+                    CyU3PUsbResetEp (CY_FX_EP_DATA_OUT);
                     CyU3PDmaChannelSetXfer (&Dma.DataOut_, 0);
 
-                    CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER_2, CyFalse);
+                    CyU3PUsbSetEpNak (CY_FX_EP_DATA_OUT, CyFalse);
                 }
-                else if (Setup.Index == CY_FX_EP_CONSUMER_2)
+                else if (Setup.Index == CY_FX_EP_DATA_IN)
                 {
-                    CyU3PUsbSetEpNak (CY_FX_EP_CONSUMER_2, CyTrue);
+                    CyU3PUsbSetEpNak (CY_FX_EP_DATA_IN, CyTrue);
                     CyU3PBusyWait (125);
 
                     CyU3PDmaChannelReset (&Dma.DataIn_);
-                    CyU3PUsbFlushEp(CY_FX_EP_CONSUMER_2);
-                    CyU3PUsbResetEp (CY_FX_EP_CONSUMER_2);
+                    CyU3PUsbFlushEp(CY_FX_EP_DATA_IN);
+                    CyU3PUsbResetEp (CY_FX_EP_DATA_IN);
                     CyU3PDmaChannelSetXfer (&Dma.DataIn_, 0);
 
-                    CyU3PUsbSetEpNak (CY_FX_EP_CONSUMER_2, CyFalse);
+                    CyU3PUsbSetEpNak (CY_FX_EP_DATA_IN, CyFalse);
                 }
 
                 CyU3PUsbStall (Setup.Index, CyFalse, CyTrue);

@@ -10,10 +10,10 @@
 #define PACKET_SUSPEND				(0) // packet suspend / resume, 0 : disable, 1 : enable (decrease the speed)
 
 //Endpoints
-#define CY_FX_EP_PRODUCER			0x01	//EP 1 OUT, ZING Control channel
-#define CY_FX_EP_CONSUMER			0x81    //EP 1 IN
-#define CY_FX_EP_PRODUCER_2			0x02    //EP 2 OUT, ZING Data channel
-#define CY_FX_EP_CONSUMER_2			0x82    //EP 2 IN
+#define CY_FX_EP_CONTROL_OUT		0x01	//EP 1 OUT, ZING Control channel
+#define CY_FX_EP_CONTROL_IN			0x81    //EP 1 IN
+#define CY_FX_EP_DATA_OUT			0x02    //EP 2 OUT, ZING Data channel
+#define CY_FX_EP_DATA_IN			0x82    //EP 2 IN
 #define CY_FX_DATA_BURST_LENGTH		(8)     //Number of Burst for the Data. USB 3.0 only, fix 8 in ZING
 
 //Debug

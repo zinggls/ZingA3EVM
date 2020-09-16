@@ -51,16 +51,16 @@ void AppStart(void)
 	epCfg.streams = 0;
 	epCfg.pcktSize = size;
 
-	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_PRODUCER, &epCfg);
+	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_CONTROL_OUT, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_PRODUCER)",apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_CONTROL_OUT)",apiRetStatus);
 	}
 
-	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_CONSUMER, &epCfg);
+	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_CONTROL_IN, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_CONSUMER)",apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_CONTROL_IN)",apiRetStatus);
     }
 
 	CyU3PMemSet ((uint8_t *)&epCfg, 0, sizeof (epCfg));
@@ -70,16 +70,16 @@ void AppStart(void)
 	epCfg.streams = 0;
 	epCfg.pcktSize = size;
 
-	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_PRODUCER_2, &epCfg);
+	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_DATA_OUT, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_PRODUCER_2)",apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_DATA_OUT)",apiRetStatus);
 	}
 
-	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_CONSUMER_2, &epCfg);
+	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_DATA_IN, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_CONSUMER_2)",apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_DATA_IN)",apiRetStatus);
 	}
 
 	/* Update the status flag. */
@@ -98,41 +98,41 @@ void AppStop(void)
 	IsApplnActive = CyFalse;
 
 	/* Flush the endpoint memory */
-	CyU3PUsbFlushEp(CY_FX_EP_PRODUCER);
-	CyU3PUsbFlushEp(CY_FX_EP_CONSUMER);
-	CyU3PUsbFlushEp(CY_FX_EP_PRODUCER_2);
-	CyU3PUsbFlushEp(CY_FX_EP_CONSUMER_2);
+	CyU3PUsbFlushEp(CY_FX_EP_CONTROL_OUT);
+	CyU3PUsbFlushEp(CY_FX_EP_CONTROL_IN);
+	CyU3PUsbFlushEp(CY_FX_EP_DATA_OUT);
+	CyU3PUsbFlushEp(CY_FX_EP_DATA_IN);
 
 	/* Disable endpoints. */
 	CyU3PMemSet((uint8_t *)&epCfg, 0, sizeof (epCfg));
 	epCfg.enable = CyFalse;
 
 	/* Control OUT: Producer endpoint configuration. */
-	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_PRODUCER, &epCfg);
+	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_CONTROL_OUT, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_PRODUCER)",apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_CONTROL_OUT)",apiRetStatus);
 	}
 
     /* Control IN: Consumer endpoint configuration. */
-	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_CONSUMER, &epCfg);
+	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_CONTROL_IN, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_CONSUMER)",apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_CONTROL_IN)",apiRetStatus);
     }
 
 	/* Data OUT: Producer endpoint configuration */
-	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_PRODUCER_2, &epCfg);
+	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_DATA_OUT, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
     {
-		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_PRODUCER_2)",apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_DATA_OUT)",apiRetStatus);
     }
 
 	/* Data IN: Consumer endpoint configuration */
-	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_CONSUMER_2, &epCfg);
+	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_DATA_IN, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_CONSUMER_2)",apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_DATA_IN)",apiRetStatus);
 	}
 }
 
@@ -161,7 +161,7 @@ void ApplicationThread(uint32_t Value)
 	CheckStatus("[App] PIB_Init", Status);
 
 	initDmaCount();
-	DMA_Sync_mode(CY_FX_EP_CONSUMER,CY_FX_EP_PRODUCER,CY_FX_EP_CONSUMER_2,CY_FX_EP_PRODUCER_2,CY_FX_DATA_BURST_LENGTH);
+	DMA_Sync_mode(CY_FX_EP_CONTROL_IN,CY_FX_EP_CONTROL_OUT,CY_FX_EP_DATA_IN,CY_FX_EP_DATA_OUT,CY_FX_DATA_BURST_LENGTH);
 
 	Status = ControlChThread_Create();
 	CheckStatus("[App] ControlChThread_Create", Status);
@@ -182,7 +182,7 @@ void ApplicationThread(uint32_t Value)
 		CyU3PThreadSleep(100);
 	}
 
-	DMA_Normal_mode(CY_FX_EP_CONSUMER,CY_FX_EP_PRODUCER,CY_FX_EP_CONSUMER_2,CY_FX_EP_PRODUCER_2,CY_FX_DATA_BURST_LENGTH);
+	DMA_Normal_mode(CY_FX_EP_CONTROL_IN,CY_FX_EP_CONTROL_OUT,CY_FX_EP_DATA_IN,CY_FX_EP_DATA_OUT,CY_FX_DATA_BURST_LENGTH);
 
 	uint32_t loop = 0;
 	while (1)
