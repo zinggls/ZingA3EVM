@@ -2,6 +2,7 @@
 #include "DebugConsole.h"
 #include "i2c_test.h"
 #include "pib_test.h"
+#include "zing_test.h"
 
 void assert(const char *str,int nExpression)
 {
@@ -19,6 +20,8 @@ void ApplicationThread(uint32_t Value)
 	test_i2c_write_read();
 
 	test_pib_init();
+
+	test_zing_init();
 
     CyU3PDebugPrint(4, "All tests are done\n");
 }
