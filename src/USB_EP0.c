@@ -178,15 +178,15 @@ CyU3PReturnStatus_t USBEP0RxThread_Create(void)
     Status = CyU3PEventCreate(&UsbEp0Ctx.Event_);
     if(Status!=CY_U3P_SUCCESS) return Status;
 
-    StackPtr = CyU3PMemAlloc(APPLICATION_THREAD_STACK);
+    StackPtr = CyU3PMemAlloc(USB_EP0_THREAD_STACK);
     Status = CyU3PThreadCreate(&EP0ThreadHandle,	// Handle to my Application Thread
-            "12:tmp",                		// Thread ID and name
+            "12:tmp",                				// Thread ID and name
             USBEP0RxThread,     					// Thread entry function
-            0,                             		// Parameter passed to Thread
+            0,                             			// Parameter passed to Thread
             StackPtr,                       		// Pointer to the allocated thread stack
-            APPLICATION_THREAD_STACK,               // Allocated thread stack size
-            APPLICATION_THREAD_PRIORITY,            // Thread priority
-            APPLICATION_THREAD_PRIORITY,            // = Thread priority so no preemption
+            USB_EP0_THREAD_STACK,               	// Allocated thread stack size
+            USB_EP0_THREAD_PRIORITY,            	// Thread priority
+            USB_EP0_THREAD_PRIORITY,            	// = Thread priority so no preemption
             CYU3P_NO_TIME_SLICE,            		// Time slice no supported
             CYU3P_AUTO_START                		// Start the thread immediately
             );

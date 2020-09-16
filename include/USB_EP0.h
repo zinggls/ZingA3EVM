@@ -4,7 +4,9 @@
 #include "cyu3types.h"
 #include "cyu3os.h"
 
-#define EVT_EP0			(1 << 1)
+#define USB_EP0_THREAD_STACK	(0x1000)
+#define USB_EP0_THREAD_PRIORITY	(8)
+#define EVT_EP0					(1 << 1)
 
 typedef struct UsbEp0Ctx_t{
 	CyU3PEvent Event_;
