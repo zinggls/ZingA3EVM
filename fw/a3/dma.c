@@ -2,7 +2,6 @@
 #include "cyu3error.h"
 #include "cyu3usb.h"
 #include "DebugConsole.h"
-#include "Application.h"
 
 void initDmaCount()
 {
@@ -66,7 +65,7 @@ void createChannel(const char* name,
 	}
 }
 
-void channelReset()
+void channelReset(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut)
 {
 	//Abort & destroy DMAs
 	CyU3PDmaChannelAbort(&Dma.ControlOut_);
@@ -80,18 +79,18 @@ void channelReset()
 	CyU3PDmaChannelDestroy(&Dma.DataIn_);
 
 	//Flush the Endpoint memory
-	CyU3PUsbFlushEp(CY_FX_EP_PRODUCER);
-	CyU3PUsbFlushEp(CY_FX_EP_CONSUMER);
-	CyU3PUsbFlushEp(CY_FX_EP_PRODUCER_2);
-	CyU3PUsbFlushEp(CY_FX_EP_CONSUMER_2);
+	CyU3PUsbFlushEp(controlIn);
+	CyU3PUsbFlushEp(controlOut);
+	CyU3PUsbFlushEp(dataIn);
+	CyU3PUsbFlushEp(dataOut);
 }
 
-void DMA_Sync_mode(void)
+void DMA_Sync_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
 {
 	CyU3PDmaChannelConfig_t dmaCfg;
 	uint16_t size = 1024; // super speed <- assumed condition , temporary code
 
-	channelReset();
+	channelReset(controlIn,controlOut,dataIn,dataOut);
 
 	createChannel("DmaSync.ControlOut",
 		&dmaCfg,size,8,CY_U3P_CPU_SOCKET_PROD,CY_U3P_PIB_SOCKET_0,CY_U3P_DMA_CB_PROD_EVENT,0,
@@ -102,11 +101,11 @@ void DMA_Sync_mode(void)
 		&Dma.ControlIn_,CY_U3P_DMA_TYPE_MANUAL_IN);
 
 	createChannel("DmaSync.DataOut",
-		&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_CPU_SOCKET_PROD,CY_U3P_PIB_SOCKET_2,CY_U3P_DMA_CB_PROD_EVENT,0,
+		&dmaCfg,size*dataBurstLength,4,CY_U3P_CPU_SOCKET_PROD,CY_U3P_PIB_SOCKET_2,CY_U3P_DMA_CB_PROD_EVENT,0,
 		&Dma.DataOut_,CY_U3P_DMA_TYPE_MANUAL_OUT);
 
 	createChannel("DmaSync.DataIn",
-		&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_PIB_SOCKET_3,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,0,
+		&dmaCfg,size*dataBurstLength,4,CY_U3P_PIB_SOCKET_3,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,0,
 		&Dma.DataIn_,CY_U3P_DMA_TYPE_MANUAL_IN);
 
 	Dma.Mode_ = DMA_SYNC;
@@ -185,12 +184,12 @@ void DMA_Normal_DataIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PD
 	}
 }
 
-void DMA_Normal_mode(void)
+void DMA_Normal_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
 {
 	CyU3PDmaChannelConfig_t dmaCfg;
 	uint16_t size = 1024; // super speed <- assumed condition , temporary code
 
-	channelReset();
+	channelReset(controlIn,controlOut,dataIn,dataOut);
 
 	createChannel("DmaNormal.ControlOut",
 		&dmaCfg,size,8,CY_U3P_UIB_SOCKET_PROD_1,CY_U3P_PIB_SOCKET_0,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_CtrlOut_Cb,
@@ -201,30 +200,30 @@ void DMA_Normal_mode(void)
 		&Dma.ControlIn_,CY_U3P_DMA_TYPE_AUTO_SIGNAL);
 
 	createChannel("DmaNormal.DataOut",
-		&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_PIB_SOCKET_2,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_DataOut_Cb,
+		&dmaCfg,size*dataBurstLength,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_PIB_SOCKET_2,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_DataOut_Cb,
 		&Dma.DataOut_,CY_U3P_DMA_TYPE_AUTO_SIGNAL);
 
 	createChannel("DmaNormal.DataIn",
-		&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_PIB_SOCKET_3,CY_U3P_UIB_SOCKET_CONS_2,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_DataIn_Cb,
+		&dmaCfg,size*dataBurstLength,4,CY_U3P_PIB_SOCKET_3,CY_U3P_UIB_SOCKET_CONS_2,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_DataIn_Cb,
 		&Dma.DataIn_,CY_U3P_DMA_TYPE_AUTO_SIGNAL);
 
 	Dma.Mode_ = DMA_NORMAL;
 	CyU3PDebugPrint(4,"DMA_Normal_mode(%d) done\n", Dma.Mode_);
 }
 
-void DMA_LoopBack_mode(void)
+void DMA_LoopBack_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
 {
 	CyU3PDmaChannelConfig_t dmaCfg;
 	uint16_t size = 1024; // super speed <- assumed condition , temporary code
 
-	channelReset();
+	channelReset(controlIn,controlOut,dataIn,dataOut);
 
 	createChannel("DmaLoopback.ControlOut",
 			&dmaCfg,size,8,CY_U3P_UIB_SOCKET_PROD_1,CY_U3P_UIB_SOCKET_CONS_1,0,0,
 			&Dma.ControlOut_,CY_U3P_DMA_TYPE_AUTO);
 
 	createChannel("DmaLoopback.DataOut",
-			&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_UIB_SOCKET_CONS_2,0,0,
+			&dmaCfg,size*dataBurstLength,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_UIB_SOCKET_CONS_2,0,0,
 			&Dma.DataOut_,CY_U3P_DMA_TYPE_AUTO);
 
 	Dma.Mode_ = DMA_LP;
@@ -305,12 +304,12 @@ void DMASrcSinkFillInBuffers(void)
 	}
 }
 
-void DMA_SinkSource_mode(void)
+void DMA_SinkSource_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
 {
 	CyU3PDmaChannelConfig_t dmaCfg;
 	uint16_t size = 1024; // super speed <- assumed condition , temporary code
 
-	channelReset();
+	channelReset(controlIn,controlOut,dataIn,dataOut);
 
 	createChannel("DmaSinkSource.ControlOut",
 			&dmaCfg,size,8,CY_U3P_UIB_SOCKET_PROD_1,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,DMA_SinkSource_Cb,
@@ -321,11 +320,11 @@ void DMA_SinkSource_mode(void)
 			&Dma.ControlIn_, CY_U3P_DMA_TYPE_MANUAL_OUT);
 
 	createChannel("DmaSinkSource.DataOut",
-			&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,DMA_SinkSource_Cb,
+			&dmaCfg,size*dataBurstLength,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,DMA_SinkSource_Cb,
 			&Dma.DataOut_, CY_U3P_DMA_TYPE_MANUAL_IN);
 
 	createChannel("DmaSinkSource.DataIn",
-			&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_CPU_SOCKET_PROD,CY_U3P_UIB_SOCKET_CONS_2,CY_U3P_DMA_CB_CONS_EVENT,DMA_SinkSource_Cb,
+			&dmaCfg,size*dataBurstLength,4,CY_U3P_CPU_SOCKET_PROD,CY_U3P_UIB_SOCKET_CONS_2,CY_U3P_DMA_CB_CONS_EVENT,DMA_SinkSource_Cb,
 			&Dma.DataIn_, CY_U3P_DMA_TYPE_MANUAL_OUT);
 
 	DMASrcSinkFillInBuffers();

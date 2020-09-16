@@ -34,16 +34,16 @@ void createChannel(const char* name,
 		CyU3PDmaChannelConfig_t *pDmaCfg,uint16_t size,uint16_t count,CyU3PDmaSocketId_t prodSckId,
 		CyU3PDmaSocketId_t consSckId,uint32_t notification,CyU3PDmaCallback_t cb,
 		CyU3PDmaChannel *handle,CyU3PDmaType_t type);
-void channelReset();
-void DMA_Sync_mode(void);
+void channelReset(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut);
+void DMA_Sync_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength);
 void DMA_Normal_CtrlOut_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PDmaCBInput_t *input);
 void DMA_Normal_CtrlIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PDmaCBInput_t *input);
 void DMA_Normal_DataOut_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PDmaCBInput_t *input);
 void DMA_Normal_DataIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PDmaCBInput_t *input);
-void DMA_Normal_mode(void);
-void DMA_LoopBack_mode(void);
+void DMA_Normal_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength);
+void DMA_LoopBack_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength);
 void DMA_SinkSource_Cb(CyU3PDmaChannel *chHandle,CyU3PDmaCbType_t type,CyU3PDmaCBInput_t *input);
 void DMASrcSinkFillInBuffers(void);
-void DMA_SinkSource_mode(void);
+void DMA_SinkSource_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength);
 
 #endif
