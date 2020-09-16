@@ -7,7 +7,7 @@
 void assert(const char *str,int nExpression)
 {
 	CyU3PDebugPrint(4,"> %s",str);
-	for(int i=0;i<80-strlen(str);i++) CyU3PDebugPrint(4,"-");
+	for(int i=0;i<70-strlen(str);i++) CyU3PDebugPrint(4,"-");
 	nExpression? CyU3PDebugPrint(4,": OK\n"):CyU3PDebugPrint(4,": FAIL\n");
 }
 
