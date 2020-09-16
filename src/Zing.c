@@ -129,7 +129,7 @@ static void Zing_SetGPIFBusWidth(uint8_t width)
 		break;
 	}
 
-#if DBG_LEVEL >= DBG_TYPE_ZING
+#ifdef DEBUG
 	CyU3PDebugPrint (4, "[Zing/BusWidth] %d\r\n", width);
 #endif
 }
@@ -315,7 +315,7 @@ void Zing_AFC2(float f_tg)
 	// print dbg
 	CyU3PDebugPrint (4, "elapsed time :%d ms\r\n", t2-t1);
 
-#if DBG_LEVEL >= DBG_TYPE_ZING
+#ifdef DEBUG
 	for(i=0;i<AFC_N;i++) {
 		CyU3PDebugPrint (4, "cnt[%d] :%d\r\n", i, CntArr[i]);
 	}
@@ -353,7 +353,7 @@ void Zing_SetHRCP(uint32_t val)
 		Zing_RegWrite(REG_IFS,(uint8_t*)&reg_val,4);
 	}
 
-#if DBG_LEVEL >= DBG_TYPE_ZING
+#ifdef DEBUG
 	CyU3PDebugPrint (4, "[Zing] HRCP : %s\r\n",val ? "PPC" : "DEV");
 #endif
 
@@ -498,7 +498,7 @@ CyU3PReturnStatus_t Zing_AutoHRCP(void)
 	uint32_t fail_cnt1, fail_cnt2;
 	uint32_t rt_reg_val;
 
-#if DBG_LEVEL >= DBG_TYPE_ZING
+#ifdef DEBUG
 	CyU3PDebugPrint (4, "[Zing/AutoPpcDev] Start\r\n");
 #endif
 	fail_cnt1=0;
@@ -588,11 +588,11 @@ CyU3PDebugPrint (4, "STATE_END\r\n");
 	Zing_DataReadFlush();
 
 Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4);
-#if DBG_LEVEL >= DBG_TYPE_ZING
+#ifdef DEBUG
 CyU3PDebugPrint (4, "[Zing] HRCP : %s\r\n",rt_reg_val&0x00000010 ? "PPC" : "DEV");
 #endif
 
-#if DBG_LEVEL >= DBG_TYPE_ZING
+#ifdef DEBUG
 	CyU3PDebugPrint (4, "[Zing/AutoPpcDev] End\r\n");
 #endif
 
@@ -691,7 +691,7 @@ void Zing_Test_DataSink2 (uint32_t cnt, uint32_t timeout)
 
 	t2 = CyU3PGetTime()-(timeout*1000);
 
-#if DBG_LEVEL >= DBG_TYPE_ZING
+#ifdef DEBUG
 	if (cnt == rx_cnt) {
 		CyU3PDebugPrint (4, "Success| expected:%d, received:%d, pattern:%X, elapsed:%d ms\r\n", \
 				cnt,rx_cnt, rx_pattern, t2-t1);
