@@ -14,6 +14,9 @@
 #define CY_FX_EP_DATA_IN			0x82    //EP 2 IN
 #define CY_FX_DATA_BURST_LENGTH		(8)     //Number of Burst for the Data. USB 3.0 only, fix 8 in ZING
 
+//Debug
+#define DEBUG
+
 void assert(const char *str,int nExpression);
 
 #include "cyu3externcend.h"

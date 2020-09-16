@@ -16,11 +16,6 @@
 #define CY_FX_EP_DATA_IN			0x82    //EP 2 IN
 #define CY_FX_DATA_BURST_LENGTH		(8)     //Number of Burst for the Data. USB 3.0 only, fix 8 in ZING
 
-//Debug
-#define DBG_LEVEL					(2)		// Print a value less than or equal to DBG_LEVEL
-#define DBG_TYPE_ZING_DBG			(3)
-#define DBG_TYPE_ZING_TR			(3)
-
 void AppStart(void);
 void AppStop(void);
 void ApplicationThread(uint32_t Value);

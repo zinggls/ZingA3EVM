@@ -140,7 +140,7 @@ CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len)
 
     if(len < 4)
     {
-#if DBG_LEVEL >= DBG_TYPE_ZING_DBG
+#ifdef DEBUG
         CyU3PDebugPrint(4, "must be greater than or equal to 4 bytes\n\r");
 #endif
         return CY_U3P_ERROR_BAD_SIZE;
@@ -148,7 +148,7 @@ CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len)
 
     if(len > 128)
     {
-#if DBG_LEVEL >= DBG_TYPE_ZING_DBG
+#ifdef DEBUG
         CyU3PDebugPrint(4, "Can't read too big size of memory.(must be less than 512 bytes)\n\r");
 #endif
         return CY_U3P_ERROR_BAD_SIZE;
@@ -157,7 +157,7 @@ CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len)
 	Zing_Header(ZingControlOutBuffer,len,addr,ZING_HDR_ACTION_WRITE);
 	memcpy(ZingControlOutBuffer+ZING_HDR_SIZE, buf, len);
 	apiRetStatus = Zing_Transfer_Send(&Dma.ControlOut_,ZingControlOutBuffer,len+ZING_HDR_SIZE);
-#if DBG_LEVEL >= DBG_TYPE_ZING_TR
+#ifdef DEBUG
 	{
 		int i;
 		CyU3PDebugPrint(4,"[Zing/RegWrite] (0x%X) ",addr);
@@ -178,7 +178,7 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
 
     if(len < 4)
     {
-#if DBG_LEVEL >= DBG_TYPE_ZING_DBG
+#ifdef DEBUG
         CyU3PDebugPrint(4, "must be greater than or equal to 4 bytes\n\r");
 #endif
         return CY_U3P_ERROR_BAD_SIZE;
@@ -186,7 +186,7 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
 
     if(len > 128)
     {
-#if DBG_LEVEL >= DBG_TYPE_ZING_DBG
+#ifdef DEBUG
         CyU3PDebugPrint(4, "Can't read too big size of memory.(must be less than 512 bytes)\n\r");
 #endif
         return CY_U3P_ERROR_BAD_SIZE;
@@ -199,7 +199,7 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
 	// copy data only (except zing header(8Byte))
 	memcpy(buf,CcCtx.Data_+8,CcCtx.Data_idx_-8);
 
-#if DBG_LEVEL >= DBG_TYPE_ZING_TR
+#ifdef DEBUG
 	{
 		int i;
 		CyU3PDebugPrint(4,"[Zing/RegRead] (0x%X) ",addr);
@@ -415,7 +415,7 @@ CyU3PReturnStatus_t Zing_DataWrite(uint8_t* buf, uint32_t len)
 
 	memcpy(ZingDataOutBuffer, buf, len);
 	apiRetStatus = Zing_Transfer_Send(&Dma.DataOut_,ZingDataOutBuffer,len);
-#if DBG_LEVEL >= DBG_TYPE_ZING_TR
+#ifdef DEBUG
 	if(apiRetStatus==CY_U3P_SUCCESS) {
 		{
 			int i;
@@ -472,7 +472,7 @@ CyU3PReturnStatus_t Zing_DataRead(uint8_t* buf, uint32_t* len_pt)
 	else
 		*len_pt = 0;
 
-#if DBG_LEVEL >= DBG_TYPE_ZING_TR
+#ifdef DEBUG
 	if(apiRetStatus==CY_U3P_SUCCESS) {
 		{
 			int i;
@@ -506,7 +506,7 @@ CyU3PReturnStatus_t Zing_AutoHRCP(void)
 	goto STATE1;
 
 STATE1 :
-#if DBG_LEVEL >= DBG_TYPE_ZING_DBG
+#ifdef DEBUG
 CyU3PDebugPrint (4, "STATE1\r\n");
 #endif
 	for(i=0;i<4;i++) {
@@ -519,7 +519,7 @@ CyU3PDebugPrint (4, "STATE1\r\n");
 	goto STATE2;
 
 STATE2:
-#if DBG_LEVEL >= DBG_TYPE_ZING_DBG
+#ifdef DEBUG
 CyU3PDebugPrint (4, "STATE2\r\n");
 #endif
 	fail_cnt1++;
@@ -542,7 +542,7 @@ CyU3PDebugPrint (4, "STATE2\r\n");
 
 
 STATE3:
-#if DBG_LEVEL >= DBG_TYPE_ZING_DBG
+#ifdef DEBUG
 CyU3PDebugPrint (4, "STATE3\r\n");
 #endif
 	Zing_Reset(0);
@@ -557,7 +557,7 @@ CyU3PDebugPrint (4, "STATE3\r\n");
 	goto STATE5;
 
 STATE4:
-#if DBG_LEVEL >= DBG_TYPE_ZING_DBG
+#ifdef DEBUG
 CyU3PDebugPrint (4, "STATE4\r\n");
 #endif
 	fail_cnt2++;
@@ -567,21 +567,21 @@ CyU3PDebugPrint (4, "STATE4\r\n");
 	goto STATE6;
 
 STATE5:
-#if DBG_LEVEL >= DBG_TYPE_ZING_DBG
+#ifdef DEBUG
 CyU3PDebugPrint (4, "STATE5\r\n");
 	CyU3PDebugPrint (4, "Success\r\n");
 #endif
 	goto STATE_END;
 
 STATE6:
-#if DBG_LEVEL >= DBG_TYPE_ZING_DBG
+#ifdef DEBUG
 CyU3PDebugPrint (4, "STATE6\r\n");
 	CyU3PDebugPrint (4, "Failed\r\n");
 #endif
 	goto STATE_END;
 
 STATE_END:
-#if DBG_LEVEL >= DBG_TYPE_ZING_DBG
+#ifdef DEBUG
 CyU3PDebugPrint (4, "STATE_END\r\n");
 #endif
 	Zing_Reset(0);
