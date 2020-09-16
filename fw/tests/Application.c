@@ -6,7 +6,8 @@
 
 void assert(const char *str,int nExpression)
 {
-	nExpression? CyU3PDebugPrint(4,"[%s]: OK\n",str) : CyU3PDebugPrint(4,"[%s]: FAIL\n",str);
+	nExpression? CyU3PDebugPrint(4,"> %s-----------------------------------------: OK\n",str) :
+				 CyU3PDebugPrint(4,"> %s-----------------------------------------: FAIL\n",str);
 }
 
 CyU3PThread ApplicationThreadHandle;
