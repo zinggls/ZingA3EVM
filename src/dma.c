@@ -3,13 +3,23 @@
 #include "cyu3usb.h"
 #include "DebugConsole.h"
 
-void initDmaCount()
+static void initDmaCount()
 {
 	Dma.Mode_= DMA_NORMAL;
 	Dma.DataOutCount_ = 0;
 	Dma.DataInCount_ = 0;
 	Dma.ControlOutCount_ = 0;
 	Dma.ControlInCount_ = 0;
+}
+
+void initDma(uint8_t controlInEP,uint8_t controlOutEP,uint8_t dataInEP,uint8_t dataOutEP,uint16_t dataBurstLength)
+{
+	initDmaCount();
+	Dma.ControlInEP_ = controlInEP;
+	Dma.ControlOutEP_ = controlOutEP;
+	Dma.DataInEP_ = dataInEP;
+	Dma.DataOutEP_ = dataOutEP;
+	Dma.DataBurstLength_ = dataBurstLength;
 }
 
 void setDmaChannelCfg(CyU3PDmaChannelConfig_t *pDmaCfg, uint16_t size, uint16_t count, CyU3PDmaSocketId_t prodSckId,
@@ -85,7 +95,7 @@ void channelReset(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t da
 	CyU3PUsbFlushEp(dataOut);
 }
 
-void DMA_Sync_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
+static void DMA_Sync_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
 {
 	CyU3PDmaChannelConfig_t dmaCfg;
 	uint16_t size = 1024; // super speed <- assumed condition , temporary code
@@ -184,7 +194,7 @@ void DMA_Normal_DataIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PD
 	}
 }
 
-void DMA_Normal_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
+static void DMA_Normal_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
 {
 	CyU3PDmaChannelConfig_t dmaCfg;
 	uint16_t size = 1024; // super speed <- assumed condition , temporary code
@@ -211,7 +221,7 @@ void DMA_Normal_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t
 	CyU3PDebugPrint(4,"DMA_Normal_mode(%d) done\n", Dma.Mode_);
 }
 
-void DMA_LoopBack_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
+static void DMA_LoopBack_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
 {
 	CyU3PDmaChannelConfig_t dmaCfg;
 	uint16_t size = 1024; // super speed <- assumed condition , temporary code
@@ -304,7 +314,7 @@ void DMASrcSinkFillInBuffers(void)
 	}
 }
 
-void DMA_SinkSource_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
+static void DMA_SinkSource_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
 {
 	CyU3PDmaChannelConfig_t dmaCfg;
 	uint16_t size = 1024; // super speed <- assumed condition , temporary code
@@ -331,4 +341,24 @@ void DMA_SinkSource_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uin
 
 	Dma.Mode_ = DMA_SINKSOURCE;
 	CyU3PDebugPrint(4,"DMA_SinkSource_mode(%d) done\n", Dma.Mode_);
+}
+
+void DMA_Sync()
+{
+	DMA_Sync_mode(Dma.ControlInEP_,Dma.ControlOutEP_,Dma.DataInEP_,Dma.DataOutEP_,Dma.DataBurstLength_);
+}
+
+void DMA_Normal()
+{
+	DMA_Normal_mode(Dma.ControlInEP_,Dma.ControlOutEP_,Dma.DataInEP_,Dma.DataOutEP_,Dma.DataBurstLength_);
+}
+
+void DMA_LoopBack()
+{
+	DMA_LoopBack_mode(Dma.ControlInEP_,Dma.ControlOutEP_,Dma.DataInEP_,Dma.DataOutEP_,Dma.DataBurstLength_);
+}
+
+void DMA_SinkSource()
+{
+	DMA_SinkSource_mode(Dma.ControlInEP_,Dma.ControlOutEP_,Dma.DataInEP_,Dma.DataOutEP_,Dma.DataBurstLength_);
 }

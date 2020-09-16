@@ -160,8 +160,8 @@ void ApplicationThread(uint32_t Value)
 	Status = PIB_Init();
 	CheckStatus("[App] PIB_Init", Status);
 
-	initDmaCount();
-	DMA_Sync_mode(CY_FX_EP_CONTROL_IN,CY_FX_EP_CONTROL_OUT,CY_FX_EP_DATA_IN,CY_FX_EP_DATA_OUT,CY_FX_DATA_BURST_LENGTH);
+	initDma(CY_FX_EP_CONTROL_IN,CY_FX_EP_CONTROL_OUT,CY_FX_EP_DATA_IN,CY_FX_EP_DATA_OUT,CY_FX_DATA_BURST_LENGTH);
+	DMA_Sync();
 
 	Status = ControlChThread_Create();
 	CheckStatus("[App] ControlChThread_Create", Status);
@@ -182,7 +182,7 @@ void ApplicationThread(uint32_t Value)
 		CyU3PThreadSleep(100);
 	}
 
-	DMA_Normal_mode(CY_FX_EP_CONTROL_IN,CY_FX_EP_CONTROL_OUT,CY_FX_EP_DATA_IN,CY_FX_EP_DATA_OUT,CY_FX_DATA_BURST_LENGTH);
+	DMA_Normal();
 
 	uint32_t loop = 0;
 	while (1)
