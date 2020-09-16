@@ -5,7 +5,6 @@
 #include "Zing.h"
 #include "cyu3error.h"
 #include "cyu3system.h"
-#include "Application.h"
 
 CyU3PThread ControlChThreadHandle;
 
@@ -69,15 +68,15 @@ CyU3PReturnStatus_t ControlChThread_Create(void)
 	Status = CyU3PEventCreate(&CcCtx.Event_);
 	if (Status != CY_U3P_SUCCESS) return Status;
 
-	StackPtr = CyU3PMemAlloc(APPLICATION_THREAD_STACK);
+	StackPtr = CyU3PMemAlloc(CONTROLCH_THREAD_STACK);
 	Status = CyU3PThreadCreate(&ControlChThreadHandle,	// Handle to my Application Thread
 				"22:tmp2",								// Thread ID and name
 				ControlChThread,						// Thread entry function
 				0,										// Parameter passed to Thread
 				StackPtr,								// Pointer to the allocated thread stack
-				APPLICATION_THREAD_STACK,				// Allocated thread stack size
-				APPLICATION_THREAD_PRIORITY,			// Thread priority
-				APPLICATION_THREAD_PRIORITY,			// = Thread priority so no preemption
+				CONTROLCH_THREAD_STACK,					// Allocated thread stack size
+				CONTROLCH_THREAD_PRIORITY,				// Thread priority
+				CONTROLCH_THREAD_PRIORITY,				// = Thread priority so no preemption
 				CYU3P_NO_TIME_SLICE,					// Time slice no supported
 				CYU3P_AUTO_START						// Start the thread immediately
 	);

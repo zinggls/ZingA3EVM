@@ -4,7 +4,9 @@
 #include "cyu3types.h"
 #include "cyu3os.h"
 
-#define EVT_CTLCH0		(1 << 1)
+#define CONTROLCH_THREAD_STACK		(0x1000)
+#define CONTROLCH_THREAD_PRIORITY	(8)
+#define EVT_CTLCH0					(1 << 1)
 
 typedef struct ConChCtx_t{
 	CyU3PEvent Event_;
