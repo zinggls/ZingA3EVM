@@ -235,7 +235,9 @@ void Zing_AFC2(float f_tg)
 			 0x12288091
 	 };
 	 uint32_t data;
+#ifdef DEBUG
 	 float f_set;
+#endif
 
 	 uint32_t t1,t2;
 	 t1 = CyU3PGetTime();
@@ -655,16 +657,17 @@ void Zing_Test_DataSink2 (uint32_t cnt, uint32_t timeout)
 	CyU3PDmaBuffer_t Buf;
 
 	uint32_t idx32;
-	uint8_t rx_pattern;
 	uint32_t rx_cnt = 0;
 	uint32_t rt_len = 0;
 	uint32_t length = 8192;
 	uint8_t* buf = (uint8_t *)CyU3PDmaBufferAlloc (length);
 	CyU3PMemSet(buf,(uint8_t)0,length);
 
+#ifdef DEBUG
+	uint8_t rx_pattern;
 	uint32_t t1,t2;
-
 	t1 = CyU3PGetTime();
+#endif
 
 	idx32 = 0;
 	while(1) {
@@ -676,7 +679,9 @@ void Zing_Test_DataSink2 (uint32_t cnt, uint32_t timeout)
 			rt_len = Buf.count;
 			if(rt_len != 0) {
 				memcpy(&idx32,Buf.buffer,4);
+#ifdef DEBUG
 				rx_pattern = Buf.buffer[4];
+#endif
 				if(idx32 == rx_cnt+1) {
 					rx_cnt++;
 				}
@@ -689,9 +694,9 @@ void Zing_Test_DataSink2 (uint32_t cnt, uint32_t timeout)
 		}
 	}
 
+#ifdef DEBUG
 	t2 = CyU3PGetTime()-(timeout*1000);
 
-#ifdef DEBUG
 	if (cnt == rx_cnt) {
 		CyU3PDebugPrint (4, "Success| expected:%d, received:%d, pattern:%X, elapsed:%d ms\r\n", \
 				cnt,rx_cnt, rx_pattern, t2-t1);
