@@ -349,7 +349,7 @@ void Zing_SetHRCP(uint32_t val)
 		Zing_RegWrite(REG_IFS,(uint8_t*)&reg_val,4);
 	}
 
-	CyU3PDebugPrint (4, "HRCP=%s\r\n",val ? "PPC" : "DEV");
+	CyU3PDebugPrint (4, "Zing_SetHRCP=%s\n",val ? "PPC" : "DEV");
 }
 
 // val = 1 (RF), val = 0 (SERDES)
