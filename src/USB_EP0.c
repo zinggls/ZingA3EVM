@@ -6,6 +6,7 @@
 #include "cyu3usb.h"
 #include "ZingHw.h"
 #include "ControlCh.h"
+#include "DebugConsole.h"
 
 CyU3PThread EP0ThreadHandle;
 
@@ -174,8 +175,7 @@ CyU3PReturnStatus_t USBEP0RxThread_Create(void)
     void *StackPtr = NULL;
     CyU3PReturnStatus_t Status;
 
-    Status = CyU3PEventCreate(&UsbEp0Ctx.Event_);
-    if(Status!=CY_U3P_SUCCESS) return Status;
+    CHECK(CyU3PEventCreate(&UsbEp0Ctx.Event_));
 
     StackPtr = CyU3PMemAlloc(USB_EP0_THREAD_STACK);
     Status = CyU3PThreadCreate(&EP0ThreadHandle,	// Handle to my Application Thread
