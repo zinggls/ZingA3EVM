@@ -9,6 +9,7 @@
 #include "dma.h"
 #include "ControlCh.h"
 #include <math.h>
+#include "DebugConsole.h"
 
 // DMA override mode buffers
 static uint8_t *ZingControlInBuffer;
@@ -21,22 +22,19 @@ static uint32_t zing_hrcp = PPC;
 
 static CyU3PReturnStatus_t Zing_PLLConfig(void)
 {
-	CyU3PReturnStatus_t apiRetStatus;
 	uint8_t buffer[] = {0x6F,0x00,0x00,0x00,0x00,0x90,0x01,0x00,0x00,0x00,0x00};
 	uint8_t rxbuffer[11] = {0,};
 	uint8_t devAddr = I2C_DeviceAddress;
 	uint8_t regAddr = 0x00;
 
-	apiRetStatus = I2C_Write(devAddr,regAddr,buffer,sizeof(buffer));
-	if(apiRetStatus!=CY_U3P_SUCCESS) return apiRetStatus;
-
-	apiRetStatus = I2C_Read(devAddr,regAddr,rxbuffer,sizeof(rxbuffer));
+	CHECK(I2C_Write(devAddr,regAddr,buffer,sizeof(buffer)));
+	CHECK(I2C_Read(devAddr,regAddr,rxbuffer,sizeof(rxbuffer)));
 
 	CyU3PDebugPrint(4, "[I2C/RD] ");
 	for(uint8_t i=0;i<sizeof(rxbuffer);i++) CyU3PDebugPrint(4, "0x%X ",rxbuffer[i]);
 	CyU3PDebugPrint(4, "\r\n");
 
-	return apiRetStatus;
+	return CY_U3P_SUCCESS;
 }
 
 static void Zing_AllocBuffer(void)
@@ -749,14 +747,12 @@ CyU3PReturnStatus_t Zing_Management_Send (
 
 CyU3PReturnStatus_t Zing_Init(void)
 {
-	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 	uint32_t reg_val;
 	uint32_t rt_reg_val;
 
 	// init pll through i2c
 	CyU3PDebugPrint (4, "[Init/Zing/PLL]...\r\n");
-	apiRetStatus = Zing_PLLConfig();
-	if(apiRetStatus!=CY_U3P_SUCCESS) return apiRetStatus;
+	CHECK(Zing_PLLConfig());
 	CyU3PDebugPrint (4, "[Init/Zing/PLL] done\r\n");
 
 	// allocate buffer
@@ -768,40 +764,44 @@ CyU3PReturnStatus_t Zing_Init(void)
 	// init rf/serdes
 	CyU3PDebugPrint (4, "[init/Zing/RF,Serdes]...\r\n");
 	reg_val = 0x00000000;
-	Zing_RegWrite(REG_SERDES_TEST_PATTERN,(uint8_t*)&reg_val,4);
-	Zing_RegWrite(REG_RF_RX_CONTROL_0,(uint8_t*)&reg_val,4);
-	Zing_RegWrite(REG_RF_RX_CONTROL_1,(uint8_t*)&reg_val,4);
-	Zing_RegWrite(REG_RF_TX_CONTROL_0,(uint8_t*)&reg_val,4);
-	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4);
-	Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TEST_PATTERN,(uint8_t*)&reg_val,4));
+	CHECK(Zing_RegWrite(REG_RF_RX_CONTROL_0,(uint8_t*)&reg_val,4));
+	CHECK(Zing_RegWrite(REG_RF_RX_CONTROL_1,(uint8_t*)&reg_val,4));
+	CHECK(Zing_RegWrite(REG_RF_TX_CONTROL_0,(uint8_t*)&reg_val,4));
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4));
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_val,4));
 
 	reg_val = 0x0001DFFF;
-	Zing_RegWrite(REG_RF_CONTROL_1,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_RF_CONTROL_1,(uint8_t*)&reg_val,4));
 	reg_val = 0x00FE011F;
-	Zing_RegWrite(REG_RF_CONTROL_0,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_RF_CONTROL_0,(uint8_t*)&reg_val,4));
 	reg_val = 0x000AA666;
-	Zing_RegWrite(REG_RF_RX_CONTROL_0,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_RF_RX_CONTROL_0,(uint8_t*)&reg_val,4));
 	reg_val = 0x0003FF59;
-	Zing_RegWrite(REG_RF_RX_CONTROL_1,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_RF_RX_CONTROL_1,(uint8_t*)&reg_val,4));
 	reg_val = 0x000000EF;
-	Zing_RegWrite(REG_RF_TX_CONTROL_0,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_RF_TX_CONTROL_0,(uint8_t*)&reg_val,4));
 
 	reg_val = 0x00000000;
-	Zing_RegWrite(REG_SERDES_TEST_PATTERN,(uint8_t*)&reg_val,4); Zing_RegRead(REG_SERDES_TEST_PATTERN,(uint8_t*)&rt_reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TEST_PATTERN,(uint8_t*)&reg_val,4));
+	CHECK(Zing_RegRead(REG_SERDES_TEST_PATTERN,(uint8_t*)&rt_reg_val,4));
 	reg_val = 0x00000008;
-	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4); Zing_RegRead(REG_SERDES_TRIM_1,(uint8_t*)&rt_reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4));
+	CHECK(Zing_RegRead(REG_SERDES_TRIM_1,(uint8_t*)&rt_reg_val,4));
 	reg_val = 0x00000001;
-	Zing_RegWrite(REG_SERDES_TEST_CONFIG,(uint8_t*)&reg_val,4); Zing_RegRead(REG_SERDES_TEST_CONFIG,(uint8_t*)&rt_reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TEST_CONFIG,(uint8_t*)&reg_val,4));
+	CHECK(Zing_RegRead(REG_SERDES_TEST_CONFIG,(uint8_t*)&rt_reg_val,4));
 	reg_val = 0x88C8A33D;
-	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4); Zing_RegRead(REG_SERDES_TRIM_1,(uint8_t*)&rt_reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4));
+	CHECK(Zing_RegRead(REG_SERDES_TRIM_1,(uint8_t*)&rt_reg_val,4));
 	reg_val = 0xFF888888;
-	Zing_RegWrite(REG_SERDES_TRIM_4,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_4,(uint8_t*)&reg_val,4));
 	reg_val = 0x9224F0F5;
-	Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_val,4));
 	reg_val = 0x488F73;
-	Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4));
 	reg_val = 0x788F73;
-	Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4));
 
 	// AFC
 	CyU3PDebugPrint (4, "[init/Zing/AFC]...\r\n");
@@ -811,47 +811,47 @@ CyU3PReturnStatus_t Zing_Init(void)
 
 #if ZING_RF_SERDES_PATH == 0
 	reg_val = 0x88C8A3BF; // serdes path
-	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4));
 #elif ZING_RF_SERDES_PATH == 1
 	reg_val = 0x88C8A3DF; // rf path
-	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4));
 #endif
 	CyU3PDebugPrint (4, "[init/Zing/RF,Serdes] done\r\n");
 
     // init Modem
     CyU3PDebugPrint (4, "[init/Zing/Modem]...\r\n");
 	reg_val = REG_HW_CFG_INIT_STAGE0;
-	Zing_RegWrite(REG_HW_CFG,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_HW_CFG,(uint8_t*)&reg_val,4));
 	reg_val = REG_IFS_PPC_INIT;
-	Zing_RegWrite(REG_IFS,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_IFS,(uint8_t*)&reg_val,4));
 	reg_val = REG_SUPERFRAME_INIT;
-	Zing_RegWrite(REG_SUPERFRAME_CFG,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SUPERFRAME_CFG,(uint8_t*)&reg_val,4));
 	reg_val = REG_PPID_INIT;
-	Zing_RegWrite(REG_PPID,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_PPID,(uint8_t*)&reg_val,4));
 	reg_val = REG_PHY_CONTROL_INIT;
-	Zing_RegWrite(REG_PHY_CTRL,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_PHY_CTRL,(uint8_t*)&reg_val,4));
 	reg_val = REG_PLL_SERDES_INIT2;
-	Zing_RegWrite(REG_PLL_CTRL_SERDES,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_PLL_CTRL_SERDES,(uint8_t*)&reg_val,4));
 	reg_val = REG_DEVID_INIT;
-	Zing_RegWrite(REG_DEVICE_ID,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_DEVICE_ID,(uint8_t*)&reg_val,4));
 	reg_val = REG_MAC_TIMEOUT_INIT;
-	Zing_RegWrite(REG_MAC_TIMEOUT_CFG,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_MAC_TIMEOUT_CFG,(uint8_t*)&reg_val,4));
 	reg_val = REG_PHY_TIMEOUT_INIT;
-	Zing_RegWrite(REG_PHY_TIMEOUT_CFG,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_PHY_TIMEOUT_CFG,(uint8_t*)&reg_val,4));
 	reg_val = REG_RETRANSMIT_LIMIT_INIT;
-	Zing_RegWrite(REG_MAC_RETX_LIMIT,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_MAC_RETX_LIMIT,(uint8_t*)&reg_val,4));
 	reg_val = REG_HW_CFG_INIT_STAGE1;
-	Zing_RegWrite(REG_HW_CFG,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_HW_CFG,(uint8_t*)&reg_val,4));
 	reg_val = REG_HW_CFG_INIT_STAGE2;
-	Zing_RegWrite(REG_HW_CFG,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_HW_CFG,(uint8_t*)&reg_val,4));
     CyU3PDebugPrint (4, "[init/Zing/Modem] done\r\n");
 
-	Zing_RegRead(REG_RTL_VERSION,(uint8_t*)&rt_reg_val,4);
+    CHECK(Zing_RegRead(REG_RTL_VERSION,(uint8_t*)&rt_reg_val,4));
 	CyU3PDebugPrint (4, "[Zing] RTL version : 0x%x\r\n",rt_reg_val);
 
-	Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4);
+	CHECK(Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4));
 	CyU3PDebugPrint (4, "[Zing] HRCP : %s\r\n",rt_reg_val&0x00000010 ? "PPC" : "DEV");
 	CyU3PDebugPrint (4, "[Zing] Data mode : %s\r\n",rt_reg_val&0x01000000 ? "MSDU only mode" : "Header mode");
 
-	return apiRetStatus;
+	return CY_U3P_SUCCESS;
 }
