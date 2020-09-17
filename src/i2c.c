@@ -1,14 +1,13 @@
 #include "i2c.h"
 #include "cyu3error.h"
 #include "cyu3i2c.h"
+#include "DebugConsole.h"
 
 CyU3PReturnStatus_t I2C_Init(void)
 {
 	CyU3PI2cConfig_t i2cConfig;
-	CyU3PReturnStatus_t Status;
 
-	Status = CyU3PI2cInit();	// Start the I2C driver
-	if(Status!=CY_U3P_SUCCESS) return Status;
+	CHECK(CyU3PI2cInit());	// Start the I2C driver
 
 	i2cConfig.bitRate    = CY_FX_USBI2C_I2C_BITRATE;
 	i2cConfig.busTimeout = 0xFFFFFFFF;
