@@ -5,6 +5,7 @@
 #include "Zing.h"
 #include "cyu3error.h"
 #include "cyu3system.h"
+#include "DebugConsole.h"
 
 CyU3PThread ControlChThreadHandle;
 
@@ -65,8 +66,7 @@ CyU3PReturnStatus_t ControlChThread_Create(void)
 	void *StackPtr = NULL;
 	CyU3PReturnStatus_t Status;
 
-	Status = CyU3PEventCreate(&CcCtx.Event_);
-	if (Status != CY_U3P_SUCCESS) return Status;
+	CHECK(CyU3PEventCreate(&CcCtx.Event_));
 
 	StackPtr = CyU3PMemAlloc(CONTROLCH_THREAD_STACK);
 	Status = CyU3PThreadCreate(&ControlChThreadHandle,	// Handle to my Application Thread
