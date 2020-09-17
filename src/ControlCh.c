@@ -14,11 +14,12 @@ void ControlChThread(uint32_t Value)
 	REG_Resp_t *resp_pt;
 	uint32_t rt_len,recv,intEvt,regRead,manFrame;
 	uint8_t *buf = (uint8_t *)CyU3PDmaBufferAlloc (512);
+	CyU3PReturnStatus_t Status;
 
 	recv = intEvt = regRead = manFrame = 0;
 	while(1) {
 		if(Dma.Mode_ == DMA_SYNC) {
-			if(Zing_Transfer_Recv(&Dma.ControlIn_,buf,&rt_len,CYU3P_WAIT_FOREVER) == CY_U3P_SUCCESS) {
+			if((Status=Zing_Transfer_Recv(&Dma.ControlIn_,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
 				recv++;
 				resp_pt = (REG_Resp_t*)buf;
 				if(resp_pt->hdr.dir == 1 && resp_pt->hdr.interrupt == 1) { //Zing Interrupt Event
@@ -52,6 +53,8 @@ void ControlChThread(uint32_t Value)
 #ifdef DEBUG
 				CyU3PDebugPrint(4,"[ZCH] Recv:%d Interrupt:%d RegRead:%d ManFrame:%d\n",recv,intEvt,regRead,manFrame);
 #endif
+			}else{
+				CyU3PDebugPrint (4, "[ZCH] Zing_Transfer_Recv error(0x%x)\n",Status);
 			}
 		}
 		else {
