@@ -137,7 +137,9 @@ static CyU3PReturnStatus_t DMA_Sync_mode(uint8_t controlIn,uint8_t controlOut,ui
 						CY_U3P_DMA_TYPE_MANUAL_IN));
 
 	Dma.Mode_ = DMA_SYNC;
+#ifdef DEBUG
 	CyU3PDebugPrint(4,"DMA_Sync_mode(%d) done\n", Dma.Mode_);
+#endif
 	return CY_U3P_SUCCESS;
 }
 
@@ -265,7 +267,9 @@ static CyU3PReturnStatus_t DMA_Normal_mode(uint8_t controlIn,uint8_t controlOut,
 						CY_U3P_DMA_TYPE_AUTO_SIGNAL));
 
 	Dma.Mode_ = DMA_NORMAL;
+#ifdef DEBUG
 	CyU3PDebugPrint(4,"DMA_Normal_mode(%d) done\n", Dma.Mode_);
+#endif
 	return CY_U3P_SUCCESS;
 }
 
@@ -299,7 +303,9 @@ static CyU3PReturnStatus_t DMA_LoopBack_mode(uint8_t controlIn,uint8_t controlOu
 						CY_U3P_DMA_TYPE_AUTO));
 
 	Dma.Mode_ = DMA_LP;
+#ifdef DEBUG
 	CyU3PDebugPrint(4,"DMA_LoopBack_mode(%d) done\n", Dma.Mode_);
+#endif
 	return CY_U3P_SUCCESS;
 }
 
@@ -415,7 +421,9 @@ static CyU3PReturnStatus_t DMA_SinkSource_mode(uint8_t controlIn,uint8_t control
 	CHECK(DMASrcSinkFillInBuffers());
 
 	Dma.Mode_ = DMA_SINKSOURCE;
+#ifdef DEBUG
 	CyU3PDebugPrint(4,"DMA_SinkSource_mode(%d) done\n", Dma.Mode_);
+#endif
 	return CY_U3P_SUCCESS;
 }
 
