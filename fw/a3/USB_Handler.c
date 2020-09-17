@@ -276,12 +276,7 @@ CyU3PReturnStatus_t USB_Connect(void)
 		/* Check in other orientation */
 	  CyU3PGpioSetValue(GPIO57, CyTrue);
 	  apiRetStatus = CyU3PUsbControlUsb2Support (CyTrue);
-	  apiRetStatus = CyU3PConnectState(CyTrue, CyTrue);
-	  if (apiRetStatus != CY_U3P_SUCCESS)
-	  {
-		  CyU3PDebugPrint(4, "USB Connect failed, Error code = %d\n", apiRetStatus);
-	  }
+	  CHECK(CyU3PConnectState(CyTrue, CyTrue));
 	}
-
 	return apiRetStatus;
 }

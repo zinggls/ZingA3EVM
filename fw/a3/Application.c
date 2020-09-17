@@ -170,7 +170,7 @@ void ApplicationThread(uint32_t Value)
 	CheckStatus("[App] Zing_Init", Status);
 
 #if 0
-	Zing_AutoHRCP();
+	CheckStatus("[App] Zing_AutoHRCP",Zing_AutoHRCP());
 	Zing_SetHRCP(PPC);
 #endif
 	Zing_SetHRCP(DEV);
