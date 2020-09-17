@@ -30,10 +30,11 @@ static CyU3PReturnStatus_t Zing_PLLConfig(void)
 	CHECK(I2C_Write(devAddr,regAddr,buffer,sizeof(buffer)));
 	CHECK(I2C_Read(devAddr,regAddr,rxbuffer,sizeof(rxbuffer)));
 
+#ifdef DEBUG
 	CyU3PDebugPrint(4, "[I2C/RD] ");
 	for(uint8_t i=0;i<sizeof(rxbuffer);i++) CyU3PDebugPrint(4, "0x%X ",rxbuffer[i]);
 	CyU3PDebugPrint(4, "\r\n");
-
+#endif
 	return CY_U3P_SUCCESS;
 }
 
@@ -312,10 +313,9 @@ void Zing_AFC2(float f_tg)
 	Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4);
 
 	t2 = CyU3PGetTime();
-	// print dbg
-	CyU3PDebugPrint (4, "elapsed time :%d ms\r\n", t2-t1);
 
 #ifdef DEBUG
+	CyU3PDebugPrint (4, "elapsed time :%d ms\r\n", t2-t1);
 	for(i=0;i<AFC_N;i++) {
 		CyU3PDebugPrint (4, "cnt[%d] :%d\r\n", i, CntArr[i]);
 	}
@@ -351,7 +351,7 @@ void Zing_SetHRCP(uint32_t val)
 		Zing_RegWrite(REG_IFS,(uint8_t*)&reg_val,4);
 	}
 
-	CyU3PDebugPrint (4, "[Zing] HRCP : %s\r\n",val ? "PPC" : "DEV");
+	CyU3PDebugPrint (4, "HRCP=%s\r\n",val ? "PPC" : "DEV");
 }
 
 // val = 1 (RF), val = 0 (SERDES)
@@ -751,9 +751,10 @@ CyU3PReturnStatus_t Zing_Init(void)
 	uint32_t rt_reg_val;
 
 	// init pll through i2c
-	CyU3PDebugPrint (4, "[Init/Zing/PLL]...\r\n");
 	CHECK(Zing_PLLConfig());
-	CyU3PDebugPrint (4, "[Init/Zing/PLL] done\r\n");
+#ifdef DEBUG
+	CyU3PDebugPrint (4, "Zing_Init:PLLConfig done\n");
+#endif
 
 	// allocate buffer
 	Zing_AllocBuffer();
@@ -762,7 +763,9 @@ CyU3PReturnStatus_t Zing_Init(void)
 	Zing_SetGPIFBusWidth(ZING_GPIF_BUSWIDTH);
 
 	// init rf/serdes
-	CyU3PDebugPrint (4, "[init/Zing/RF,Serdes]...\r\n");
+#ifdef DEBUG
+	CyU3PDebugPrint (4, "Zing_Init:RF Serdes...\r\n");
+#endif
 	reg_val = 0x00000000;
 	CHECK(Zing_RegWrite(REG_SERDES_TEST_PATTERN,(uint8_t*)&reg_val,4));
 	CHECK(Zing_RegWrite(REG_RF_RX_CONTROL_0,(uint8_t*)&reg_val,4));
@@ -804,10 +807,11 @@ CyU3PReturnStatus_t Zing_Init(void)
 	CHECK(Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4));
 
 	// AFC
-	CyU3PDebugPrint (4, "[init/Zing/AFC]...\r\n");
     //Zing_AFC(); // AFC : Automatic Frequency Controller
 	Zing_AFC2(1.25*1000000000); // AFC : Automatic Frequency Controller
-    CyU3PDebugPrint (4, "[init/Zing/AFC] done\r\n");
+#ifdef DEBUG
+	CyU3PDebugPrint (4, "Zing_Init:AFC done\r\n");
+#endif
 
 #if ZING_RF_SERDES_PATH == 0
 	reg_val = 0x88C8A3BF; // serdes path
@@ -816,10 +820,12 @@ CyU3PReturnStatus_t Zing_Init(void)
 	reg_val = 0x88C8A3DF; // rf path
 	CHECK(Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4));
 #endif
-	CyU3PDebugPrint (4, "[init/Zing/RF,Serdes] done\r\n");
+
+#ifdef DEBUG
+	CyU3PDebugPrint (4, "Zing_Init:RF Serdes done\r\n");
+#endif
 
     // init Modem
-    CyU3PDebugPrint (4, "[init/Zing/Modem]...\r\n");
 	reg_val = REG_HW_CFG_INIT_STAGE0;
 	CHECK(Zing_RegWrite(REG_HW_CFG,(uint8_t*)&reg_val,4));
 	reg_val = REG_IFS_PPC_INIT;
@@ -844,14 +850,16 @@ CyU3PReturnStatus_t Zing_Init(void)
 	CHECK(Zing_RegWrite(REG_HW_CFG,(uint8_t*)&reg_val,4));
 	reg_val = REG_HW_CFG_INIT_STAGE2;
 	CHECK(Zing_RegWrite(REG_HW_CFG,(uint8_t*)&reg_val,4));
-    CyU3PDebugPrint (4, "[init/Zing/Modem] done\r\n");
+#ifdef DEBUG
+	CyU3PDebugPrint (4, "Zing_Init:Modem done\r\n");
+#endif
 
     CHECK(Zing_RegRead(REG_RTL_VERSION,(uint8_t*)&rt_reg_val,4));
-	CyU3PDebugPrint (4, "[Zing] RTL version : 0x%x\r\n",rt_reg_val);
+	CyU3PDebugPrint (4, "Zing_Init: RTL version=0x%x\r\n",rt_reg_val);
 
 	CHECK(Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4));
-	CyU3PDebugPrint (4, "[Zing] HRCP : %s\r\n",rt_reg_val&0x00000010 ? "PPC" : "DEV");
-	CyU3PDebugPrint (4, "[Zing] Data mode : %s\r\n",rt_reg_val&0x01000000 ? "MSDU only mode" : "Header mode");
+	CyU3PDebugPrint (4, "Zing_Init: HRCP=%s\r\n",rt_reg_val&0x00000010 ? "PPC" : "DEV");
+	CyU3PDebugPrint (4, "Zing_Init: Data mode=%s\r\n",rt_reg_val&0x01000000 ? "MSDU only mode" : "Header mode");
 
 	return CY_U3P_SUCCESS;
 }
