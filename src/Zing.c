@@ -236,11 +236,9 @@ void Zing_AFC2(float f_tg)
 	 uint32_t data;
 #ifdef DEBUG
 	 float f_set;
-#endif
-
 	 uint32_t t1,t2;
 	 t1 = CyU3PGetTime();
-
+#endif
 
 	 // calc ref_cnt
 	 ref_cnt = (uint32_t)(f_ref/f_tg*50*pow(2,15));
@@ -312,9 +310,9 @@ void Zing_AFC2(float f_tg)
 	reg_val = 0x788F73;
 	Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4);
 
+#ifdef DEBUG
 	t2 = CyU3PGetTime();
 
-#ifdef DEBUG
 	CyU3PDebugPrint (4, "elapsed time :%d ms\r\n", t2-t1);
 	for(i=0;i<AFC_N;i++) {
 		CyU3PDebugPrint (4, "cnt[%d] :%d\r\n", i, CntArr[i]);
