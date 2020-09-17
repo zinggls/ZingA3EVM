@@ -2,6 +2,7 @@
 #include "cyu3pib.h"
 #include "cyu3error.h"
 #include "cyu3gpif.h"
+#include "DebugConsole.h"
 
 #if ZING_BUG_WM3 == 0
 
@@ -28,7 +29,6 @@
 CyU3PReturnStatus_t PIB_Init(void)
 {
 	CyU3PPibClock_t pibClock;
-    CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 
    /* Initialize the p-port block. */
    pibClock.clkDiv = 2;             /* in AN87216, value is 2 */
@@ -37,18 +37,10 @@ CyU3PReturnStatus_t PIB_Init(void)
    /* Disable DLL for sync GPIF */
    pibClock.isDllEnable = CyFalse;
 
-   apiRetStatus = CyU3PPibInit(CyTrue, &pibClock);
-   if (apiRetStatus != CY_U3P_SUCCESS)
-   {
-	   CyU3PDebugPrint (4, "P-port Initialization failed(0x%x)\n",apiRetStatus);
-   }
+   CHECK(CyU3PPibInit(CyTrue, &pibClock));
 
    /* Load the GPIF configuration for Master mode. */
-   apiRetStatus = CyU3PGpifLoad (&CyFxGpifConfig);
-   if (apiRetStatus != CY_U3P_SUCCESS)
-   {
-	   CyU3PDebugPrint (4, "CyU3PGpifLoad failed(0x%x)\n",apiRetStatus);
-   }
+   CHECK(CyU3PGpifLoad (&CyFxGpifConfig));
 
    CyU3PGpifSocketConfigure (0,CY_U3P_PIB_SOCKET_0,4,CyFalse,1);
    CyU3PGpifSocketConfigure (1,CY_U3P_PIB_SOCKET_1,4,CyFalse,1);
@@ -58,11 +50,6 @@ CyU3PReturnStatus_t PIB_Init(void)
    //CyU3PGpifRegisterCallback(CyFxBulkLpApplnGPIFEventCB);	//	refer to AN87216
 
    /* Start the state machine. */
-   apiRetStatus = CyU3PGpifSMStart (START, ALPHA_START);
-   if (apiRetStatus != CY_U3P_SUCCESS)
-   {
-	   CyU3PDebugPrint (4, "CyU3PGpifSMStart failed(0x%x)\n",apiRetStatus);
-   }
-
-   return apiRetStatus;
+   CHECK(CyU3PGpifSMStart (START, ALPHA_START));
+   return CY_U3P_SUCCESS;
 }
