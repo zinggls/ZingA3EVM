@@ -138,36 +138,21 @@ void AppStop(void)
 
 void ApplicationThread(uint32_t Value)
 {
-	CyU3PReturnStatus_t Status;
-
-	Status = InitializeDebugConsole(6,NULL);
-	CheckStatus("[App] InitializeDebugConsole", Status);
+	CheckStatus("[App] InitializeDebugConsole", InitializeDebugConsole(6,NULL));
 
 	CyU3PDebugPrint(4,"[App] Git:%s\n",GIT_INFO);
 
-	Status = USBEP0RxThread_Create();
-	CheckStatus("[App] USBEP0RxThread_Create", Status);
-
-	Status = SetupGPIO();
-	CheckStatus("[App] SetupGPIO", Status);
-
-	Status = I2C_Init();
-	CheckStatus("[App] I2C_Init", Status);
-
-	Status = USB_Init();
-	CheckStatus("[App] USB_Init", Status);
-
-	Status = PIB_Init();
-	CheckStatus("[App] PIB_Init", Status);
+	CheckStatus("[App] USBEP0RxThread_Create", USBEP0RxThread_Create());
+	CheckStatus("[App] SetupGPIO", SetupGPIO());
+	CheckStatus("[App] I2C_Init", I2C_Init());
+	CheckStatus("[App] USB_Init", USB_Init());
+	CheckStatus("[App] PIB_Init", PIB_Init());
 
 	initDma(CY_FX_EP_CONTROL_IN,CY_FX_EP_CONTROL_OUT,CY_FX_EP_DATA_IN,CY_FX_EP_DATA_OUT,CY_FX_DATA_BURST_LENGTH);
 	CheckStatus("[App] DMA_Sync",DMA_Sync());
 
-	Status = ControlChThread_Create();
-	CheckStatus("[App] ControlChThread_Create", Status);
-
-	Status = Zing_Init();
-	CheckStatus("[App] Zing_Init", Status);
+	CheckStatus("[App] ControlChThread_Create", ControlChThread_Create());
+	CheckStatus("[App] Zing_Init", Zing_Init());
 
 #if 0
 	CheckStatus("[App] Zing_AutoHRCP",Zing_AutoHRCP());
@@ -175,8 +160,7 @@ void ApplicationThread(uint32_t Value)
 #endif
 	Zing_SetHRCP(DEV);
 
-	Status = USB_Connect();
-	CheckStatus("[App] USB_Connect", Status);
+	CheckStatus("[App] USB_Connect", USB_Connect());
 
 	while(IsApplnActive == 0) {
 		CyU3PThreadSleep(100);
