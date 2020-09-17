@@ -210,14 +210,8 @@ CyBool_t USBLPMRqtCB(CyU3PUsbLinkPowerMode link_mode)
 
 CyU3PReturnStatus_t USB_Init(void)
 {
-    CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
-
     /* Start the USB functionality. */
-    apiRetStatus = CyU3PUsbStart();
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-        CyFxAppErrorHandler("CyU3PUsbStart",apiRetStatus);
-    }
+    CHECK(CyU3PUsbStart());
 
     /* The fast enumeration is the easiest way to setup a USB connection,
      * where all enumeration phase is handled by the library. Only the
@@ -233,82 +227,38 @@ CyU3PReturnStatus_t USB_Init(void)
     /* Set the USB Enumeration descriptors */
 
     /* Super speed device descriptor. */
-    apiRetStatus = CyU3PUsbSetDesc(CY_U3P_USB_SET_SS_DEVICE_DESCR, 0, (uint8_t *)CyFxUSB30DeviceDscr);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-        CyFxAppErrorHandler("CyU3PUsbSetDesc(CY_U3P_USB_SET_SS_DEVICE_DESCR)",apiRetStatus);
-    }
+    CHECK(CyU3PUsbSetDesc(CY_U3P_USB_SET_SS_DEVICE_DESCR, 0, (uint8_t *)CyFxUSB30DeviceDscr));
 
     /* High speed device descriptor. */
-    apiRetStatus = CyU3PUsbSetDesc(CY_U3P_USB_SET_HS_DEVICE_DESCR, 0, (uint8_t *)CyFxUSB20DeviceDscr);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-    	CyFxAppErrorHandler("CyU3PUsbSetDesc(CY_U3P_USB_SET_HS_DEVICE_DESCR)",apiRetStatus);
-    }
+    CHECK(CyU3PUsbSetDesc(CY_U3P_USB_SET_HS_DEVICE_DESCR, 0, (uint8_t *)CyFxUSB20DeviceDscr));
 
     /* BOS descriptor */
-    apiRetStatus = CyU3PUsbSetDesc(CY_U3P_USB_SET_SS_BOS_DESCR, 0, (uint8_t *)CyFxUSBBOSDscr);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-    	CyFxAppErrorHandler("CyU3PUsbSetDesc(CY_U3P_USB_SET_SS_BOS_DESCR)",apiRetStatus);
-    }
+    CHECK(CyU3PUsbSetDesc(CY_U3P_USB_SET_SS_BOS_DESCR, 0, (uint8_t *)CyFxUSBBOSDscr));
 
     /* Device qualifier descriptor */
-    apiRetStatus = CyU3PUsbSetDesc(CY_U3P_USB_SET_DEVQUAL_DESCR, 0, (uint8_t *)CyFxUSBDeviceQualDscr);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-    	CyFxAppErrorHandler("CyU3PUsbSetDesc(CY_U3P_USB_SET_DEVQUAL_DESCR)",apiRetStatus);
-    }
+    CHECK(CyU3PUsbSetDesc(CY_U3P_USB_SET_DEVQUAL_DESCR, 0, (uint8_t *)CyFxUSBDeviceQualDscr));
 
     /* Super speed configuration descriptor */
-    apiRetStatus = CyU3PUsbSetDesc(CY_U3P_USB_SET_SS_CONFIG_DESCR, 0, (uint8_t *)CyFxUSBSSConfigDscr);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-    	CyFxAppErrorHandler("CyU3PUsbSetDesc(CY_U3P_USB_SET_SS_CONFIG_DESCR)",apiRetStatus);
-    }
+    CHECK(CyU3PUsbSetDesc(CY_U3P_USB_SET_SS_CONFIG_DESCR, 0, (uint8_t *)CyFxUSBSSConfigDscr));
 
     /* High speed configuration descriptor */
-    apiRetStatus = CyU3PUsbSetDesc(CY_U3P_USB_SET_HS_CONFIG_DESCR, 0, (uint8_t *)CyFxUSBHSConfigDscr);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-    	CyFxAppErrorHandler("CyU3PUsbSetDesc(CY_U3P_USB_SET_HS_CONFIG_DESCR)",apiRetStatus);
-    }
+    CHECK(CyU3PUsbSetDesc(CY_U3P_USB_SET_HS_CONFIG_DESCR, 0, (uint8_t *)CyFxUSBHSConfigDscr));
 
     /* Full speed configuration descriptor */
-    apiRetStatus = CyU3PUsbSetDesc(CY_U3P_USB_SET_FS_CONFIG_DESCR, 0, (uint8_t *)CyFxUSBFSConfigDscr);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-    	CyFxAppErrorHandler("CyU3PUsbSetDesc(CY_U3P_USB_SET_FS_CONFIG_DESCR)",apiRetStatus);
-    }
+    CHECK(CyU3PUsbSetDesc(CY_U3P_USB_SET_FS_CONFIG_DESCR, 0, (uint8_t *)CyFxUSBFSConfigDscr));
 
     /* String descriptor 0 */
-    apiRetStatus = CyU3PUsbSetDesc(CY_U3P_USB_SET_STRING_DESCR, 0, (uint8_t *)CyFxUSBStringLangIDDscr);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-    	CyFxAppErrorHandler("CyU3PUsbSetDesc(CY_U3P_USB_SET_STRING_DESCR)",apiRetStatus);
-    }
+    CHECK(CyU3PUsbSetDesc(CY_U3P_USB_SET_STRING_DESCR, 0, (uint8_t *)CyFxUSBStringLangIDDscr));
 
     /* String descriptor 1 */
-    apiRetStatus = CyU3PUsbSetDesc(CY_U3P_USB_SET_STRING_DESCR, 1, (uint8_t *)CyFxUSBManufactureDscr);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-    	CyFxAppErrorHandler("CyU3PUsbSetDesc(CY_U3P_USB_SET_STRING_DESCR)",apiRetStatus);
-    }
+    CHECK(CyU3PUsbSetDesc(CY_U3P_USB_SET_STRING_DESCR, 1, (uint8_t *)CyFxUSBManufactureDscr));
 
     /* String descriptor 2 */
-    apiRetStatus = CyU3PUsbSetDesc(CY_U3P_USB_SET_STRING_DESCR, 2, (uint8_t *)CyFxUSBProductDscr);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-    	CyFxAppErrorHandler("CyU3PUsbSetDesc(CY_U3P_USB_SET_STRING_DESCR)",apiRetStatus);
-    }
+    CHECK(CyU3PUsbSetDesc(CY_U3P_USB_SET_STRING_DESCR, 2, (uint8_t *)CyFxUSBProductDscr));
 
     /* String descriptor 3 */
-    apiRetStatus = CyU3PUsbSetDesc(CY_U3P_USB_SET_STRING_DESCR, 3, (uint8_t *)CyFxUSBSerialNumDscr);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-    	CyFxAppErrorHandler("CyU3PUsbSetDesc(CY_U3P_USB_SET_STRING_DESCR)",apiRetStatus);
-    }
-    return apiRetStatus;
+    CHECK(CyU3PUsbSetDesc(CY_U3P_USB_SET_STRING_DESCR, 3, (uint8_t *)CyFxUSBSerialNumDscr));
+    return CY_U3P_SUCCESS;
 }
 
 CyU3PReturnStatus_t USB_Connect(void)
