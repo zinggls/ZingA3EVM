@@ -33,10 +33,8 @@ void CyFxAppErrorHandler(char* StringPtr,CyU3PReturnStatus_t Status)
 CyU3PReturnStatus_t InitializeDebugConsole(uint8_t TraceLevel,CyU3PUartIntrCb_t UartCallback)
 {
 	CyU3PUartConfig_t uartConfig;
-	CyU3PReturnStatus_t Status = CY_U3P_SUCCESS;
 
-	Status = CyU3PUartInit();											// Start the UART driver
-	CheckStatus("CyU3PUartInit", Status);
+	CHECK(CyU3PUartInit());											// Start the UART driver
 
 	CyU3PMemSet ((uint8_t *)&uartConfig, 0, sizeof (uartConfig));
 	uartConfig.baudRate = CY_U3P_UART_BAUDRATE_115200;
@@ -47,16 +45,12 @@ CyU3PReturnStatus_t InitializeDebugConsole(uint8_t TraceLevel,CyU3PUartIntrCb_t 
 	uartConfig.flowCtrl = CyFalse;
 	uartConfig.isDma    = CyTrue;
 
-	Status = CyU3PUartSetConfig(&uartConfig, UartCallback);				// Configure the UART hardware
-	CheckStatus("CyU3PUartSetConfig", Status);
+	CHECK(CyU3PUartSetConfig(&uartConfig, UartCallback));			// Configure the UART hardware
+	CHECK(CyU3PUartTxSetBlockXfer(0xFFFFFFFF));						// Send as much data as I need to
+	CHECK(CyU3PDebugInit(CY_U3P_LPP_SOCKET_UART_CONS, TraceLevel));	// Attach the Debug driver above the UART driver
 
-	Status = CyU3PUartTxSetBlockXfer(0xFFFFFFFF);						// Send as much data as I need to
-	CheckStatus("CyU3PUartTxSetBlockXfer", Status);
+	DebugTxEnabled = CyTrue;
 
-	Status = CyU3PDebugInit(CY_U3P_LPP_SOCKET_UART_CONS, TraceLevel);	// Attach the Debug driver above the UART driver
-	if (Status == CY_U3P_SUCCESS) DebugTxEnabled = CyTrue;
-    CheckStatus("ConsoleOutEnabled", Status);
-
-	CyU3PDebugPreamble(CyFalse);										// Skip preamble, debug info is targeted for a person
-	return Status;
+	CyU3PDebugPreamble(CyFalse);									// Skip preamble, debug info is targeted for a person
+	return CY_U3P_SUCCESS;
 }
