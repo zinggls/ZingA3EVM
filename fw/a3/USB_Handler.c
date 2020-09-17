@@ -270,8 +270,7 @@ CyU3PReturnStatus_t USB_Connect(void)
 	apiRetStatus = CyU3PConnectState(CyTrue, CyTrue);
 	if(CyU3PUsbGetSpeed() != CY_U3P_SUPER_SPEED)
 	{
-	  apiRetStatus = CyU3PConnectState(CyFalse, CyFalse);
-	  CyU3PDebugPrint(4, "First attempt failed = %d\n", apiRetStatus);
+	  CyU3PConnectState(CyFalse, CyFalse);
 
 		/* Check in other orientation */
 	  CyU3PGpioSetValue(GPIO57, CyTrue);
