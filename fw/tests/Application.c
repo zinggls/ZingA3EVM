@@ -15,7 +15,7 @@ CyU3PThread ApplicationThreadHandle;
 
 void ApplicationThread(uint32_t Value)
 {
-	CyU3PReturnStatus_t Status = InitializeDebugConsole(6);
+	CyU3PReturnStatus_t Status = InitializeDebugConsole(6,NULL);
 	CheckStatus("[App] InitializeDebugConsole", Status);
 
 	test_i2c_init();

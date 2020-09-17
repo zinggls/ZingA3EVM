@@ -140,7 +140,7 @@ void ApplicationThread(uint32_t Value)
 {
 	CyU3PReturnStatus_t Status;
 
-	Status = InitializeDebugConsole(6);
+	Status = InitializeDebugConsole(6,NULL);
 	CheckStatus("[App] InitializeDebugConsole", Status);
 
 	CyU3PDebugPrint(4,"[App] Git:%s\n",GIT_INFO);

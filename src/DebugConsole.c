@@ -30,14 +30,7 @@ void CyFxAppErrorHandler(char* StringPtr,CyU3PReturnStatus_t Status)
 	}
 }
 
-void UartCallback(CyU3PUartEvt_t Event, CyU3PUartError_t Error)
-{
-	if (Event == CY_U3P_UART_EVENT_RX_DONE)
-    {
-    }
-}
-
-CyU3PReturnStatus_t InitializeDebugConsole(uint8_t TraceLevel)
+CyU3PReturnStatus_t InitializeDebugConsole(uint8_t TraceLevel,CyU3PUartIntrCb_t UartCallback)
 {
 	CyU3PUartConfig_t uartConfig;
 	CyU3PReturnStatus_t Status = CY_U3P_SUCCESS;
