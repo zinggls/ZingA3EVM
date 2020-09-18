@@ -406,7 +406,7 @@ CyU3PReturnStatus_t Zing_DataWrite(uint8_t* buf, uint32_t len)
 #ifdef DEBUG
 	if(apiRetStatus==CY_U3P_SUCCESS) {
 		CyU3PDebugPrint(4,"[Zing/DataWrite] ");
-		for(i i=0;i<len;i++) CyU3PDebugPrint(4,"0x%X, ",buf[i]);
+		for(int i=0;i<len;i++) CyU3PDebugPrint(4,"0x%X, ",buf[i]);
 		CyU3PDebugPrint(4,"\n");
 	}
 #endif
