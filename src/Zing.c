@@ -433,28 +433,20 @@ CyU3PReturnStatus_t Zing_Transfer_Send(CyU3PDmaChannel* dma_ch,uint8_t *data,uin
 
 CyU3PReturnStatus_t Zing_DataRead(uint8_t* buf, uint32_t* len_pt)
 {
-	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
+	CyU3PReturnStatus_t apiRetStatus;
 
-	apiRetStatus = Zing_Transfer_Recv(&Dma.DataIn_,ZingDataInBuffer,len_pt,ZING_HW_TIMEOUT);
-
-	if(apiRetStatus==CY_U3P_SUCCESS)
+	if((apiRetStatus = Zing_Transfer_Recv(&Dma.DataIn_,ZingDataInBuffer,len_pt,ZING_HW_TIMEOUT))==CY_U3P_SUCCESS)
 		memcpy(buf,ZingDataInBuffer,*len_pt);
 	else
 		*len_pt = 0;
 
 #ifdef DEBUG
 	if(apiRetStatus==CY_U3P_SUCCESS) {
-		{
-			int i;
-			CyU3PDebugPrint(4,"[Zing/DataRead] ");
-			for(i=0;i<*len_pt;i++) {
-				CyU3PDebugPrint(4,"0x%X, ",buf[i]);
-			}
-			CyU3PDebugPrint(4,"\r\n");
-		}
+		CyU3PDebugPrint(4,"[Zing/DataRead] ");
+		for(int i=0;i<*len_pt;i++) CyU3PDebugPrint(4,"0x%X, ",buf[i]);
+		CyU3PDebugPrint(4,"\r\n");
 	}
 #endif
-
 	return apiRetStatus;
 }
 
