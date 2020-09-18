@@ -331,28 +331,29 @@ uint32_t Zing_GetHRCP()
 }
 
 // val = 1 (PPC), val = 0 (DEV)
-void Zing_SetHRCP(uint32_t val)
+CyU3PReturnStatus_t Zing_SetHRCP(uint32_t val)
 {
 	uint32_t rt_reg_val, reg_val;
 	HW_CFG *TempReg_pt;
 
 	// PPC/DEV
-	Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4);
+	CHECK(Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4));
 	TempReg_pt = (HW_CFG*)&rt_reg_val;
 	TempReg_pt->ppc_mode = val;
-	Zing_RegWrite(REG_HW_CFG,(uint8_t*)&rt_reg_val,4);
+	CHECK(Zing_RegWrite(REG_HW_CFG,(uint8_t*)&rt_reg_val,4));
 
 	// IFS
 	if(val == 1) {//PPC
 		reg_val = REG_IFS_PPC_INIT;
-		Zing_RegWrite(REG_IFS,(uint8_t*)&reg_val,4);
+		CHECK(Zing_RegWrite(REG_IFS,(uint8_t*)&reg_val,4));
 	} else { //DEV
 		reg_val = REG_IFS_DEV_INIT;
-		Zing_RegWrite(REG_IFS,(uint8_t*)&reg_val,4);
+		CHECK(Zing_RegWrite(REG_IFS,(uint8_t*)&reg_val,4));
 	}
 
 	zing_hrcp = val;
 	CyU3PDebugPrint (4, "Zing_SetHRCP=%s\n",val ? "PPC" : "DEV");
+	return CY_U3P_SUCCESS;
 }
 
 // val = 1 (RF), val = 0 (SERDES)
