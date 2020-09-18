@@ -381,10 +381,6 @@ CyU3PReturnStatus_t Zing_Reset(uint8_t type)
 	HW_CFG *TempReg_pt;
 
 	if(type == 0) {
-
-		//DMA_Sync_mode();
-
-		//
 		CHECK(Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4));
 		TempReg_pt = (HW_CFG*)&rt_reg_val;
 		TempReg_pt->init_n = 0;
@@ -394,11 +390,9 @@ CyU3PReturnStatus_t Zing_Reset(uint8_t type)
 
 		TempReg_pt->init_n = 1;
 		CHECK(Zing_RegWrite(REG_HW_CFG,(uint8_t*)&rt_reg_val,4));
-
-		//DMA_Normal_mode();
 	}
 	else if(type == 1) {
-
+		//Nothing implemented yet
 	}
 	return CY_U3P_SUCCESS;
 }
