@@ -473,10 +473,9 @@ CyU3PDebugPrint (4, "STATE1\r\n");
 #endif
 	for(i=0;i<4;i++) {
 		status = Zing_DataWrite((uint8_t*)tx_msg, strlen(tx_msg));
+		if(status == CY_U3P_SUCCESS) goto STATE3;
 		status = Zing_DataRead((uint8_t*)rx_msg, &rx_len);
-		if(status == CY_U3P_SUCCESS) {
-			goto STATE3;
-		}
+		if(status == CY_U3P_SUCCESS) goto STATE3;
 	}
 	goto STATE2;
 
@@ -511,10 +510,9 @@ CyU3PDebugPrint (4, "STATE3\r\n");
 	CyU3PThreadSleep(500);
 	for(i=0;i<4;i++) {
 		status = Zing_DataWrite((uint8_t*)tx_msg, strlen(tx_msg));
+		if(status == CY_U3P_SUCCESS) goto STATE4;
 		status = Zing_DataRead((uint8_t*)rx_msg, &rx_len);
-		if(status != CY_U3P_SUCCESS) {
-			goto STATE4;
-		}
+		if(status == CY_U3P_SUCCESS) goto STATE4;
 	}
 	goto STATE5;
 
@@ -549,7 +547,7 @@ CyU3PDebugPrint (4, "STATE_END\r\n");
 	CHECK(Zing_Reset(0));
 	Zing_DataReadFlush();
 
-Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4);
+CHECK(Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4));
 #ifdef DEBUG
 CyU3PDebugPrint (4, "[Zing] HRCP : %s\r\n",rt_reg_val&0x00000010 ? "PPC" : "DEV");
 #endif
