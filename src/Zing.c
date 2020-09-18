@@ -357,14 +357,12 @@ CyU3PReturnStatus_t Zing_SetHRCP(uint32_t val)
 }
 
 // val = 1 (RF), val = 0 (SERDES)
-void Zing_SetPath(uint32_t val)
+CyU3PReturnStatus_t Zing_SetPath(uint32_t val)
 {
 	uint32_t rt_reg_val;
 
-	//DMA_Sync_mode();
-
 	// PPC/DEV
-	Zing_RegRead(REG_SERDES_TRIM_1,(uint8_t*)&rt_reg_val,4);
+	CHECK(Zing_RegRead(REG_SERDES_TRIM_1,(uint8_t*)&rt_reg_val,4));
 	rt_reg_val &= 0xFFFFFF9F;
 	if(val==1) { //rf path
 		rt_reg_val |= 0x00000040;
@@ -372,9 +370,8 @@ void Zing_SetPath(uint32_t val)
 	else if(val ==0) { //serdes path
 		rt_reg_val |= 0x00000020;
 	}
-	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&rt_reg_val,4);
-
-	//DMA_Normal_mode();
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&rt_reg_val,4));
+	return CY_U3P_SUCCESS;
 }
 
 // type = 0 (S/W reset), type = 1 (H/W reset)
