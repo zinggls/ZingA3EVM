@@ -413,34 +413,22 @@ CyU3PReturnStatus_t Zing_DataWrite(uint8_t* buf, uint32_t len)
 	return apiRetStatus;
 }
 
-CyU3PReturnStatus_t Zing_Transfer_Send(
-	CyU3PDmaChannel* dma_ch,
-    uint8_t     *data,		/* pointer to msg */
-    uint32_t    length	 	/* msg size in bytes */
-    )
+CyU3PReturnStatus_t Zing_Transfer_Send(CyU3PDmaChannel* dma_ch,uint8_t *data,uint32_t length)
 {
-    CyU3PReturnStatus_t status;
-    CyU3PDmaBuffer_t Buf;
+	CyU3PReturnStatus_t status;
+	CyU3PDmaBuffer_t Buf;
 
-
-    /* Wait for a free buffer to transmit the received data. The failure cases are same as above. */
-    status = CyU3PDmaChannelGetBuffer (dma_ch, &Buf, ZING_HW_TIMEOUT);
-    if (status != CY_U3P_SUCCESS)
-    {
-        CyU3PDebugPrint (4, "Zing_Transfer_Send,CyU3PDmaChannelGetBuffer failed(0x%x)\n", status);
-    }
-    else {
+	/* Wait for a free buffer to transmit the received data. The failure cases are same as above. */
+	if ((status = CyU3PDmaChannelGetBuffer(dma_ch, &Buf, ZING_HW_TIMEOUT))!= CY_U3P_SUCCESS)
+		CyU3PDebugPrint (4, "Zing_Transfer_Send,CyU3PDmaChannelGetBuffer(Timeout=%d) failed(0x%x)\n",ZING_HW_TIMEOUT,status);
+	else {
 		CyU3PMemCopy (Buf.buffer, data, length);
 		Buf.count = length;
 
-		status = CyU3PDmaChannelCommitBuffer (dma_ch, Buf.count, 0);
-		if (status != CY_U3P_SUCCESS)
-		{
+		if ((status = CyU3PDmaChannelCommitBuffer (dma_ch, Buf.count, 0))!=CY_U3P_SUCCESS)
 			CyU3PDebugPrint (4, "Zing_Transfer_Send,CyU3PDmaChannelCommitBuffer failed(0x%x)\n", status);
-		}
-    }
-
-    return status;
+	}
+	return status;
 }
 
 CyU3PReturnStatus_t Zing_DataRead(uint8_t* buf, uint32_t* len_pt)
