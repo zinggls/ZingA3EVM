@@ -446,3 +446,14 @@ CyU3PReturnStatus_t DMA_SinkSource()
 {
 	return DMA_SinkSource_mode(Dma.ControlInEP_,Dma.ControlOutEP_,Dma.DataInEP_,Dma.DataOutEP_,Dma.DataBurstLength_);
 }
+
+const char* dmaModeStr(dma_mode_t mode)
+{
+	if(mode==DMA_UNINITIALIZED) return "DMA UNINITIALIZED";
+	else if(mode==DMA_NORMAL) return "DMA NORMAL";
+	else if(mode==DMA_SYNC) return "DMA SYNC";
+	else if(mode==DMA_LP) return "DMA LOOPBACK";
+	else if(mode==DMA_SINKSOURCE) return "DMA SINKSOURCE";
+
+	return "NOT FOUND";
+}
