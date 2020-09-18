@@ -175,7 +175,7 @@ void ApplicationThread(uint32_t Value)
 						Zing_GetHRCP()?"PPC":"DEV",dmaModeStr(Dma.Mode_),
 						loop++,Dma.ControlInCount_,Dma.ControlOutCount_,Dma.DataInCount_,Dma.DataOutCount_);
 
-		CyU3PThreadSleep(1000);
+		CyU3PThreadSleep(100);
 	}
 
 	while (1);	// Hang here
