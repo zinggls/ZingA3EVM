@@ -686,18 +686,11 @@ CyU3PReturnStatus_t Zing_Transfer_Recv (CyU3PDmaChannel *dma_ch,uint8_t *data,ui
 	return status;
 }
 
-CyU3PReturnStatus_t Zing_Management_Send (
-    uint8_t     *data,		/* pointer to msg */
-    uint32_t    length	 	/* msg size in bytes */
-    )
+CyU3PReturnStatus_t Zing_Management_Send (uint8_t *data,uint32_t length)
 {
-	CyU3PReturnStatus_t status=CY_U3P_SUCCESS;
-
 	Zing_Header2(ZingControlOutBuffer,0,0,0,1,0,1,0,0,length);
 	memcpy(ZingControlOutBuffer+ZING_HDR_SIZE, data, length);
-	status = Zing_Transfer_Send(&Dma.ControlOut_,ZingControlOutBuffer,length+ZING_HDR_SIZE);
-
-	return status;
+	return Zing_Transfer_Send(&Dma.ControlOut_,ZingControlOutBuffer,length+ZING_HDR_SIZE);
 }
 
 CyU3PReturnStatus_t Zing_Init(void)
