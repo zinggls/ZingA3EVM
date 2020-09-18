@@ -213,7 +213,7 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
 }
 
 // f_tg : Hz
-void Zing_AFC2(float f_tg)
+CyU3PReturnStatus_t Zing_AFC2(float f_tg)
 {
 	 uint32_t	reg_value, reg_val;
 	 uint32_t CntArr[AFC_N] = {0,};
@@ -251,28 +251,28 @@ void Zing_AFC2(float f_tg)
 
 	// init
 	reg_value=0x0000001F;
-	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_value,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_value,4));
 
 	reg_value=0x00000088;
-	Zing_RegWrite(REG_SERDES_TRIM_4,(uint8_t*)&reg_value,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_4,(uint8_t*)&reg_value,4));
 
 	reg_value=0x1221809B;
-	Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_value,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_value,4));
 
 	// measure full mode AFC
 	for(i=0; i<AFC_N; i++) {
 		reg_value = reg_value2[i];
-		Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_value,4);
+		CHECK(Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_value,4));
 
 		reg_value=0x00000000;
-		Zing_RegWrite(REG_SERDES_PLL_AFC,(uint8_t*)&reg_value,4);
+		CHECK(Zing_RegWrite(REG_SERDES_PLL_AFC,(uint8_t*)&reg_value,4));
 
 		reg_value=0x00010000;
-		Zing_RegWrite(REG_SERDES_PLL_AFC,(uint8_t*)&reg_value,4);
+		CHECK(Zing_RegWrite(REG_SERDES_PLL_AFC,(uint8_t*)&reg_value,4));
 
 		CyU3PThreadSleep (10);
 
-		Zing_RegRead(REG_SERDES_PLL_AFC,(uint8_t*)&data,4);
+		CHECK(Zing_RegRead(REG_SERDES_PLL_AFC,(uint8_t*)&data,4));
 		CntArr[i] = data & 0x0000ffff;
 	}
 
@@ -291,24 +291,24 @@ void Zing_AFC2(float f_tg)
 
 	// write reg
 	reg_val = 0x00000000;
-	Zing_RegWrite(REG_SERDES_TEST_PATTERN,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TEST_PATTERN,(uint8_t*)&reg_val,4));
 	reg_val = 0x00000008;
-	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4));
 	reg_val = 0x00000001;
-	Zing_RegWrite(REG_SERDES_TEST_CONFIG,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TEST_CONFIG,(uint8_t*)&reg_val,4));
 	reg_val = 0x88C8A33D;
-	Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4));
 	reg_val = 0xFF888888;
-	Zing_RegWrite(REG_SERDES_TRIM_4,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_4,(uint8_t*)&reg_val,4));
 
 	reg_value=(0x9224F0F5 & 0xFF00FFFF) | (reg_value2[selected_idx] & 0x00FF0000);
-	Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_value,4);
-	Zing_RegRead(REG_SERDES_TRIM_2,(uint8_t*)&data,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_value,4));
+	CHECK(Zing_RegRead(REG_SERDES_TRIM_2,(uint8_t*)&data,4));
 
 	reg_val = 0x488F73;
-	Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4));
 	reg_val = 0x788F73;
-	Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4);
+	CHECK(Zing_RegWrite(REG_SERDES_TRIM_3,(uint8_t*)&reg_val,4));
 
 #ifdef DEBUG
 	t2 = CyU3PGetTime();
@@ -322,7 +322,7 @@ void Zing_AFC2(float f_tg)
 	CyU3PDebugPrint (4, "vco freq :%d Hz\r\n", (int)f_set);
 
 #endif
-
+	return CY_U3P_SUCCESS;
 }
 
 uint32_t Zing_GetHRCP()

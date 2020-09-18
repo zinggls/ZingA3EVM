@@ -9,7 +9,7 @@
 CyU3PReturnStatus_t Zing_Init(void);
 CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len);
 CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len);
-void Zing_AFC2(float f_tg);
+CyU3PReturnStatus_t Zing_AFC2(float f_tg);
 uint32_t Zing_GetHRCP();
 void Zing_SetHRCP(uint32_t val);
 void Zing_SetPath(uint32_t val);
