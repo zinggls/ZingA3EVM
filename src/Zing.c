@@ -809,7 +809,7 @@ CyU3PReturnStatus_t Zing_Init(void)
 
 	// AFC
     //Zing_AFC(); // AFC : Automatic Frequency Controller
-	Zing_AFC2(1.25*1000000000); // AFC : Automatic Frequency Controller
+	CHECK(Zing_AFC2(1.25*1000000000)); // AFC : Automatic Frequency Controller
 #ifdef DEBUG
 	CyU3PDebugPrint (4, "Zing_Init:AFC done\r\n");
 #endif
