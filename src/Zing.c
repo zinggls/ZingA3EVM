@@ -325,12 +325,9 @@ void Zing_AFC2(float f_tg)
 
 }
 
-CyU3PReturnStatus_t Zing_GetHRCP(uint32_t *val)
+uint32_t Zing_GetHRCP()
 {
-	uint32_t rt_reg_val;
-	CHECK(Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4));
-	*val = rt_reg_val&0x00000010;
-	return CY_U3P_SUCCESS;
+	return zing_hrcp;
 }
 
 // val = 1 (PPC), val = 0 (DEV)
@@ -354,6 +351,7 @@ void Zing_SetHRCP(uint32_t val)
 		Zing_RegWrite(REG_IFS,(uint8_t*)&reg_val,4);
 	}
 
+	zing_hrcp = val;
 	CyU3PDebugPrint (4, "Zing_SetHRCP=%s\n",val ? "PPC" : "DEV");
 }
 
