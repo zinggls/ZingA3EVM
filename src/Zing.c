@@ -524,11 +524,11 @@ CyU3PDebugPrint (4, "STATE2\r\n");
 		CyU3PThreadSleep(RandomGen_GetNumber());
 		if(zing_hrcp == PPC) {
 			zing_hrcp = DEV;
-			Zing_SetHRCP(DEV);
+			CHECK(Zing_SetHRCP(DEV));
 		}
 		else {
 			zing_hrcp = PPC;
-			Zing_SetHRCP(PPC);
+			CHECK(Zing_SetHRCP(PPC));
 		}
 		goto STATE1;
 	}

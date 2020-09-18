@@ -156,9 +156,9 @@ void ApplicationThread(uint32_t Value)
 
 #if 0
 	CheckStatus("[App] Zing_AutoHRCP",Zing_AutoHRCP());
-	Zing_SetHRCP(PPC);
+	CheckStatus("[App] Zing_SetHRCP(PPC)",Zing_SetHRCP(PPC));
 #endif
-	Zing_SetHRCP(DEV);
+	CheckStatus("[App] Zing_SetHRCP(DEV)",Zing_SetHRCP(DEV));
 
 	CheckStatus("[App] USB_Connect", USB_Connect());
 
