@@ -5,7 +5,7 @@
 
 static void initDmaCount()
 {
-	Dma.Mode_= DMA_NORMAL;
+	Dma.Mode_= DMA_UNINITIALIZED;
 	Dma.DataOutCount_ = 0;
 	Dma.DataInCount_ = 0;
 	Dma.ControlOutCount_ = 0;

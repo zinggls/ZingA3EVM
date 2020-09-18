@@ -6,6 +6,7 @@
 
 typedef enum DMA_MODE_T
 {
+	DMA_UNINITIALIZED = -1,
 	DMA_NORMAL = 0,
 	DMA_SYNC,
 	DMA_LP,
