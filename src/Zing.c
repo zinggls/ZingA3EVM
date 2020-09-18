@@ -666,34 +666,23 @@ void Zing_Test_DataSink2 (uint32_t cnt, uint32_t timeout)
 #endif
 }
 
-CyU3PReturnStatus_t Zing_Transfer_Recv (
-	CyU3PDmaChannel* dma_ch,
-    uint8_t     *data,		/* pointer to msg */
-    uint32_t*    length_pt,	 	/* msg size in bytes */
-    uint32_t	waitOption		/* Duration to wait before returning a timeout status */
-    )
+CyU3PReturnStatus_t Zing_Transfer_Recv (CyU3PDmaChannel *dma_ch,uint8_t *data,uint32_t *length_pt,uint32_t waitOption)
 {
 	CyU3PReturnStatus_t status;
 	CyU3PDmaBuffer_t Buf;
 
-
 	/* Wait for a free buffer to transmit the received data. The failure cases are same as above. */
 	status = CyU3PDmaChannelGetBuffer (dma_ch, &Buf, waitOption);
 	if (status != CY_U3P_SUCCESS)
-	{
-		CyU3PDebugPrint (4, "Zing_Transfer_Recv,CyU3PDmaChannelGetBuffer failed(0x%x)\n", status);
-	}
+		CyU3PDebugPrint (4, "Zing_Transfer_Recv,CyU3PDmaChannelGetBuffer(Timeout=%d) failed(0x%x)\n", waitOption,status);
 	else {
 		CyU3PMemCopy (data, Buf.buffer, Buf.count);
 		*length_pt = Buf.count;
 
 		status = CyU3PDmaChannelDiscardBuffer (dma_ch);
 		if (status != CY_U3P_SUCCESS)
-		{
 			CyU3PDebugPrint (4, "Zing_Transfer_Recv,CyU3PDmaChannelCommitBuffer failed(0x%x)\n", status);
-		}
 	}
-
 	return status;
 }
 
