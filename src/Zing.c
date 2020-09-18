@@ -405,18 +405,12 @@ CyU3PReturnStatus_t Zing_DataWrite(uint8_t* buf, uint32_t len)
 	apiRetStatus = Zing_Transfer_Send(&Dma.DataOut_,ZingDataOutBuffer,len);
 #ifdef DEBUG
 	if(apiRetStatus==CY_U3P_SUCCESS) {
-		{
-			int i;
-			CyU3PDebugPrint(4,"[Zing/DataWrite] ");
-			for(i=0;i<len;i++) {
-				CyU3PDebugPrint(4,"0x%X, ",buf[i]);
-			}
-			CyU3PDebugPrint(4,"\r\n");
-		}
+		CyU3PDebugPrint(4,"[Zing/DataWrite] ");
+		for(i i=0;i<len;i++) CyU3PDebugPrint(4,"0x%X, ",buf[i]);
+		CyU3PDebugPrint(4,"\n");
 	}
 #endif
-
-		return apiRetStatus;
+	return apiRetStatus;
 }
 
 CyU3PReturnStatus_t Zing_Transfer_Send(
