@@ -15,7 +15,7 @@ CyU3PReturnStatus_t Zing_SetHRCP(uint32_t val);
 CyU3PReturnStatus_t Zing_SetPath(uint32_t val);
 CyU3PReturnStatus_t Zing_DataWrite(uint8_t* buf, uint32_t len);
 CyU3PReturnStatus_t Zing_DataRead(uint8_t* buf, uint32_t* len_pt);
-void Zing_Reset(uint8_t type);
+CyU3PReturnStatus_t Zing_Reset(uint8_t type);
 CyU3PReturnStatus_t Zing_AutoHRCP(void);
 CyU3PReturnStatus_t Zing_GetVersion(uint8_t *version);
 void Zing_Test_DataTx2 (uint32_t repeat, uint32_t length, uint32_t pattern);

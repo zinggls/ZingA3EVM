@@ -375,7 +375,7 @@ CyU3PReturnStatus_t Zing_SetPath(uint32_t val)
 }
 
 // type = 0 (S/W reset), type = 1 (H/W reset)
-void Zing_Reset(uint8_t type)
+CyU3PReturnStatus_t Zing_Reset(uint8_t type)
 {
 	uint32_t rt_reg_val;
 	HW_CFG *TempReg_pt;
@@ -385,21 +385,22 @@ void Zing_Reset(uint8_t type)
 		//DMA_Sync_mode();
 
 		//
-		Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4);
+		CHECK(Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4));
 		TempReg_pt = (HW_CFG*)&rt_reg_val;
 		TempReg_pt->init_n = 0;
-		Zing_RegWrite(REG_HW_CFG,(uint8_t*)&rt_reg_val,4);
+		CHECK(Zing_RegWrite(REG_HW_CFG,(uint8_t*)&rt_reg_val,4));
 
 		CyU3PThreadSleep (100);
 
 		TempReg_pt->init_n = 1;
-		Zing_RegWrite(REG_HW_CFG,(uint8_t*)&rt_reg_val,4);
+		CHECK(Zing_RegWrite(REG_HW_CFG,(uint8_t*)&rt_reg_val,4));
 
 		//DMA_Normal_mode();
 	}
 	else if(type == 1) {
 
 	}
+	return CY_U3P_SUCCESS;
 }
 
 CyU3PReturnStatus_t Zing_DataWrite(uint8_t* buf, uint32_t len)
