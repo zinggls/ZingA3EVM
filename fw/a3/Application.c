@@ -171,8 +171,8 @@ void ApplicationThread(uint32_t Value)
 	uint32_t loop = 0;
 	while (1)
 	{
-		CyU3PDebugPrint(4,"[App] Loop:%d ConIn:%d ConOut:%d DataIn:%d DataOut:%d\r",
-				loop++,Dma.ControlInCount_,Dma.ControlOutCount_,Dma.DataInCount_,Dma.DataOutCount_);
+		CyU3PDebugPrint(4,"[App] (%s) Loop:%d ConIn:%d ConOut:%d DataIn:%d DataOut:%d\r",
+				Zing_GetHRCP()?"PPC":"DEV",loop++,Dma.ControlInCount_,Dma.ControlOutCount_,Dma.DataInCount_,Dma.DataOutCount_);
 
 		CyU3PThreadSleep(1000);
 	}
