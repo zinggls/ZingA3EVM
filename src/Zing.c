@@ -512,7 +512,7 @@ CyU3PDebugPrint (4, "STATE2\r\n");
 #endif
 	fail_cnt1++;
 	if(fail_cnt1 <= 30) {
-		Zing_Reset(0);
+		CHECK(Zing_Reset(0));
 		CyU3PThreadSleep(RandomGen_GetNumber());
 		if(zing_hrcp == PPC) {
 			zing_hrcp = DEV;
@@ -533,7 +533,7 @@ STATE3:
 #ifdef DEBUG
 CyU3PDebugPrint (4, "STATE3\r\n");
 #endif
-	Zing_Reset(0);
+	CHECK(Zing_Reset(0));
 	CyU3PThreadSleep(500);
 	for(i=0;i<4;i++) {
 		status = Zing_DataWrite((uint8_t*)tx_msg, strlen(tx_msg));
@@ -572,7 +572,7 @@ STATE_END:
 #ifdef DEBUG
 CyU3PDebugPrint (4, "STATE_END\r\n");
 #endif
-	Zing_Reset(0);
+	CHECK(Zing_Reset(0));
 	Zing_DataReadFlush();
 
 Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4);
