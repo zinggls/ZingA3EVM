@@ -672,15 +672,13 @@ CyU3PReturnStatus_t Zing_Transfer_Recv (CyU3PDmaChannel *dma_ch,uint8_t *data,ui
 	CyU3PDmaBuffer_t Buf;
 
 	/* Wait for a free buffer to transmit the received data. The failure cases are same as above. */
-	status = CyU3PDmaChannelGetBuffer (dma_ch, &Buf, waitOption);
-	if (status != CY_U3P_SUCCESS)
+	if ((status = CyU3PDmaChannelGetBuffer (dma_ch, &Buf, waitOption)) != CY_U3P_SUCCESS)
 		CyU3PDebugPrint (4, "Zing_Transfer_Recv,CyU3PDmaChannelGetBuffer(Timeout=%d) failed(0x%x)\n", waitOption,status);
 	else {
 		CyU3PMemCopy (data, Buf.buffer, Buf.count);
 		*length_pt = Buf.count;
 
-		status = CyU3PDmaChannelDiscardBuffer (dma_ch);
-		if (status != CY_U3P_SUCCESS)
+		if ((status = CyU3PDmaChannelDiscardBuffer (dma_ch)) != CY_U3P_SUCCESS)
 			CyU3PDebugPrint (4, "Zing_Transfer_Recv,CyU3PDmaChannelCommitBuffer failed(0x%x)\n", status);
 	}
 	return status;
