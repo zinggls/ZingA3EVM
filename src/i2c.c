@@ -16,30 +16,6 @@ CyU3PReturnStatus_t I2C_Init(void)
 	return CyU3PI2cSetConfig(&i2cConfig, NULL);
 }
 
-void WriteI2C_test(void)
-{
-	uint8_t   buffer[] = {0x77,0x07,0x00,0x00};
-
-	CyU3PI2cPreamble_t preamble;
-	preamble.length    = 2;
-	preamble.buffer[0] = 0x08<<1;
-	preamble.buffer[1] = 0x00;
-	preamble.ctrlMask  = 0x0000;
-
-	CyU3PI2cTransmitBytes(&preamble, buffer, sizeof(buffer), 0);
-}
-
-void ReadI2C_test(void)
-{
-	CyU3PI2cPreamble_t preamble;
-	uint8_t   buffer[20] = {0,};
-	preamble.length    = 1;
-	preamble.buffer[0] = (0x08<<1) | 1;
-	preamble.ctrlMask  = 0x0000;
-
-	CyU3PI2cReceiveBytes(&preamble, buffer, 4, 0);
-}
-
 CyU3PReturnStatus_t I2C_Write(uint8_t dev_addr, uint8_t reg_addr, uint8_t* data_pt, uint32_t data_len)
 {
 	CyU3PI2cPreamble_t preamble;
