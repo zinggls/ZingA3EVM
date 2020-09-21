@@ -14,6 +14,12 @@ void test_zing_init()
 	assert("Control Channel Thread",ControlChThread_Create()==CY_U3P_SUCCESS);
 	assert("1st Zing Init",Zing_Init()==CY_U3P_SUCCESS);
 	assert("2nd Zing Init",Zing_Init()==CY_U3P_SUCCESS);
+
+	assert("Zing SetHRCP(PPC)",Zing_SetHRCP(PPC)==CY_U3P_SUCCESS);
+	assert("Zing GetHRCP",Zing_GetHRCP()==PPC);
+
+	assert("Zing SetHRCP(DEV)",Zing_SetHRCP(DEV)==CY_U3P_SUCCESS);
+	assert("Zing GetHRCP",Zing_GetHRCP()==DEV);
 }
 
 #endif
