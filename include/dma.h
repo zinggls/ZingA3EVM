@@ -13,23 +13,21 @@ typedef enum DMA_MODE_T
 	DMA_SINKSOURCE,
 } dma_mode_t;
 
+typedef struct DMA_CHANNEL_T
+{
+	CyU3PDmaChannel Channel_;
+	uint32_t Count_;
+	uint8_t EP_;
+} DMA_CHANNEL_T;
+
 typedef struct DMA_T
 {
 	dma_mode_t Mode_;
-	CyU3PDmaChannel ControlOut_;
-	CyU3PDmaChannel ControlIn_;
-	CyU3PDmaChannel DataOut_;
-	CyU3PDmaChannel DataIn_;
-	uint32_t DataOutCount_;
-	uint32_t DataInCount_;
-	uint32_t ControlOutCount_;
-	uint32_t ControlInCount_;
-
-	uint8_t ControlOutEP_;
-	uint8_t ControlInEP_;
-	uint8_t DataOutEP_;
-	uint8_t DataInEP_;
 	uint16_t DataBurstLength_;
+	DMA_CHANNEL_T ControlOut_;
+	DMA_CHANNEL_T ControlIn_;
+	DMA_CHANNEL_T DataOut_;
+	DMA_CHANNEL_T DataIn_;
 } DMA_T;
 
 DMA_T Dma;

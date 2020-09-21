@@ -65,10 +65,10 @@ CyBool_t USBSetupCB(uint32_t setupdat0,uint32_t setupdat1)
                     CyU3PUsbSetEpNak (CY_FX_EP_CONTROL_OUT, CyTrue);
                     CyU3PBusyWait (125);
 
-                    CyU3PDmaChannelReset (&Dma.ControlOut_);
+                    CyU3PDmaChannelReset (&Dma.ControlOut_.Channel_);
                     CyU3PUsbFlushEp(CY_FX_EP_CONTROL_OUT);
                     CyU3PUsbResetEp (CY_FX_EP_CONTROL_OUT);
-                    CyU3PDmaChannelSetXfer (&Dma.ControlOut_, 0);
+                    CyU3PDmaChannelSetXfer (&Dma.ControlOut_.Channel_, 0);
 
                     CyU3PUsbSetEpNak (CY_FX_EP_CONTROL_OUT, CyFalse);
                 }
@@ -77,10 +77,10 @@ CyBool_t USBSetupCB(uint32_t setupdat0,uint32_t setupdat1)
                     CyU3PUsbSetEpNak (CY_FX_EP_CONTROL_IN, CyTrue);
                     CyU3PBusyWait (125);
 
-                    CyU3PDmaChannelReset (&Dma.ControlIn_);
+                    CyU3PDmaChannelReset (&Dma.ControlIn_.Channel_);
                     CyU3PUsbFlushEp(CY_FX_EP_CONTROL_IN);
                     CyU3PUsbResetEp (CY_FX_EP_CONTROL_IN);
-                    CyU3PDmaChannelSetXfer (&Dma.ControlIn_, 0);
+                    CyU3PDmaChannelSetXfer (&Dma.ControlIn_.Channel_, 0);
 
                     CyU3PUsbSetEpNak (CY_FX_EP_CONTROL_IN, CyFalse);
                 }
@@ -89,10 +89,10 @@ CyBool_t USBSetupCB(uint32_t setupdat0,uint32_t setupdat1)
                     CyU3PUsbSetEpNak (CY_FX_EP_DATA_OUT, CyTrue);
                     CyU3PBusyWait (125);
 
-                    CyU3PDmaChannelReset (&Dma.DataOut_);
+                    CyU3PDmaChannelReset (&Dma.DataOut_.Channel_);
                     CyU3PUsbFlushEp(CY_FX_EP_DATA_OUT);
                     CyU3PUsbResetEp (CY_FX_EP_DATA_OUT);
-                    CyU3PDmaChannelSetXfer (&Dma.DataOut_, 0);
+                    CyU3PDmaChannelSetXfer (&Dma.DataOut_.Channel_, 0);
 
                     CyU3PUsbSetEpNak (CY_FX_EP_DATA_OUT, CyFalse);
                 }
@@ -101,10 +101,10 @@ CyBool_t USBSetupCB(uint32_t setupdat0,uint32_t setupdat1)
                     CyU3PUsbSetEpNak (CY_FX_EP_DATA_IN, CyTrue);
                     CyU3PBusyWait (125);
 
-                    CyU3PDmaChannelReset (&Dma.DataIn_);
+                    CyU3PDmaChannelReset (&Dma.DataIn_.Channel_);
                     CyU3PUsbFlushEp(CY_FX_EP_DATA_IN);
                     CyU3PUsbResetEp (CY_FX_EP_DATA_IN);
-                    CyU3PDmaChannelSetXfer (&Dma.DataIn_, 0);
+                    CyU3PDmaChannelSetXfer (&Dma.DataIn_.Channel_, 0);
 
                     CyU3PUsbSetEpNak (CY_FX_EP_DATA_IN, CyFalse);
                 }

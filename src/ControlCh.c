@@ -19,7 +19,7 @@ void ControlChThread(uint32_t Value)
 	recv = intEvt = regRead = manFrame = 0;
 	while(1) {
 		if(Dma.Mode_ == DMA_SYNC) {
-			if((Status=Zing_Transfer_Recv(&Dma.ControlIn_,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
+			if((Status=Zing_Transfer_Recv(&Dma.ControlIn_.Channel_,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
 				recv++;
 				resp_pt = (REG_Resp_t*)buf;
 				if(resp_pt->hdr.dir == 1 && resp_pt->hdr.interrupt == 1) { //Zing Interrupt Event
