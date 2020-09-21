@@ -1,7 +1,7 @@
 #include "i2c.h"
 #include "cyu3error.h"
 #include "cyu3i2c.h"
-#include "DebugConsole.h"
+#include "macro.h"
 
 CyU3PReturnStatus_t I2C_Init(void)
 {

@@ -1,7 +1,7 @@
 #include "gpio.h"
 #include "cyu3gpio.h"
 #include "cyu3error.h"
-#include "DebugConsole.h"
+#include "macro.h"
 
 CyU3PReturnStatus_t SetupGPIO(void)
 {

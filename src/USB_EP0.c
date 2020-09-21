@@ -6,7 +6,7 @@
 #include "cyu3usb.h"
 #include "ZingHw.h"
 #include "ControlCh.h"
-#include "DebugConsole.h"
+#include "macro.h"
 
 CyU3PThread EP0ThreadHandle;
 

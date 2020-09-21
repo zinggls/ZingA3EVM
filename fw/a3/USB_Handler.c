@@ -1,5 +1,4 @@
 #include "Application.h"
-#include "DebugConsole.h"
 #include "USB_Handler.h"
 #include "gpio.h"
 #include "cyu3error.h"
@@ -7,6 +6,7 @@
 #include "cyu3gpio.h"
 #include "dma.h"
 #include "USB_EP0.h"
+#include "macro.h"
 
 // setup data
 #define STANDARD_REQUEST	(0)			// My values are not shifted

@@ -2,7 +2,7 @@
 #include "cyu3pib.h"
 #include "cyu3error.h"
 #include "cyu3gpif.h"
-#include "DebugConsole.h"
+#include "macro.h"
 
 #if ZING_BUG_WM3 == 0
 

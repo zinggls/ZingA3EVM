@@ -1,5 +1,6 @@
 #include "DebugConsole.h"
 #include "cyu3error.h"
+#include "macro.h"
 
 static CyBool_t DebugTxEnabled = CyFalse;	// Set true once I can output messages to the Console
 

@@ -1,7 +1,8 @@
 #include "dma.h"
 #include "cyu3error.h"
 #include "cyu3usb.h"
-#include "DebugConsole.h"
+#include "cyu3system.h"
+#include "macro.h"
 
 static void initDmaCount()
 {

@@ -9,7 +9,7 @@
 #include "dma.h"
 #include "ControlCh.h"
 #include <math.h>
-#include "DebugConsole.h"
+#include "macro.h"
 
 // ZING mode
 static uint32_t zing_hrcp = PPC;

@@ -5,7 +5,7 @@
 #include "Zing.h"
 #include "cyu3error.h"
 #include "cyu3system.h"
-#include "DebugConsole.h"
+#include "macro.h"
 
 CyU3PThread ControlChThreadHandle;
 
