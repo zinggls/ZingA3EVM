@@ -8,7 +8,7 @@
 #include "ControlCh.h"
 #include "macro.h"
 
-CyU3PThread EP0ThreadHandle;
+static CyU3PThread EP0ThreadHandle;
 
 void USBEP0RxThread(uint32_t Value)
 {
