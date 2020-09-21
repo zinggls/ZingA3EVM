@@ -7,10 +7,7 @@
 static void initDmaCount()
 {
 	Dma.Mode_= DMA_UNINITIALIZED;
-	Dma.DataOut_.Count_ = 0;
-	Dma.DataIn_.Count_ = 0;
-	Dma.ControlOut_.Count_ = 0;
-	Dma.ControlIn_.Count_ = 0;
+	Dma.DataOut_.Count_ = Dma.DataIn_.Count_= Dma.ControlOut_.Count_ = Dma.ControlIn_.Count_ = 0;
 }
 
 void initDma(uint8_t controlInEP,uint8_t controlOutEP,uint8_t dataInEP,uint8_t dataOutEP,uint16_t dataBurstLength)
