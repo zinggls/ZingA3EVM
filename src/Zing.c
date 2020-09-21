@@ -172,7 +172,6 @@ CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len)
 
 CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
 {
-	CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
 	uint32_t	evStat;
 
     if(len < 4)
@@ -192,9 +191,9 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
     }
 
     Zing_Header(ZingControlOutBuffer,len,addr,ZING_HDR_ACTION_READ);
-    status = Zing_Transfer_Send(&Dma.ControlOut_,ZingControlOutBuffer,ZING_HDR_SIZE);
+    CHECK(Zing_Transfer_Send(&Dma.ControlOut_,ZingControlOutBuffer,ZING_HDR_SIZE));
 
-    status = CyU3PEventGet (&CcCtx.Event_, EVT_CTLCH0, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_WAIT_FOREVER);
+    CHECK(CyU3PEventGet (&CcCtx.Event_, EVT_CTLCH0, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_WAIT_FOREVER));
 	// copy data only (except zing header(8Byte))
 	memcpy(buf,CcCtx.Data_+8,CcCtx.Data_idx_-8);
 
@@ -209,7 +208,7 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
 	}
 #endif
 
-	return status;
+	return CY_U3P_SUCCESS;
 }
 
 // f_tg : Hz
