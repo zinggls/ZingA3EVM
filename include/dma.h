@@ -18,6 +18,7 @@ typedef struct DMA_CHANNEL_T
 	CyU3PDmaChannel Channel_;
 	uint32_t Count_;
 	uint8_t EP_;
+	uint8_t *Buffer_;
 } DMA_CHANNEL_T;
 
 typedef struct DMA_T
