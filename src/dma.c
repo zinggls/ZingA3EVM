@@ -20,7 +20,7 @@ void initDma(uint8_t controlInEP,uint8_t controlOutEP,uint8_t dataInEP,uint8_t d
 	Dma.DataBurstLength_ = dataBurstLength;
 }
 
-void setDmaChannelCfg(CyU3PDmaChannelConfig_t *pDmaCfg, uint16_t size, uint16_t count, CyU3PDmaSocketId_t prodSckId,
+static void setDmaChannelCfg(CyU3PDmaChannelConfig_t *pDmaCfg, uint16_t size, uint16_t count, CyU3PDmaSocketId_t prodSckId,
 		CyU3PDmaSocketId_t consSckId, uint32_t notification, CyU3PDmaCallback_t cb)
 {
 	pDmaCfg->size  = size;
