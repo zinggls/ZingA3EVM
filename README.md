@@ -26,3 +26,14 @@ git으로 관리되고 있지 않아 이전의 버전들도 모두 git에 등록
 
 ## version : 1.24
 - AFC 수정
+
+## version : 1.25
+- dma를 별도의 모듈로 구현
+- git commit 해시 표시
+- 프로젝트 구조 변경
+- 코드 refactoring
+  
+## version : 1.26
+- f/w 프로젝트를 A3와 tests로 구분
+- 모듈 tests 추가 (i2c,pib,zing)
+- 코드 refactoring
