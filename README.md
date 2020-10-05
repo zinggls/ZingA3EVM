@@ -37,3 +37,6 @@ git으로 관리되고 있지 않아 이전의 버전들도 모두 git에 등록
 - f/w 프로젝트를 A3와 tests로 구분
 - 모듈 tests 추가 (i2c,pib,zing)
 - 코드 refactoring
+
+## version : 1.27
+- Release모드 컴파일 지원
