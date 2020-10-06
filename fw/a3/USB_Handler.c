@@ -263,13 +263,14 @@ CyU3PReturnStatus_t USB_Init(void)
 
 CyU3PReturnStatus_t USB_Connect(void)
 {
-	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
-
 	// type-c connector
 	/* Check the enumeration MuxControl_GPIO to High */
-	apiRetStatus = CyU3PConnectState(CyTrue, CyTrue);
-	if(CyU3PUsbGetSpeed() != CY_U3P_SUPER_SPEED)
+	CyU3PReturnStatus_t apiRetStatus = CyU3PConnectState(CyTrue, CyTrue);
+
+	CyU3PUSBSpeed_t usbSpeed;
+	if((usbSpeed=CyU3PUsbGetSpeed()) != CY_U3P_SUPER_SPEED)
 	{
+		CyU3PDebugPrint (4, "CyU3PUsbGetSpeed = %d\n",usbSpeed);
 		CyU3PConnectState(CyFalse, CyFalse);
 
 		/* Check in other orientation */

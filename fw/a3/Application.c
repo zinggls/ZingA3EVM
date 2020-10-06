@@ -43,6 +43,7 @@ void AppStart(void)
 		CyFxAppErrorHandler("Invalid USB speed",CY_U3P_ERROR_FAILURE);
 		break;
 	}
+	CyU3PDebugPrint (4, "CyU3PUsbGetSpeed = %d\n",usbSpeed);
 
 	CyU3PMemSet((uint8_t *)&epCfg, 0, sizeof (epCfg));
 	epCfg.enable = CyTrue;
