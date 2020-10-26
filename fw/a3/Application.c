@@ -155,11 +155,11 @@ void ApplicationThread(uint32_t Value)
 	CheckStatus("[App] ControlChThread_Create", ControlChThread_Create());
 	CheckStatus("[App] Zing_Init", Zing_Init());
 
-#if 0
-	CheckStatus("[App] Zing_AutoHRCP",Zing_AutoHRCP());
+#ifdef HRCP_PPC
 	CheckStatus("[App] Zing_SetHRCP(PPC)",Zing_SetHRCP(PPC));
-#endif
+#else
 	CheckStatus("[App] Zing_SetHRCP(DEV)",Zing_SetHRCP(DEV));
+#endif
 
 	CheckStatus("[App] USB_Connect", USB_Connect());
 
