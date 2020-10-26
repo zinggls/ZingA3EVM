@@ -146,6 +146,11 @@ void DMA_Normal_CtrlOut_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3P
 	switch (evtype)
 	{
 	case CY_U3P_DMA_CB_PROD_EVENT:
+#ifdef DMA_NORMAL_MANUAL
+		CyU3PReturnStatus_t status = CyU3PDmaChannelCommitBuffer (handle, input->buffer_p.count, 0);
+        if (status != CY_U3P_SUCCESS)
+            CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
+#endif
 		Dma.ControlOut_.Count_++;
 		break;
 	case CY_U3P_DMA_CB_SEND_CPLT:	//override mode
@@ -162,6 +167,11 @@ void DMA_Normal_CtrlIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PD
 	switch (evtype)
 	{
 	case CY_U3P_DMA_CB_PROD_EVENT:
+#ifdef DMA_NORMAL_MANUAL
+		CyU3PReturnStatus_t status = CyU3PDmaChannelCommitBuffer (handle, input->buffer_p.count, 0);
+        if (status != CY_U3P_SUCCESS)
+            CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
+#endif
 		Dma.ControlIn_.Count_++;
 		break;
 	case CY_U3P_DMA_CB_SEND_CPLT:	//override mode
@@ -178,6 +188,11 @@ void DMA_Normal_DataOut_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3P
 	switch (evtype)
 	{
 	case CY_U3P_DMA_CB_PROD_EVENT:
+#ifdef DMA_NORMAL_MANUAL
+		CyU3PReturnStatus_t status = CyU3PDmaChannelCommitBuffer (handle, input->buffer_p.count, 0);
+        if (status != CY_U3P_SUCCESS)
+            CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
+#endif
 		Dma.DataOut_.Count_++;
 		break;
 	case CY_U3P_DMA_CB_SEND_CPLT:	//override mode
@@ -194,6 +209,11 @@ void DMA_Normal_DataIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PD
 	switch (evtype)
 	{
 	case CY_U3P_DMA_CB_PROD_EVENT:
+#ifdef DMA_NORMAL_MANUAL
+		CyU3PReturnStatus_t status = CyU3PDmaChannelCommitBuffer (handle, input->buffer_p.count, 0);
+        if (status != CY_U3P_SUCCESS)
+            CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
+#endif
 		Dma.DataIn_.Count_++;
 		break;
 	case CY_U3P_DMA_CB_SEND_CPLT:	//override mode
@@ -229,7 +249,11 @@ static CyU3PReturnStatus_t DMA_Normal_mode(uint8_t controlIn,uint8_t controlOut,
 						CY_U3P_DMA_CB_PROD_EVENT,
 						DMA_Normal_CtrlOut_Cb,
 						&Dma.ControlOut_.Channel_,
+#ifdef DMA_NORMAL_MANUAL
+						CY_U3P_DMA_TYPE_MANUAL));
+#else
 						CY_U3P_DMA_TYPE_AUTO_SIGNAL));
+#endif
 
 	CHECK(createChannel("DmaNormal.ControlIn",
 						&dmaCfg,
@@ -240,7 +264,11 @@ static CyU3PReturnStatus_t DMA_Normal_mode(uint8_t controlIn,uint8_t controlOut,
 						CY_U3P_DMA_CB_PROD_EVENT,
 						DMA_Normal_CtrlIn_Cb,
 						&Dma.ControlIn_.Channel_,
+#ifdef DMA_NORMAL_MANUAL
+						CY_U3P_DMA_TYPE_MANUAL));
+#else
 						CY_U3P_DMA_TYPE_AUTO_SIGNAL));
+#endif
 
 	CHECK(createChannel("DmaNormal.DataOut",
 						&dmaCfg,
@@ -251,7 +279,11 @@ static CyU3PReturnStatus_t DMA_Normal_mode(uint8_t controlIn,uint8_t controlOut,
 						CY_U3P_DMA_CB_PROD_EVENT,
 						DMA_Normal_DataOut_Cb,
 						&Dma.DataOut_.Channel_,
+#ifdef DMA_NORMAL_MANUAL
+						CY_U3P_DMA_TYPE_MANUAL));
+#else
 						CY_U3P_DMA_TYPE_AUTO_SIGNAL));
+#endif
 
 	CHECK(createChannel("DmaNormal.DataIn",
 						&dmaCfg,
@@ -262,7 +294,11 @@ static CyU3PReturnStatus_t DMA_Normal_mode(uint8_t controlIn,uint8_t controlOut,
 						CY_U3P_DMA_CB_PROD_EVENT,
 						DMA_Normal_DataIn_Cb,
 						&Dma.DataIn_.Channel_,
+#ifdef DMA_NORMAL_MANUAL
+						CY_U3P_DMA_TYPE_MANUAL));
+#else
 						CY_U3P_DMA_TYPE_AUTO_SIGNAL));
+#endif
 
 	Dma.Mode_ = DMA_NORMAL;
 #ifdef DEBUG
