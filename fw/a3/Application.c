@@ -168,6 +168,12 @@ void ApplicationThread(uint32_t Value)
 	}
 
 	CheckStatus("[App] DMA_Normal",DMA_Normal());
+	CyU3PDebugPrint(4,"[App] DMA Nomal mode uses ");
+#ifdef DMA_NORMAL_MANUAL
+	CyU3PDebugPrint(4,"Manual mode\n");
+#else
+	CyU3PDebugPrint(4,"Auto Signal mode\n");
+#endif
 
 	uint32_t loop = 0;
 	while (1)
