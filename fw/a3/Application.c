@@ -207,13 +207,8 @@ void CyFxApplicationDefine(void)
             CYU3P_NO_TIME_SLICE,							// Time slice no supported
             CYU3P_AUTO_START								// Start the thread immediately
             );
-    if (Status != CY_U3P_SUCCESS)
-    {
-        /* Thread creation failed with the Status = error code */
+    if (Status != CY_U3P_SUCCESS) goto InitError;
 
-        /* Add custom recovery or debug actions here */
-
-        /* Application cannot continue. Loop indefinitely */
-        while(1);
-    }
+InitError:
+	while(1);
 }
