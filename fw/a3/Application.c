@@ -13,6 +13,9 @@
 #include "USB_EP0.h"
 
 CyBool_t IsApplnActive = CyFalse;		//Whether the application is active or not
+#ifdef OTG
+CyU3PEvent applnEvent;
+#endif
 
 /* This function starts the application. This is called
  * when a SET_CONF event is received from the USB host. The endpoints
@@ -209,6 +212,12 @@ void CyFxApplicationDefine(void)
             );
     if (Status != CY_U3P_SUCCESS) goto InitError;
 
+#ifdef OTG
+    Status = CyU3PEventCreate (&applnEvent);
+    if (Status != 0) goto InitError;
+#endif
+
+    return;
 InitError:
 	while(1);
 }
