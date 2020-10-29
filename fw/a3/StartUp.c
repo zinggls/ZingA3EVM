@@ -1,38 +1,7 @@
-#include "Application.h"
 #include "gpio.h"
 #include "cyu3error.h"
 #include "cyfx3_api.h"
 #include "cyu3system.h"
-
-CyU3PThread ApplicationThreadHandle;
-
-void CyFxApplicationDefine(void)
-{
-    void *StackPtr = NULL;
-    uint32_t Status;
-
-    StackPtr = CyU3PMemAlloc(APPLICATION_THREAD_STACK);
-    Status = CyU3PThreadCreate(&ApplicationThreadHandle,	// Handle to my Application Thread
-            "11:Step1",										// Thread ID and name
-            ApplicationThread,								// Thread entry function
-            1,												// Parameter passed to Thread
-            StackPtr,										// Pointer to the allocated thread stack
-            APPLICATION_THREAD_STACK,						// Allocated thread stack size
-            APPLICATION_THREAD_PRIORITY,					// Thread priority
-            APPLICATION_THREAD_PRIORITY,					// Thread priority so no preemption
-            CYU3P_NO_TIME_SLICE,							// Time slice no supported
-            CYU3P_AUTO_START								// Start the thread immediately
-            );
-    if (Status != CY_U3P_SUCCESS)
-    {
-        /* Thread creation failed with the Status = error code */
-
-        /* Add custom recovery or debug actions here */
-
-        /* Application cannot continue. Loop indefinitely */
-        while(1);
-    }
-}
 
 int main (void)
 {
