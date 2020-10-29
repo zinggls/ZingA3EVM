@@ -13,7 +13,9 @@
 #include "USB_EP0.h"
 
 CyBool_t IsApplnActive = CyFalse;		//Whether the application is active or not
+
 #ifdef OTG
+#include "otg.h"
 CyU3PEvent applnEvent;
 #endif
 
@@ -176,6 +178,10 @@ void ApplicationThread(uint32_t Value)
 	CyU3PDebugPrint(4,"Manual mode\n");
 #else
 	CyU3PDebugPrint(4,"Auto Signal mode\n");
+#endif
+
+#ifdef OTG
+	CheckStatus("[App] CyFxApplnInit()", CyFxApplnInit());
 #endif
 
 	uint32_t loop = 0;
