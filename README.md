@@ -40,3 +40,8 @@ git으로 관리되고 있지 않아 이전의 버전들도 모두 git에 등록
 
 ## version : 1.27
 - Release모드 컴파일 지원
+
+## version : 1.28
+- DMA AutoSignal 또는 Manual 선택 지원 (DMA_NORMAL_MANUAL 매크로 이용)
+- 매크로(HRCP_PPC)를 이용한 PPC/DEV 선택 지원
+- 프로젝트 설정을 이용한 매크로 설정 방법('Properties>C/C++ Build>Settings>Cross ARM C Compiler>Preprocessor')
