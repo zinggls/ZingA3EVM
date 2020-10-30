@@ -50,7 +50,10 @@ CyU3PReturnStatus_t CyFxApplnInit (void)
 	otgCfg.chargerMode = CY_U3P_OTG_CHARGER_DETECT_ACA_MODE;
 	otgCfg.cb = CyFxOtgEventCb;
 	status = CyU3POtgStart (&otgCfg);
-	if (status != CY_U3P_SUCCESS) return status;
+	if (status != CY_U3P_SUCCESS) {
+		CyU3PDebugPrint (4, "CyU3POtgStart failed with status: %d\r\n",status);
+		return status;
+	}
 
 	/* Since VBATT or VBUS is required for OTG operation enable it. */
 	return CyU3PUsbVBattEnable (CyTrue);
