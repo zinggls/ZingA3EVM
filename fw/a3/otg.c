@@ -5,9 +5,13 @@
 #include "cyu3usbhost.h"
 #include "cyu3gpio.h"
 #include "cyu3utils.h"
+#include "cyfxmousedrv.h"
 
 /* Setup packet buffer for host mode. */
 uint8_t glSetupPkt[CY_FX_HOST_EP0_SETUP_SIZE] __attribute__ ((aligned (32)));
+
+/* Buffer to hold the USB device descriptor. */
+uint8_t glDeviceDesc[32] __attribute__ ((aligned (32)));
 
 /* USB host stack event callback function. */
 void CyFxHostEventCb (CyU3PUsbHostEventType_t evType, uint32_t evData)
@@ -30,14 +34,8 @@ void CyFxHostEventCb (CyU3PUsbHostEventType_t evType, uint32_t evData)
 }
 
 /* Helper function to send EP0 setup packet. */
-CyU3PReturnStatus_t
-CyFxSendSetupRqt (
-        uint8_t type,
-        uint8_t request,
-        uint16_t value,
-        uint16_t index,
-        uint16_t length,
-        uint8_t *buffer_p)
+CyU3PReturnStatus_t CyFxSendSetupRqt (uint8_t type,uint8_t request,
+		uint16_t value,uint16_t index,uint16_t length,uint8_t *buffer_p)
 {
     CyU3PUsbHostEpStatus_t epStatus;
     CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
@@ -65,13 +63,146 @@ CyFxSendSetupRqt (
 /* This function initializes the mouse driver application. */
 void CyFxApplnStart ()
 {
+    uint16_t length;
+    CyU3PReturnStatus_t status;
+    CyU3PUsbHostEpConfig_t epCfg;
+
 	CyU3PDebugPrint (2, "CyFxApplnStart()\r\n");
+
+    /* Add EP0 to the scheduler. */
+    CyU3PMemSet ((uint8_t *)&epCfg, 0, sizeof(epCfg));
+    epCfg.type = CY_U3P_USB_EP_CONTROL;
+    epCfg.mult = 1;
+    /* Start off with 8 byte EP0 packet size. */
+    epCfg.maxPktSize = 8;
+    epCfg.pollingRate = 0;
+    epCfg.fullPktSize = 8;
+    epCfg.isStreamMode = CyFalse;
+    status = CyU3PUsbHostEpAdd (0, &epCfg);
+    if (status != CY_U3P_SUCCESS)
+    {
+        goto enum_error;
+    }
+
+    CyU3PThreadSleep (100);
+
+    /* Get the device descriptor. */
+    status = CyFxSendSetupRqt (0x80, CY_U3P_USB_SC_GET_DESCRIPTOR,
+            (CY_U3P_USB_DEVICE_DESCR << 8), 0, 8, glEp0Buffer);
+    if (status != CY_U3P_SUCCESS)
+    {
+        goto enum_error;
+    }
+
+    CyU3PDebugPrint (6, "Device descriptor received\r\n");
+
+    /* Identify the EP0 packet size and update the scheduler. */
+    if (glEp0Buffer[7] != 8)
+    {
+        CyU3PUsbHostEpRemove (0);
+        epCfg.maxPktSize = glEp0Buffer[7];
+        epCfg.fullPktSize = glEp0Buffer[7];
+        status = CyU3PUsbHostEpAdd (0, &epCfg);
+        if (status != CY_U3P_SUCCESS)
+        {
+            goto enum_error;
+        }
+    }
+
+    /* Read the full device descriptor. */
+    status = CyFxSendSetupRqt (0x80, CY_U3P_USB_SC_GET_DESCRIPTOR,
+            (CY_U3P_USB_DEVICE_DESCR << 8), 0, 18, glEp0Buffer);
+    if (status != CY_U3P_SUCCESS)
+    {
+        goto enum_error;
+    }
+
+    /* Save the device descriptor. */
+    CyU3PMemCopy (glDeviceDesc, glEp0Buffer, 18);
+
+    /* Set the peripheral device address. */
+    status = CyFxSendSetupRqt (0x00, CY_U3P_USB_SC_SET_ADDRESS,
+            CY_FX_HOST_PERIPHERAL_ADDRESS, 0, 0, glEp0Buffer);
+    if (status != CY_U3P_SUCCESS)
+    {
+        goto enum_error;
+    }
+    status = CyU3PUsbHostSetDeviceAddress (CY_FX_HOST_PERIPHERAL_ADDRESS);
+    if (status != CY_U3P_SUCCESS)
+    {
+        goto enum_error;
+    }
+
+    CyU3PDebugPrint (6, "Device address set\r\n");
+
+    /* Read first four bytes of configuration descriptor to determine
+     * the total length. */
+    status = CyFxSendSetupRqt (0x80, CY_U3P_USB_SC_GET_DESCRIPTOR,
+            (CY_U3P_USB_CONFIG_DESCR << 8), 0, 4, glEp0Buffer);
+    if (status != CY_U3P_SUCCESS)
+    {
+        goto enum_error;
+    }
+
+    /* Identify the length of the data received. */
+    length = CY_U3P_MAKEWORD(glEp0Buffer[3], glEp0Buffer[2]);
+    if (length > CY_FX_HOST_EP0_BUFFER_SIZE)
+    {
+        goto enum_error;
+    }
+
+    /* Read the full configuration descriptor. */
+    status = CyFxSendSetupRqt (0x80, CY_U3P_USB_SC_GET_DESCRIPTOR,
+            (CY_U3P_USB_CONFIG_DESCR << 8), 0, length, glEp0Buffer);
+    if (status != CY_U3P_SUCCESS)
+    {
+        goto enum_error;
+    }
+
+    /* Identify if this is an HID mouse or MSC device that can be
+     * supported. If the device cannot be supported, just disable
+     * the port and wait for a new device to be attached. We support
+     * only single interface with interface class = HID(0x03),
+     * interface sub class = Boot (0x01)
+     * and interface protocol = Mouse (0x02).
+     * or single interface with interface class = MSC(0x08),
+     * interface sub class 0x06 and interface protocol BOT (0x50). */
+    if ((glEp0Buffer[5] == 1) && (glEp0Buffer[14] == 0x03) &&
+            (glEp0Buffer[15] == 0x01) && (glEp0Buffer[16] == 0x02) &&
+            (glEp0Buffer[28] == CY_U3P_USB_ENDPNT_DESCR))
+    {
+        CyU3PDebugPrint (6, "Mouse device detected\r\n");
+        status = CyFxMouseDriverInit ();
+        if (status == CY_U3P_SUCCESS)
+        {
+            glIsApplnActive = CyTrue;
+            return;
+        }
+    }
+
+    /* We do not support this device. Fall-through to disable the USB port. */
+    CyU3PDebugPrint (6, "Unknown device type\r\n");
+    status = CY_U3P_ERROR_NOT_SUPPORTED;
+
+enum_error:
+    /* Remove EP0. and disable the port. */
+    CyU3PUsbHostEpRemove (0);
+    CyU3PUsbHostPortDisable ();
+    CyU3PDebugPrint (4, "Application start failed with error: %d.\r\n", status);
 }
 
 /* This function disables the mouse driver application. */
 void CyFxApplnStop ()
 {
 	CyU3PDebugPrint (2, "CyFxApplnStop()\r\n");
+	CyFxMouseDriverDeInit ();
+
+    /* Remove EP0. and disable the port. */
+    CyU3PUsbHostEpRemove (0);
+    CyU3PUsbHostPortDisable ();
+
+    /* Clear state variables. */
+    glIsApplnActive = CyFalse;
 }
 
 /* This function initializes the USB host stack. */
