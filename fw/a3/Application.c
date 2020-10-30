@@ -165,11 +165,10 @@ void ApplicationThread(uint32_t Value)
 #else
 	CheckStatus("[App] USB_Init", USB_Init());
 	CheckStatus("[App] USB_Connect", USB_Connect());
-#endif
-
 	while(IsApplnActive == 0) {
 		CyU3PThreadSleep(100);
 	}
+#endif
 
 	CheckStatus("[App] DMA_Normal",DMA_Normal());
 	CyU3PDebugPrint(4,"[App] DMA Nomal mode uses ");
@@ -201,6 +200,7 @@ void ApplicationThread(uint32_t Value)
 		/* If a peripheral change has been detected, go through device discovery. */
 		if ((status == CY_U3P_SUCCESS) && ((evStat & CY_FX_USB_CHANGE_EVENT) != 0))
 		{
+			CyU3PDebugPrint (4, "CY_FX_USB_CHANGE_EVENT event\r\n");
 			/* Add some delay for debouncing. */
 			CyU3PThreadSleep (100);
 
