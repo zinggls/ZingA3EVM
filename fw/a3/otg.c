@@ -86,7 +86,8 @@ void CyFxUsbHostStart ()
     status = CyU3PUsbHostStart (&hostCfg);
     if (status != CY_U3P_SUCCESS)
     {
-        return;
+		CyU3PDebugPrint (4, "CyU3PUsbHostStart failed with status: %d\r\n",status);
+		return;
     }
 }
 
