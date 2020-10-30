@@ -168,7 +168,6 @@ void ApplicationThread(uint32_t Value)
 	while(IsApplnActive == 0) {
 		CyU3PThreadSleep(100);
 	}
-#endif
 
 	CheckStatus("[App] DMA_Normal",DMA_Normal());
 	CyU3PDebugPrint(4,"[App] DMA Nomal mode uses ");
@@ -176,7 +175,8 @@ void ApplicationThread(uint32_t Value)
 	CyU3PDebugPrint(4,"Manual mode\n");
 #else
 	CyU3PDebugPrint(4,"Auto Signal mode\n");
-#endif
+#endif	//DMA_NORMAL_MANUAL
+#endif	//OTG
 
 #ifndef OTG
 	uint32_t loop = 0;
