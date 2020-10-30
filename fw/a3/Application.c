@@ -179,6 +179,7 @@ void ApplicationThread(uint32_t Value)
 	CyU3PDebugPrint(4,"Auto Signal mode\n");
 #endif
 
+#ifndef OTG
 	uint32_t loop = 0;
 	while (1)
 	{
@@ -188,6 +189,48 @@ void ApplicationThread(uint32_t Value)
 
 		CyU3PThreadSleep(100);
 	}
+#else
+	CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
+	uint32_t evStat;
+	for (;;)
+	{
+		/* Wait until a peripheral change event has been detected, or until the poll interval has elapsed. */
+		status = CyU3PEventGet (&applnEvent, CY_FX_USB_CHANGE_EVENT, CYU3P_EVENT_OR_CLEAR,
+				&evStat, CY_FX_HOST_POLL_INTERVAL);
+
+		/* If a peripheral change has been detected, go through device discovery. */
+		if ((status == CY_U3P_SUCCESS) && ((evStat & CY_FX_USB_CHANGE_EVENT) != 0))
+		{
+			/* Add some delay for debouncing. */
+			CyU3PThreadSleep (100);
+
+			/* Clear the CHANGE event notification, so that we do not react to stale events. */
+			CyU3PEventGet (&applnEvent, CY_FX_USB_CHANGE_EVENT, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_NO_WAIT);
+
+			/* Stop previously started application. */
+			if (glIsApplnActive)
+			{
+				CyFxApplnStop ();
+			}
+
+			/* If a peripheral got connected, then enumerate and start the application. */
+			if (glIsPeripheralPresent)
+			{
+				CyU3PDebugPrint (2, "Enable host port\r\n");
+				status = CyU3PUsbHostPortEnable ();
+				if (status == CY_U3P_SUCCESS)
+				{
+					CyFxApplnStart ();
+					CyU3PDebugPrint (2, "App start completed\r\n");
+				}
+				else
+				{
+					CyU3PDebugPrint (2, "HostPortEnable failed with code %d\r\n", status);
+				}
+			}
+		}
+	}
+#endif
 
 	while (1);	// Hang here
 }

@@ -38,7 +38,11 @@ extern const uint8_t CyFxUSBSerialNumDscr[];
 #ifdef OTG
 #include "cyu3os.h"
 #include "otg.h"
+#include "cyu3usbhost.h"
+#define CY_FX_HOST_POLL_INTERVAL        (10)            /* The polling interval for the DoWork function in ms. */
 CyU3PEvent applnEvent;
+CyBool_t glIsApplnActive;
+volatile CyBool_t glIsPeripheralPresent;
 #endif
 
 #include "cyu3externcend.h"

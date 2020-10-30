@@ -12,5 +12,7 @@
 
 void CyFxOtgEventCb (CyU3POtgEvent_t event,uint32_t input);
 CyU3PReturnStatus_t CyFxApplnInit (void);
+void CyFxApplnStart ();
+void CyFxApplnStop ();
 
 #endif

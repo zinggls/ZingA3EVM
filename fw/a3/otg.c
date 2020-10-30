@@ -6,9 +6,6 @@
 #include "cyu3gpio.h"
 #include "cyu3utils.h"
 
-CyBool_t glIsApplnActive = CyFalse;					/* Whether the application is active or not. */
-volatile CyBool_t glIsPeripheralPresent = CyFalse;	/* Whether a remote peripheral is present or not. */
-
 /* Setup packet buffer for host mode. */
 uint8_t glSetupPkt[CY_FX_HOST_EP0_SETUP_SIZE] __attribute__ ((aligned (32)));
 
@@ -68,12 +65,13 @@ CyFxSendSetupRqt (
 /* This function initializes the mouse driver application. */
 void CyFxApplnStart ()
 {
+	CyU3PDebugPrint (2, "CyFxApplnStart()\r\n");
 }
 
 /* This function disables the mouse driver application. */
 void CyFxApplnStop ()
 {
-
+	CyU3PDebugPrint (2, "CyFxApplnStop()\r\n");
 }
 
 /* This function initializes the USB host stack. */
@@ -183,6 +181,9 @@ CyU3PReturnStatus_t CyFxApplnInit (void)
 
 	/* Wait until VBUS is stabilized. */
 	CyU3PThreadSleep (100);
+
+	glIsApplnActive = CyFalse;			/* Whether the application is active or not. */
+	glIsPeripheralPresent = CyFalse;	/* Whether a remote peripheral is present or not. */
 
 	/* Initialize the OTG module. */
 	otgCfg.otgMode = CY_U3P_OTG_MODE_OTG;
