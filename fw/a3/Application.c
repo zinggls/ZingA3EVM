@@ -151,7 +151,6 @@ void ApplicationThread(uint32_t Value)
 	CheckStatus("[App] USBEP0RxThread_Create", USBEP0RxThread_Create());
 	CheckStatus("[App] SetupGPIO", SetupGPIO());
 	CheckStatus("[App] I2C_Init", I2C_Init());
-	CheckStatus("[App] USB_Init", USB_Init());
 	CheckStatus("[App] PIB_Init", PIB_Init());
 
 	initDma(CY_FX_EP_CONTROL_IN,CY_FX_EP_CONTROL_OUT,CY_FX_EP_DATA_IN,CY_FX_EP_DATA_OUT,CY_FX_DATA_BURST_LENGTH);
@@ -166,7 +165,12 @@ void ApplicationThread(uint32_t Value)
 	CheckStatus("[App] Zing_SetHRCP(DEV)",Zing_SetHRCP(DEV));
 #endif
 
+#ifdef OTG
+	CheckStatus("[App] CyFxApplnInit()", CyFxApplnInit());
+#else
+	CheckStatus("[App] USB_Init", USB_Init());
 	CheckStatus("[App] USB_Connect", USB_Connect());
+#endif
 
 	while(IsApplnActive == 0) {
 		CyU3PThreadSleep(100);
@@ -178,10 +182,6 @@ void ApplicationThread(uint32_t Value)
 	CyU3PDebugPrint(4,"Manual mode\n");
 #else
 	CyU3PDebugPrint(4,"Auto Signal mode\n");
-#endif
-
-#ifdef OTG
-	CheckStatus("[App] CyFxApplnInit()", CyFxApplnInit());
 #endif
 
 	uint32_t loop = 0;
