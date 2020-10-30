@@ -133,22 +133,40 @@ void CyFxOtgEventCb (CyU3POtgEvent_t event,uint32_t input)
 		case CY_U3P_OTG_PERIPHERAL_CHANGE:
 			if (input == CY_U3P_OTG_TYPE_A_CABLE)
 			{
-				CyU3PDebugPrint (4, "OTG Event = CY_U3P_OTG_PERIPHERAL_CHANGE, Input = CY_U3P_OTG_TYPE_A_CABLE\r\n");
+				CyFxUsbHostStart ();
+				/* Enable the VBUS supply. */
+				CyFxUsbVBusControl (CyTrue);
 			}
 			else
 			{
-				CyU3PDebugPrint (4, "OTG Event = CY_U3P_OTG_PERIPHERAL_CHANGE, Input != CY_U3P_OTG_TYPE_A_CABLE\r\n");
+				/* Make sure that the VBUS supply is disabled. */
+				CyFxUsbVBusControl (CyFalse);
+
+				/* Stop the previously started host stack. */
+				if ((!CyU3POtgIsHostMode ()) && (CyU3PUsbHostIsStarted ()))
+				{
+					CyFxUsbHostStop ();
+				}
 			}
 			break;
 
 		case CY_U3P_OTG_VBUS_VALID_CHANGE:
 			if (input)
 			{
-				CyU3PDebugPrint (4, "OTG Event = CY_U3P_OTG_VBUS_VALID_CHANGE, Input: true\r\n");
+				/* Start the host mode stack. */
+				if (!CyU3PUsbHostIsStarted ())
+				{
+					CyFxUsbHostStart ();
+				}
 			}
 			else
 			{
-				CyU3PDebugPrint (4, "OTG Event = CY_U3P_OTG_VBUS_VALID_CHANGE, Input: !true\r\n");
+				/* If the OTG mode has changed, stop the previous stack. */
+				if ((!CyU3POtgIsHostMode ()) && (CyU3PUsbHostIsStarted ()))
+				{
+					/* Stop the previously started host stack. */
+					CyFxUsbHostStop ();
+				}
 			}
 			break;
 
