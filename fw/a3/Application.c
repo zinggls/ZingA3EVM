@@ -14,11 +14,6 @@
 
 CyBool_t IsApplnActive = CyFalse;		//Whether the application is active or not
 
-#ifdef OTG
-#include "otg.h"
-CyU3PEvent applnEvent;
-#endif
-
 /* This function starts the application. This is called
  * when a SET_CONF event is received from the USB host. The endpoints
  * are configured and the DMA pipe is setup in this function. */

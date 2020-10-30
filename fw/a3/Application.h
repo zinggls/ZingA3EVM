@@ -35,5 +35,11 @@ extern const uint8_t CyFxUSBManufactureDscr[];
 extern const uint8_t CyFxUSBProductDscr[];
 extern const uint8_t CyFxUSBSerialNumDscr[];
 
+#ifdef OTG
+#include "cyu3os.h"
+#include "otg.h"
+CyU3PEvent applnEvent;
+#endif
+
 #include "cyu3externcend.h"
 #endif
