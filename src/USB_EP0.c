@@ -7,6 +7,7 @@
 #include "ZingHw.h"
 #include "ControlCh.h"
 #include "macro.h"
+#include <stdio.h>
 
 static CyU3PThread EP0ThreadHandle;
 
