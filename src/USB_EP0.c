@@ -17,19 +17,19 @@ void GetDmaMode()
 	UsbEp0Ctx.HostTxData_idx_ = 4;
 	switch(Dma.Mode_){
 	case DMA_UNINITIALIZED:
-		sprintf(UsbEp0Ctx.HostTxData_,"UNIN");
+		sprintf((char*)UsbEp0Ctx.HostTxData_,"UNIN");
 		break;
 	case DMA_SYNC:
-		sprintf(UsbEp0Ctx.HostTxData_,"SYNC");
+		sprintf((char*)UsbEp0Ctx.HostTxData_,"SYNC");
 		break;
 	case DMA_NORMAL:
-		sprintf(UsbEp0Ctx.HostTxData_,"NORM");
+		sprintf((char*)UsbEp0Ctx.HostTxData_,"NORM");
 		break;
 	case DMA_LP:
-		sprintf(UsbEp0Ctx.HostTxData_,"LOOP");
+		sprintf((char*)UsbEp0Ctx.HostTxData_,"LOOP");
 		break;
 	case DMA_SINKSOURCE:
-		sprintf(UsbEp0Ctx.HostTxData_,"SSRC");
+		sprintf((char*)UsbEp0Ctx.HostTxData_,"SSRC");
 		break;
 	}
 	CyU3PDebugPrint (4, "GetDmaMode %s\n",UsbEp0Ctx.HostTxData_);
@@ -104,7 +104,7 @@ void USBEP0RxThread(uint32_t Value)
 					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "123") == 0) {
 						{
 							char* str_tmp = "Hello";
-							sprintf(UsbEp0Ctx.HostTxData_,"%s",str_tmp);
+							sprintf((char*)UsbEp0Ctx.HostTxData_,"%s",str_tmp);
 							UsbEp0Ctx.HostTxData_idx_ = 5;
 							CyU3PDebugPrint (4, "[EP0] %s\n",UsbEp0Ctx.HostTxData_);
 						}
