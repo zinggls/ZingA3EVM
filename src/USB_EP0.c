@@ -35,6 +35,21 @@ void GetDmaMode()
 	CyU3PDebugPrint (4, "GetDmaMode %s\n",UsbEp0Ctx.HostTxData_);
 }
 
+void GetZingMode()
+{
+	memset(UsbEp0Ctx.HostTxData_,0,sizeof(UsbEp0Ctx.HostTxData_));
+	UsbEp0Ctx.HostTxData_idx_ = 3;
+	switch(Zing_GetHRCP()){
+	case PPC:
+		sprintf((char*)UsbEp0Ctx.HostTxData_,"PPC");
+		break;
+	case DEV:
+		sprintf((char*)UsbEp0Ctx.HostTxData_,"DEV");
+		break;
+	}
+	CyU3PDebugPrint (4, "GetZingMode %d\n",Zing_GetHRCP());
+}
+
 void USBEP0RxThread(uint32_t Value)
 {
 	CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
@@ -111,6 +126,9 @@ void USBEP0RxThread(uint32_t Value)
 					}
 					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "GET DMA MODE") == 0) {
 						GetDmaMode();
+					}
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "GET ZING MODE") == 0) {
+						GetZingMode();
 					}
 					else {
 						str_tk = strtok((char *)UsbEp0Ctx.HostRxData_, " ");
