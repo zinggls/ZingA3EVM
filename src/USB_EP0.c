@@ -79,7 +79,9 @@ void USBEP0RxThread(uint32_t Value)
 					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "123") == 0) {
 						{
 							char* str_tmp = "Hello";
-							CyU3PUsbSendEP0Data(5,(uint8_t *)str_tmp);
+							sprintf(UsbEp0Ctx.HostTxData_,"%s",str_tmp);
+							UsbEp0Ctx.HostTxData_idx_ = 5;
+							CyU3PDebugPrint (4, "[EP0] %s\n",UsbEp0Ctx.HostTxData_);
 						}
 					}
 					else {
