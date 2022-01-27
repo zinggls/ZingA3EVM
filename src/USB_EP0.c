@@ -52,27 +52,27 @@ void GetZingMode()
 
 void GetUsbSpeed()
 {
-	char* strSpeed = NULL;
-	CyU3PUSBSpeed_t speed = CyU3PUsbGetSpeed();
-	switch(speed)
+	char * speed = NULL;
+	switch(CyU3PUsbGetSpeed())
 	{
 	case CY_U3P_FULL_SPEED:
-		strSpeed = "FULL SPEED";
+		speed = "1";
 		break;
 	case CY_U3P_HIGH_SPEED:
-		strSpeed = "HIGH SPEED";
+		speed = "2";
 		break;
 	case  CY_U3P_SUPER_SPEED:
-		strSpeed = "SUPER SPEED";
+		speed = "3";
 		break;
 	default:
-		strSpeed = "N/A";
+		speed = "-";
 		break;
 	}
-	sprintf((char*)UsbEp0Ctx.HostTxData_,"%s",strSpeed);
-	UsbEp0Ctx.HostTxData_idx_ = strlen(strSpeed);
 
-	CyU3PDebugPrint (4, "[EP0] UsbSpeed=%d(%s)\n",speed,UsbEp0Ctx.HostTxData_);
+	sprintf((char*)UsbEp0Ctx.HostTxData_,"%s",speed);
+	UsbEp0Ctx.HostTxData_idx_ = 1;
+
+	CyU3PDebugPrint (4, "[EP0] UsbSpeed=%s\n",UsbEp0Ctx.HostTxData_);
 }
 
 void USBEP0RxThread(uint32_t Value)
