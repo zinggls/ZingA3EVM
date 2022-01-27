@@ -124,6 +124,11 @@ void USBEP0RxThread(uint32_t Value)
 							CyU3PDebugPrint (4, "[EP0] %s\n",UsbEp0Ctx.HostTxData_);
 						}
 					}
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "USB SPEED") == 0) {
+						{
+							CyU3PDebugPrint (4, "[EP0] UsbSpeed=%d\n",CyU3PUsbGetSpeed());
+						}
+					}
 					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "123") == 0) {
 						{
 							char* str_tmp = "Hello";
