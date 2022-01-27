@@ -50,6 +50,31 @@ void GetZingMode()
 	CyU3PDebugPrint (4, "GetZingMode %d\n",Zing_GetHRCP());
 }
 
+void GetUsbSpeed()
+{
+	char* strSpeed = NULL;
+	CyU3PUSBSpeed_t speed = CyU3PUsbGetSpeed();
+	switch(speed)
+	{
+	case CY_U3P_FULL_SPEED:
+		strSpeed = "FULL SPEED";
+		break;
+	case CY_U3P_HIGH_SPEED:
+		strSpeed = "HIGH SPEED";
+		break;
+	case  CY_U3P_SUPER_SPEED:
+		strSpeed = "SUPER SPEED";
+		break;
+	default:
+		strSpeed = "N/A";
+		break;
+	}
+	sprintf((char*)UsbEp0Ctx.HostTxData_,"%s",strSpeed);
+	UsbEp0Ctx.HostTxData_idx_ = strlen(strSpeed);
+
+	CyU3PDebugPrint (4, "[EP0] UsbSpeed=%d(%s)\n",speed,UsbEp0Ctx.HostTxData_);
+}
+
 void USBEP0RxThread(uint32_t Value)
 {
 	CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
@@ -124,10 +149,8 @@ void USBEP0RxThread(uint32_t Value)
 							CyU3PDebugPrint (4, "[EP0] %s\n",UsbEp0Ctx.HostTxData_);
 						}
 					}
-					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "USB SPEED") == 0) {
-						{
-							CyU3PDebugPrint (4, "[EP0] UsbSpeed=%d\n",CyU3PUsbGetSpeed());
-						}
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "GET USB SPEED") == 0) {
+						GetUsbSpeed();
 					}
 					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "123") == 0) {
 						{
