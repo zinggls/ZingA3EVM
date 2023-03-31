@@ -18,7 +18,16 @@ void ControlChThread(uint32_t Value)
 
 	recv = intEvt = regRead = manFrame = 0;
 	while(1) {
-		if(Dma.Mode_ == DMA_SYNC) {
+		switch (Dma.Mode_)
+		{
+		case DMA_NORMAL:
+			memset(buf, 0, 512);
+			if ((Status = Zing_Transfer_Recv(&Dma.ControlIn_.Channel_, buf, &rt_len, CYU3P_WAIT_FOREVER)) == CY_U3P_SUCCESS)
+			{
+				CyU3PDebugPrint (4, "[ZCH] Something Receive: %s \r\n", buf);
+			}
+			break;
+		case DMA_SYNC:
 			if((Status=Zing_Transfer_Recv(&Dma.ControlIn_.Channel_,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
 				recv++;
 				resp_pt = (REG_Resp_t*)buf;
@@ -56,9 +65,10 @@ void ControlChThread(uint32_t Value)
 			}else{
 				CyU3PDebugPrint (4, "[ZCH] Zing_Transfer_Recv error(0x%x)\n",Status);
 			}
-		}
-		else {
+			break;
+		default:
 			CyU3PThreadSleep(10);
+			break;
 		}
 	}
 	CyU3PDmaBufferFree(buf);

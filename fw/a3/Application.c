@@ -1,5 +1,4 @@
 #include "Application.h"
-#include "gitcommit.h"
 #include "DebugConsole.h"
 #include "USB_Handler.h"
 #include "gpif/PIB.h"
@@ -11,6 +10,8 @@
 #include "dma.h"
 #include "ControlCh.h"
 #include "USB_EP0.h"
+
+#define HRCP_PPC
 
 CyBool_t IsApplnActive = CyFalse;		//Whether the application is active or not
 
@@ -141,8 +142,6 @@ void ApplicationThread(uint32_t Value)
 {
 	CheckStatus("[App] InitializeDebugConsole", InitializeDebugConsole(6,NULL));
 
-	CyU3PDebugPrint(4,"[App] Git:%s\n",GIT_INFO);
-
 	CheckStatus("[App] USBEP0RxThread_Create", USBEP0RxThread_Create());
 	CheckStatus("[App] SetupGPIO", SetupGPIO());
 	CheckStatus("[App] I2C_Init", I2C_Init());
@@ -178,10 +177,11 @@ void ApplicationThread(uint32_t Value)
 	uint32_t loop = 0;
 	while (1)
 	{
+		/*
 		CyU3PDebugPrint(4,"[App] (%s)(%s) Loop:%d ConIn:%d ConOut:%d DataIn:%d DataOut:%d\r",
 						Zing_GetHRCP()?"PPC":"DEV",dmaModeStr(Dma.Mode_),
 						loop++,Dma.ControlIn_.Count_,Dma.ControlOut_.Count_,Dma.DataIn_.Count_,Dma.DataOut_.Count_);
-
+		*/
 		CyU3PThreadSleep(100);
 	}
 
