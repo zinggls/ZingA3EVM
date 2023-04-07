@@ -4,6 +4,9 @@
 #include "cyu3types.h"
 #include "cyu3dma.h"
 
+#define HRCP_PPC
+//#define HRCP_DEV
+
 #define ZING_RF_SERDES_PATH		(1)		//0 : serdes path, 1: rf path
 
 CyU3PReturnStatus_t Zing_Init(void);

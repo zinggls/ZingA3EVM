@@ -25,10 +25,15 @@ typedef struct DMA_T
 {
 	dma_mode_t Mode_;
 	uint16_t DataBurstLength_;
+
+	CyU3PDmaChannel CPUPIB_In;
+	CyU3PDmaChannel CPUPIB_Out;
+
 	DMA_CHANNEL_T ControlOut_;
 	DMA_CHANNEL_T ControlIn_;
 	DMA_CHANNEL_T DataOut_;
 	DMA_CHANNEL_T DataIn_;
+
 } DMA_T;
 
 DMA_T Dma;

@@ -70,11 +70,15 @@ void channelReset(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t da
 	CyU3PDmaChannelAbort(&Dma.ControlIn_.Channel_);
 	CyU3PDmaChannelAbort(&Dma.DataOut_.Channel_);
 	CyU3PDmaChannelAbort(&Dma.DataIn_.Channel_);
+	CyU3PDmaChannelAbort(&Dma.CPUPIB_Out);
+	CyU3PDmaChannelAbort(&Dma.CPUPIB_In);
 
 	CyU3PDmaChannelDestroy(&Dma.ControlOut_.Channel_);
 	CyU3PDmaChannelDestroy(&Dma.ControlIn_.Channel_);
 	CyU3PDmaChannelDestroy(&Dma.DataOut_.Channel_);
 	CyU3PDmaChannelDestroy(&Dma.DataIn_.Channel_);
+	CyU3PDmaChannelDestroy(&Dma.CPUPIB_Out);
+	CyU3PDmaChannelDestroy(&Dma.CPUPIB_In);
 
 	//Flush the Endpoint memory
 	CyU3PUsbFlushEp(controlIn);
@@ -248,13 +252,35 @@ static CyU3PReturnStatus_t DMA_Normal_mode(uint8_t controlIn,uint8_t controlOut,
 
 	channelReset(controlIn,controlOut,dataIn,dataOut);
 
+	CHECK(createChannel("DmaNormal.CPUPIB_Out",
+						&dmaCfg,
+						size,
+						8,
+						CY_U3P_CPU_SOCKET_PROD,
+						CY_U3P_PIB_SOCKET_0,
+						CY_U3P_DMA_CB_PROD_EVENT,
+						0,
+						&Dma.CPUPIB_Out,
+						CY_U3P_DMA_TYPE_MANUAL_OUT));
+
+	CHECK(createChannel("DmaNormal.CPUPIB_In",
+						&dmaCfg,
+						size,
+						8,
+						CY_U3P_PIB_SOCKET_1,
+						CY_U3P_CPU_SOCKET_CONS,
+						CY_U3P_DMA_CB_PROD_EVENT,
+						0,
+						&Dma.CPUPIB_In,
+						CY_U3P_DMA_TYPE_MANUAL_IN));
+
 	CHECK(createChannel("DmaNormal.ControlOut",
 						&dmaCfg,
 						size,
 						8,
 						CY_U3P_CPU_SOCKET_PROD,
 						CY_U3P_UIB_SOCKET_CONS_1,
-						CY_U3P_DMA_CB_PROD_EVENT,
+						CY_U3P_DMA_CB_CONS_EVENT,
 						DMA_Normal_CtrlOut_Cb,
 						&Dma.ControlOut_.Channel_,
 						CY_U3P_DMA_TYPE_MANUAL_OUT));
@@ -269,6 +295,30 @@ static CyU3PReturnStatus_t DMA_Normal_mode(uint8_t controlIn,uint8_t controlOut,
 						DMA_Normal_CtrlIn_Cb,
 						&Dma.ControlIn_.Channel_,
 						CY_U3P_DMA_TYPE_MANUAL_IN));
+
+	/*
+	CHECK(createChannel("DmaNormal.ControlOut",
+						&dmaCfg,
+						size,
+						8,
+						CY_U3P_UIB_SOCKET_PROD_1,
+						CY_U3P_PIB_SOCKET_0,
+						CY_U3P_DMA_CB_PROD_EVENT,
+						DMA_Normal_CtrlOut_Cb,
+						&Dma.ControlOut_.Channel_,
+						CY_U3P_DMA_TYPE_AUTO_SIGNAL));
+
+	CHECK(createChannel("DmaNormal.ControlIn",
+						&dmaCfg,
+						size,
+						8,
+						CY_U3P_PIB_SOCKET_1,
+						CY_U3P_UIB_SOCKET_CONS_1,
+						CY_U3P_DMA_CB_PROD_EVENT,
+						DMA_Normal_CtrlIn_Cb,
+						&Dma.ControlIn_.Channel_,
+						CY_U3P_DMA_TYPE_AUTO_SIGNAL));
+	*/
 
 	CHECK(createChannel("DmaNormal.DataOut",
 						&dmaCfg,

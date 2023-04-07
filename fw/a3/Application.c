@@ -11,7 +11,8 @@
 #include "ControlCh.h"
 #include "USB_EP0.h"
 
-#define HRCP_PPC
+#include "PPCToDEV.h"
+#include "DEVToPPC.h"
 
 CyBool_t IsApplnActive = CyFalse;		//Whether the application is active or not
 
@@ -167,6 +168,10 @@ void ApplicationThread(uint32_t Value)
 	}
 
 	CheckStatus("[App] DMA_Normal",DMA_Normal());
+
+	PPCToDEVThread_Create();
+	DEVToPPCThread_Create();
+
 	CyU3PDebugPrint(4,"[App] DMA Nomal mode uses ");
 #ifdef DMA_NORMAL_MANUAL
 	CyU3PDebugPrint(4,"Manual mode\n");
@@ -177,11 +182,10 @@ void ApplicationThread(uint32_t Value)
 	uint32_t loop = 0;
 	while (1)
 	{
-		/*
 		CyU3PDebugPrint(4,"[App] (%s)(%s) Loop:%d ConIn:%d ConOut:%d DataIn:%d DataOut:%d\r",
 						Zing_GetHRCP()?"PPC":"DEV",dmaModeStr(Dma.Mode_),
 						loop++,Dma.ControlIn_.Count_,Dma.ControlOut_.Count_,Dma.DataIn_.Count_,Dma.DataOut_.Count_);
-		*/
+
 		CyU3PThreadSleep(100);
 	}
 
