@@ -280,7 +280,7 @@ static CyU3PReturnStatus_t DMA_Normal_mode(uint8_t controlIn,uint8_t controlOut,
 						8,
 						CY_U3P_CPU_SOCKET_PROD,
 						CY_U3P_UIB_SOCKET_CONS_1,
-						CY_U3P_DMA_CB_CONS_EVENT,
+						CY_U3P_DMA_CB_PROD_EVENT,
 						DMA_Normal_CtrlOut_Cb,
 						&Dma.ControlOut_.Channel_,
 						CY_U3P_DMA_TYPE_MANUAL_OUT));

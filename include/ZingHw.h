@@ -93,7 +93,7 @@ typedef struct zing_header
 #define REG_DEVID_B(ppcid,devid)				((ppcid&0xFF) | ((devid&0xFF) << 8) )
 #define REG_DEVID_INIT							REG_DEVID_B(0x0, 0x35)
 #define REG_MAC_TIMEOUT_B(link, command)		((link&0xFFFF) | ((command&0xFFFF) <<16))
-#define REG_MAC_TIMEOUT_INIT					REG_MAC_TIMEOUT_B(10000, 5000)    /* 1ms, 500us 0.1us resolution */
+#define REG_MAC_TIMEOUT_INIT					REG_MAC_TIMEOUT_B(10000, 0xFFFF)    /* 1ms, 500us 0.1us resolution */
 #define REG_PHY_TIMEOUT_INIT					2000    /* 200us */
 #define REG_RETRANSMIT_LIMIT_INIT				1000
 
