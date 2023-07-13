@@ -1,6 +1,6 @@
 # ZingA3
 ZingA3 EVM Firmware
-The controlch2 branch's goal is using control channel.
+- The controlch2 branch's goal is using control channel.
 
 # 목적
 1.0부터 1.24까지는 인프리즘 이정민 선임으로부터 전달받은 소스들이다.
