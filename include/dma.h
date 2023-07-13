@@ -29,6 +29,8 @@ typedef struct DMA_T
 	DMA_CHANNEL_T ControlIn_;
 	DMA_CHANNEL_T DataOut_;
 	DMA_CHANNEL_T DataIn_;
+	CyU3PDmaChannel ZingCtrlIn;
+	CyU3PDmaChannel ZingCtrlOut;
 } DMA_T;
 
 DMA_T Dma;
