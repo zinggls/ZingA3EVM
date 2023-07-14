@@ -5,6 +5,7 @@
 #include "cyu3system.h"
 #include "macro.h"
 #include "dma.h"
+#include "queue.h"
 
 CyU3PThread ControlChThreadHandle;
 
@@ -54,13 +55,6 @@ void ControlChThread(uint32_t Value)
 #endif
 			}else{
 				CyU3PDebugPrint (4, "[ZCH] Zing_Transfer_Recv error(0x%x)\n",Status);
-			}
-		}
-		else if (Dma.Mode_ == DMA_NORMAL)
-		{
-			if ((Status = Zing_Transfer_Recv(&Dma.ZingCtrlIn, buf, &rt_len, CYU3P_WAIT_FOREVER)) == CY_U3P_SUCCESS)
-			{
-				CyU3PDebugPrint(4, "TEST\r\n");
 			}
 		}
 		else {

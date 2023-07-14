@@ -7,6 +7,7 @@
 #define ZING_RF_SERDES_PATH		(1)		//0 : serdes path, 1: rf path
 
 CyU3PReturnStatus_t Zing_Init(void);
+void Zing_Header2(uint8_t *pt, uint16_t dir, uint16_t interrupt, uint16_t target, uint16_t type, uint16_t req_resp, uint16_t fr_type, uint16_t intr_flags, uint16_t addr, uint16_t payload_size);
 CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len);
 CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len);
 CyU3PReturnStatus_t Zing_AFC2(float f_tg);

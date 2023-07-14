@@ -17,6 +17,9 @@
 #define ZING_HDR_ACTION_WRITE       1
 #define ZING_HDR_ACTION_READ        0
 
+//Zing Frame
+#define ZING_FRAME_MAX_SIZE			512
+
 typedef struct zing_header
 {
     /* Word 0 [31:0] */

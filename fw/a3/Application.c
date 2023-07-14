@@ -11,8 +11,9 @@
 #include "dma.h"
 #include "ControlCh.h"
 #include "USB_EP0.h"
+#include "queue.h"
 
-//#define HRCP_PPC
+#define HRCP_PPC
 
 CyBool_t IsApplnActive = CyFalse;		//Whether the application is active or not
 
@@ -169,6 +170,10 @@ void ApplicationThread(uint32_t Value)
 		CyU3PThreadSleep(100);
 	}
 
+	queue_init();
+	ControlCh_TX_Thread_Create();
+	ControlCh_ZingTX_Thread_Create();
+
 	CheckStatus("[App] DMA_Normal",DMA_Normal());
 	CyU3PDebugPrint(4,"[App] DMA Nomal mode uses ");
 #ifdef DMA_NORMAL_MANUAL
@@ -177,9 +182,6 @@ void ApplicationThread(uint32_t Value)
 	CyU3PDebugPrint(4,"Auto Signal mode\n");
 #endif
 
-	uint32_t loop = 0;
-	uint32_t phy_err_cnt = 0;
-	uint32_t frame_cnt = 0;
 	while (1)
 	{
 		//Zing_RegRead(0x8015, (uint8_t*)&phy_err_cnt, sizeof(uint32_t));
@@ -187,9 +189,11 @@ void ApplicationThread(uint32_t Value)
 
 		//phy_err_cnt = phy_err_cnt & 0x0000FFFF;
 
+		/*
 		CyU3PDebugPrint(4,"[App] (%s)(%s) Loop:%d FrameCnt:%d PhyErrCnt:%d\r",
 				Zing_GetHRCP()?"PPC":"DEV",dmaModeStr(Dma.Mode_),
 				loop++, frame_cnt, phy_err_cnt);
+		*/
 
 		CyU3PThreadSleep(100);
 	}

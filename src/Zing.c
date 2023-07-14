@@ -58,7 +58,7 @@ static void Zing_Header(
 	p_hdr->length = payload_size;
 }
 
-static void Zing_Header2(
+void Zing_Header2(
         uint8_t *pt,            /* pt : buffer pointer */
         uint16_t dir,
         uint16_t interrupt,
