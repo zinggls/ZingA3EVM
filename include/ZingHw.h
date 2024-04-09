@@ -69,6 +69,12 @@ typedef struct zing_header
 #define PPC		(1)
 #define DEV		(0)
 
+#ifdef NO_ACK
+#define ACK_MODE 0
+#else
+#define ACK_MODE 1
+#endif
+
 #define REG_CFG_B(txen, rxen, ppc_mode, associated, sf, channel, golay, agg_no, max_len, msdu_only, boundary_1k ,gpif16, phy_init_n, init_n) \
                                     ((txen&0x1) | ((rxen&0x1) << 1) | ((ppc_mode&0x1) << 4) | \
                                     ((associated&0x1) << 8) | ((sf&0x1) << 12) | ((channel&0x1) << 13) |  ((golay&0x1) << 14) | \
@@ -76,7 +82,7 @@ typedef struct zing_header
                                     ((gpif16&0x1) << 26) | ((phy_init_n&0x1) << 30) | ((init_n&0x1) << 31) )
 #define REG_HW_CFG_INIT_STAGE0	REG_CFG_B(1,1,1, 0,0,0,0, 1,0,0, 0,0,0,0) /* ppc, max_aggregation 1 */
 #define REG_HW_CFG_INIT_STAGE1	REG_CFG_B(1,1,1, 0,0,0,0, 1,1,1, 1,0,1,1) /* MSDU max length 8K, MSDU only mode, 1k boundary */
-#define REG_HW_CFG_INIT_STAGE2	REG_CFG_B(1,1,1, 0,0,1,0, 4,1,1, 1,0,1,1)  /* associated(NO ACK), bonding 2CH, max_aggregation 4 */
+#define REG_HW_CFG_INIT_STAGE2	REG_CFG_B(1,1,1, ACK_MODE,0,1,0, 4,1,1, 1,0,1,1)  /* associated(ACK), bonding 2CH, max_aggregation 4 */
 
 #define REG_IFS_B(sifs,rifs)    				((sifs&0xFF) | ((rifs&0xFF) <<8))
 #define REG_IFS_PPC_INIT            			REG_IFS_B(25, 94)

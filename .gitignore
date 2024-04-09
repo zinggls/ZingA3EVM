@@ -57,3 +57,5 @@ Release
 .settings
 
 gitcommit.h
+/fw/ZED/.project
+/fw/ZED/.cproject
