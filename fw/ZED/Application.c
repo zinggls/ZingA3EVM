@@ -175,12 +175,10 @@ void ApplicationThread(uint32_t Value)
 	CyU3PDebugPrint(4,"Auto Signal mode\n");
 #endif
 
-	uint32_t loop = 0;
 	while (1)
 	{
-		CyU3PDebugPrint(4,"[App] (%s)(%s) Loop:%d ConIn:%d ConOut:%d DataIn:%d DataOut:%d\r",
-						Zing_GetHRCP()?"PPC":"DEV",dmaModeStr(Dma.Mode_),
-						loop++,Dma.ControlIn_.Count_,Dma.ControlOut_.Count_,Dma.DataIn_.Count_,Dma.DataOut_.Count_);
+        CyU3PDebugPrint (4, "ZED CNT:%d \r\n",
+                Dma.DataOut_.Count_);
 
 		CyU3PThreadSleep(100);
 	}
