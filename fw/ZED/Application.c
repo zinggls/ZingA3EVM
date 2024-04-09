@@ -11,6 +11,7 @@
 #include "dma.h"
 #include "ControlCh.h"
 #include "USB_EP0.h"
+#include "utility.h"
 
 CyBool_t IsApplnActive = CyFalse;		//Whether the application is active or not
 
@@ -177,10 +178,15 @@ void ApplicationThread(uint32_t Value)
 	CyU3PDebugPrint(4,"Auto Signal mode\n");
 #endif
 
+	char transType,ack,ppc;
 	while (1)
 	{
-        CyU3PDebugPrint (4, "ZED USB:%d CNT:%d \r\n",
-                gUsbSpeed,Dma.DataOut_.Count_);
+        transType = TransferType(); //Transfer Type (1: Isochronous 2: Bulk)
+        ack = AckMode();        //Ack mode (0:No Ack 1:Ack)
+        ppc = ppcMode();        //PPC or DEV (0: DEV 1:PPC)
+
+        CyU3PDebugPrint (4, "ZED USB:%d TRT:%c ACK:%c PPC:%c CNT:%d \r\n",
+                gUsbSpeed,transType,ack,ppc,Dma.DataOut_.Count_);
 
 		CyU3PThreadSleep(100);
 	}
