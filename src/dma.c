@@ -241,6 +241,55 @@ void DMA_Normal_DataIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PD
 	}
 }
 
+static CyU3PReturnStatus_t DMA_Normal_DataOnly_mode(uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
+{
+    CyU3PDmaChannelConfig_t dmaCfg;
+    uint16_t size = 1024; // super speed <- assumed condition , temporary code
+
+    CyU3PDmaChannelAbort(&Dma.DataOut_.Channel_);
+    CyU3PDmaChannelAbort(&Dma.DataIn_.Channel_);
+    CyU3PDmaChannelDestroy(&Dma.DataOut_.Channel_);
+    CyU3PDmaChannelDestroy(&Dma.DataIn_.Channel_);
+    CyU3PUsbFlushEp(dataIn);
+    CyU3PUsbFlushEp(dataOut);
+
+    CHECK(createChannel("DmaNormal.DataOut",
+                        &dmaCfg,
+                        size*dataBurstLength,
+                        4,
+                        CY_U3P_UIB_SOCKET_PROD_2,
+                        CY_U3P_PIB_SOCKET_2,
+                        CY_U3P_DMA_CB_PROD_EVENT,
+                        DMA_Normal_DataOut_Cb,
+                        &Dma.DataOut_.Channel_,
+#ifdef DMA_NORMAL_MANUAL
+                        CY_U3P_DMA_TYPE_MANUAL));
+#else
+                        CY_U3P_DMA_TYPE_AUTO_SIGNAL));
+#endif
+
+    CHECK(createChannel("DmaNormal.DataIn",
+                        &dmaCfg,
+                        size*dataBurstLength,
+                        4,
+                        CY_U3P_PIB_SOCKET_3,
+                        CY_U3P_UIB_SOCKET_CONS_2,
+                        CY_U3P_DMA_CB_PROD_EVENT,
+                        DMA_Normal_DataIn_Cb,
+                        &Dma.DataIn_.Channel_,
+#ifdef DMA_NORMAL_MANUAL
+                        CY_U3P_DMA_TYPE_MANUAL));
+#else
+                        CY_U3P_DMA_TYPE_AUTO_SIGNAL));
+#endif
+
+    Dma.Mode_ = DMA_SYNC;
+#ifdef DEBUG
+    CyU3PDebugPrint(4,"DMA_Normal_Data_mode(%d) done\n", Dma.Mode_);
+#endif
+    return CY_U3P_SUCCESS;
+}
+
 static CyU3PReturnStatus_t DMA_Normal_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
 {
 	CyU3PDmaChannelConfig_t dmaCfg;
@@ -477,6 +526,11 @@ CyU3PReturnStatus_t DMA_Sync()
 CyU3PReturnStatus_t DMA_Normal()
 {
 	return DMA_Normal_mode(Dma.ControlIn_.EP_,Dma.ControlOut_.EP_,Dma.DataIn_.EP_,Dma.DataOut_.EP_,Dma.DataBurstLength_);
+}
+
+CyU3PReturnStatus_t DMA_Normal_DataOnly()
+{
+    return DMA_Normal_DataOnly_mode(Dma.DataIn_.EP_,Dma.DataOut_.EP_,Dma.DataBurstLength_);
 }
 
 CyU3PReturnStatus_t DMA_LoopBack()

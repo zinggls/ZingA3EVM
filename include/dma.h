@@ -42,6 +42,7 @@ void channelReset(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t da
 
 CyU3PReturnStatus_t DMA_Sync();
 CyU3PReturnStatus_t DMA_Normal();
+CyU3PReturnStatus_t DMA_Normal_DataOnly();
 CyU3PReturnStatus_t DMA_LoopBack();
 CyU3PReturnStatus_t DMA_SinkSource();
 

@@ -181,8 +181,8 @@ void ApplicationThread(uint32_t Value)
 		CyU3PThreadSleep(100);
 	}
 
-	CheckStatus("[App] DMA_Normal",DMA_Normal());
-	CyU3PDebugPrint(4,"[App] DMA Nomal mode uses ");
+	CheckStatus("[App] DMA_Normal_DataOnly",DMA_Normal_DataOnly());
+	CyU3PDebugPrint(4,"[App] DMA Normal DataOnly mode uses ");
 #ifdef DMA_NORMAL_MANUAL
 	CyU3PDebugPrint(4,"Manual mode\n");
 #else
