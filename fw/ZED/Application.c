@@ -14,6 +14,7 @@
 #include "utility.h"
 
 CyBool_t IsApplnActive = CyFalse;		//Whether the application is active or not
+uint16_t gDataInCountPrev = 0;
 
 /* This function starts the application. This is called
  * when a SET_CONF event is received from the USB host. The endpoints
@@ -140,6 +141,16 @@ void AppStop(void)
 	}
 }
 
+static char RunStatus()
+{
+    if(Dma.DataOut_.Count_ == gDataInCountPrev)
+        return 'N';
+    else{
+        gDataInCountPrev = Dma.DataOut_.Count_;
+        return 'Y';
+    }
+}
+
 void ApplicationThread(uint32_t Value)
 {
 	CheckStatus("[App] InitializeDebugConsole", InitializeDebugConsole(6,NULL));
@@ -178,15 +189,17 @@ void ApplicationThread(uint32_t Value)
 	CyU3PDebugPrint(4,"Auto Signal mode\n");
 #endif
 
+	char runStatusVal;
 	char transType,ack,ppc;
 	while (1)
 	{
         transType = TransferType(); //Transfer Type (1: Isochronous 2: Bulk)
         ack = AckMode();        //Ack mode (0:No Ack 1:Ack)
         ppc = ppcMode();        //PPC or DEV (0: DEV 1:PPC)
+        runStatusVal = RunStatus();
 
-        CyU3PDebugPrint (4, "ZED USB:%d TRT:%c ACK:%c PPC:%c CNT:%d \r\n",
-                gUsbSpeed,transType,ack,ppc,Dma.DataOut_.Count_);
+        CyU3PDebugPrint (4, "ZED USB:%d TRT:%c ACK:%c PPC:%c RUN:%c CNT:%d \r\n",
+                gUsbSpeed,transType,ack,ppc,runStatusVal,Dma.DataOut_.Count_);
 
 		CyU3PThreadSleep(100);
 	}
