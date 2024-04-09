@@ -191,15 +191,21 @@ void ApplicationThread(uint32_t Value)
 
 	char runStatusVal;
 	char transType,ack,ppc;
+	uint32_t ppidVal,deviceIdVal,rxidVal,txidVal;
+
+	ppidVal = ppid();
+	deviceIdVal = deviceID();
 	while (1)
 	{
         transType = TransferType(); //Transfer Type (1: Isochronous 2: Bulk)
         ack = AckMode();        //Ack mode (0:No Ack 1:Ack)
         ppc = ppcMode();        //PPC or DEV (0: DEV 1:PPC)
         runStatusVal = RunStatus();
+        rxidVal = rx_id();
+        txidVal = tx_id();
 
-        CyU3PDebugPrint (4, "ZED USB:%d TRT:%c ACK:%c PPC:%c RUN:%c CNT:%d \r\n",
-                gUsbSpeed,transType,ack,ppc,runStatusVal,Dma.DataOut_.Count_);
+        CyU3PDebugPrint (4, "ZED USB:%d PPID:0x%x DeviceID:0x%x TRT:%c ACK:%c PPC:%c TXID:0x%x RXID:0x%x RUN:%c CNT:%d \r\n",
+                gUsbSpeed,ppidVal,deviceIdVal,transType,ack,ppc,txidVal,rxidVal,runStatusVal,Dma.DataOut_.Count_);
 
 		CyU3PThreadSleep(100);
 	}
