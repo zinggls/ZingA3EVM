@@ -3,6 +3,7 @@
 
 #include "cyu3types.h"
 #include "cyu3externcstart.h"
+#include "cyu3usb.h"
 
 #define APPLICATION_THREAD_STACK	(0x1000)
 #define APPLICATION_THREAD_PRIORITY	(8)
@@ -21,6 +22,7 @@ void AppStop(void);
 void ApplicationThread(uint32_t Value);
 
 CyBool_t IsApplnActive;
+CyU3PUSBSpeed_t gUsbSpeed;
 
 //Extern definitions for the USB Descriptors
 extern const uint8_t CyFxUSB20DeviceDscr[];

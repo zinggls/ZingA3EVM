@@ -24,6 +24,8 @@ void AppStart(void)
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 	CyU3PUSBSpeed_t usbSpeed = CyU3PUsbGetSpeed();
 
+    gUsbSpeed = usbSpeed;
+
     /* First identify the usb speed. Once that is identified,
      * create a DMA channel and start the transfer on this. */
 
@@ -177,8 +179,8 @@ void ApplicationThread(uint32_t Value)
 
 	while (1)
 	{
-        CyU3PDebugPrint (4, "ZED CNT:%d \r\n",
-                Dma.DataOut_.Count_);
+        CyU3PDebugPrint (4, "ZED USB:%d CNT:%d \r\n",
+                gUsbSpeed,Dma.DataOut_.Count_);
 
 		CyU3PThreadSleep(100);
 	}
