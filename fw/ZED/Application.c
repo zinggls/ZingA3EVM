@@ -15,6 +15,60 @@
 
 CyBool_t IsApplnActive = CyFalse;		//Whether the application is active or not
 uint16_t gDataInCountPrev = 0;
+extern CyU3PDmaChannel glChHandleUARTtoCPU;
+
+void uartIntrCb(CyU3PUartEvt_t evt, CyU3PUartError_t error)
+{
+    CyU3PReturnStatus_t Status = CY_U3P_SUCCESS;
+    CyU3PDmaBuffer_t inBuf;
+    uint8_t *buf;
+
+    if (evt == CY_U3P_UART_EVENT_RX_DONE)
+    {
+        Status = CyU3PDmaChannelSetWrapUp (&glChHandleUARTtoCPU);
+        if(Status != CY_U3P_SUCCESS) CyU3PDebugPrint(4, "CyU3PDmaChannelSetWrapUp error=0x%x \n\r",Status);
+
+        Status = CyU3PDmaChannelGetBuffer (&glChHandleUARTtoCPU, &inBuf, CYU3P_NO_WAIT);
+        if(Status != CY_U3P_SUCCESS) CyU3PDebugPrint(4, "CyU3PDmaChannelGetBuffer error=0x%x \n\r",Status);
+
+        buf = inBuf.buffer;
+        CyU3PDebugPrint(4, "[%d] ",inBuf.count);
+        for(int i=0;i<inBuf.count;i++) CyU3PDebugPrint(4,"%x ",buf[i]);
+        CyU3PDebugPrint(4,"\n\r");
+
+        if(buf[0]==0x4 && buf[1]==0x66 && buf[3]==0x0) {    //ex. 4f10  4byte f:formatIndex 1:index 0:padding
+            CyU3PDebugPrint(4,"gFormatIndex = \n\r");
+        }
+
+        if(buf[0]==0x4 && buf[1]==0x72 && buf[3]==0x0) {    //ex. 4r10  4byte r:frameIndex 1:index 0:padding
+            CyU3PDebugPrint(4,"gFrameIndex = \n\r");
+        }
+
+        if(buf[0]==0x4 && buf[1]==0x62 && buf[3]==0x0) {    //ex. 4b10  4byte b:band (0:low or 1:high) 0:padding
+            CyU3PDebugPrint(4,"band = %d\n\r",buf[2]);
+            if(buf[2]==0) {
+                //low band
+                char b = setBand('L');
+                if(b=='L') CyU3PDebugPrint(4,"Low band set\n\r");
+            }else if(buf[2]==1) {
+                //High band
+                char b = setBand('H');
+                if(b=='H') CyU3PDebugPrint(4,"High band set\n\r");
+            }else{
+                //Undefined
+                CyU3PDebugPrint(4,"Undefined band value=0x%x\n\r",buf[2]);
+            }
+        }
+
+        if(buf[0]==0x4 && buf[1]==0x72 && buf[2]==0x73 && buf[3]==0x74) {
+            //Device Reset
+            CyU3PDeviceReset(CyFalse);
+        }
+
+        CyU3PDmaChannelDiscardBuffer (&glChHandleUARTtoCPU);
+        CyU3PUartRxSetBlockXfer (UART_RX_UNIT);
+    }
+}
 
 /* This function starts the application. This is called
  * when a SET_CONF event is received from the USB host. The endpoints
@@ -153,7 +207,7 @@ static char RunStatus()
 
 void ApplicationThread(uint32_t Value)
 {
-	CheckStatus("[App] InitializeDebugConsole", InitializeDebugConsole(6,NULL));
+	CheckStatus("[App] InitializeDebugConsole", InitializeDebugConsole(8,uartIntrCb));
 
 	CyU3PDebugPrint(4,"[App] Git:%s\n",GIT_INFO);
 
