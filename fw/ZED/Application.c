@@ -251,6 +251,7 @@ void ApplicationThread(uint32_t Value)
 	deviceIdVal = deviceID();
 	while (1)
 	{
+#ifndef SLEEP_MODE
         transType = TransferType(); //Transfer Type (1: Isochronous 2: Bulk)
         ack = AckMode();        //Ack mode (0:No Ack 1:Ack)
         ppc = ppcMode();        //PPC or DEV (0: DEV 1:PPC)
@@ -263,6 +264,10 @@ void ApplicationThread(uint32_t Value)
                 gUsbSpeed,bnd,ppidVal,deviceIdVal,transType,ack,ppc,txidVal,rxidVal,runStatusVal,Dma.DataOut_.Count_);
 
 		CyU3PThreadSleep(100);
+#else
+		CyU3PDebugPrint (4, ".");
+		CyU3PThreadSleep(1000);
+#endif
 	}
 
 	while (1);	// Hang here
