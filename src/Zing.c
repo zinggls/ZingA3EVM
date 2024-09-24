@@ -713,7 +713,7 @@ CyU3PReturnStatus_t Zing_Init(void)
 	CHECK(Zing_RegWrite(REG_SERDES_TRIM_1,(uint8_t*)&reg_val,4));
 	CHECK(Zing_RegWrite(REG_SERDES_TRIM_2,(uint8_t*)&reg_val,4));
 
-	reg_val = 0x0001DFFF;
+	reg_val = 0x00000FFF;
 	CHECK(Zing_RegWrite(REG_RF_CONTROL_1,(uint8_t*)&reg_val,4));
 	reg_val = 0x00FE011F;
 	CHECK(Zing_RegWrite(REG_RF_CONTROL_0,(uint8_t*)&reg_val,4));
@@ -721,7 +721,7 @@ CyU3PReturnStatus_t Zing_Init(void)
 	CHECK(Zing_RegWrite(REG_RF_RX_CONTROL_0,(uint8_t*)&reg_val,4));
 	reg_val = 0x0003FF59;
 	CHECK(Zing_RegWrite(REG_RF_RX_CONTROL_1,(uint8_t*)&reg_val,4));
-	reg_val = 0x000000EF;
+	reg_val = 0x0000001F;
 	CHECK(Zing_RegWrite(REG_RF_TX_CONTROL_0,(uint8_t*)&reg_val,4));
 
 	reg_val = 0x00000000;
