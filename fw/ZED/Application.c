@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "gitcommit.h"
+#include "git_describe.h"
 #include "DebugConsole.h"
 #include "USB_Handler.h"
 #include "gpif/PIB.h"
@@ -249,6 +250,7 @@ void ApplicationThread(uint32_t Value)
 
 	ppidVal = ppid();
 	deviceIdVal = deviceID();
+	uint16_t loopCount = 0;
 	while (1)
 	{
         transType = TransferType(); //Transfer Type (1: Isochronous 2: Bulk)
@@ -263,6 +265,9 @@ void ApplicationThread(uint32_t Value)
                 gUsbSpeed,bnd,ppidVal,deviceIdVal,transType,ack,ppc,txidVal,rxidVal,runStatusVal,Dma.DataOut_.Count_);
 
 		CyU3PThreadSleep(100);
+
+        if(loopCount%10==0) CyU3PDebugPrint(4,"GIT DESCRIBE:%s GIT_INFO:%s \r\n",GIT_DESCRIBE,GIT_INFO);
+        loopCount++;
 	}
 
 	while (1);	// Hang here
