@@ -59,3 +59,4 @@ Release
 gitcommit.h
 /fw/ZED/.project
 /fw/ZED/.cproject
+git_describe.h
