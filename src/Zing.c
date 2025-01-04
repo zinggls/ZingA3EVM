@@ -176,7 +176,7 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
         return CY_U3P_ERROR_BAD_SIZE;
     }
 
-    if(len > 128)
+    if(len > 512)
     {
 #ifdef DEBUG
         CyU3PDebugPrint(4, "Can't read too big size of memory.(must be less than 512 bytes)\n\r");
