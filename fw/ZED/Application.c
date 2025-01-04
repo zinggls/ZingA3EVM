@@ -17,6 +17,7 @@
 CyBool_t IsApplnActive = CyFalse;		//Whether the application is active or not
 uint16_t gDataInCountPrev = 0;
 extern CyU3PDmaChannel glChHandleUARTtoCPU;
+static uint8_t regBuf[512];
 
 void uartIntrCb(CyU3PUartEvt_t evt, CyU3PUartError_t error)
 {
@@ -223,6 +224,9 @@ void ApplicationThread(uint32_t Value)
 
 	CheckStatus("[App] ControlChThread_Create", ControlChThread_Create());
 	CheckStatus("[App] Zing_Init", Zing_Init());
+
+    CheckStatus("[App] Zing_RegRead",Zing_RegRead(0x8000, (uint8_t*)regBuf, sizeof(regBuf)));
+    printRegisters(regBuf);
 
 #ifdef HRCP_PPC
 	CheckStatus("[App] Zing_SetHRCP(PPC)",Zing_SetHRCP(PPC));
