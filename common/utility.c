@@ -8,6 +8,7 @@
 #include "cyu3system.h"
 #include "Zing.h"
 #include "macro.h"
+#include "ZingHw.h"
 
 void shrinkPrint(uint8_t* buffer, uint32_t bufferSize)
 {
@@ -265,4 +266,106 @@ char interferenceByDestIdDiff(uint32_t destIdDiff)
     }else{
         return 'N';
     }
+}
+
+uint32_t reg_rb(uint8_t* regBuf, uint32_t address)
+{
+    uint32_t offset = address&0xfff;
+    uint32_t* pVal = (uint32_t*)(regBuf+ sizeof(uint32_t)*offset);
+    return *pVal;
+}
+
+void printRegisters(uint8_t* regBuf)
+{
+    //0x8000  REG_HW_CFG
+    uint32_t HW_CFG = reg_rb(regBuf,REG_HW_CFG);
+    CyU3PDebugPrint (4, "REG_HW_CFG:0x%x\r\n",HW_CFG);
+
+    //0x8001  REG_IFS
+    uint32_t IFS = reg_rb(regBuf,REG_IFS);
+    CyU3PDebugPrint (4, "REG_IFS:0x%x\r\n",IFS);
+
+    //0x8002  REG_SUPERFRAME_CFG
+    uint32_t SUPERFRAME_CFG = reg_rb(regBuf,REG_SUPERFRAME_CFG);
+    CyU3PDebugPrint (4, "REG_SUPERFRAME_CFG:0x%x\r\n",SUPERFRAME_CFG);
+
+    //0x8003  REG_PPID
+    uint32_t PPID = reg_rb(regBuf,REG_PPID);
+    CyU3PDebugPrint (4, "REG_PPID:0x%x\r\n",PPID);
+
+    //0x8004  REG_DEVICE_ID
+    uint32_t DEVICE_ID = reg_rb(regBuf,REG_DEVICE_ID);
+    CyU3PDebugPrint (4, "RED_DEVICE_ID:0x%x\r\n",DEVICE_ID);
+
+    //0x8007  REG_PHY_CTRL
+    uint32_t PHY_CTRL = reg_rb(regBuf,REG_PHY_CTRL);
+    CyU3PDebugPrint (4, "REG_PHY_CTRL:0x%x\r\n",PHY_CTRL);
+
+    //0x8008  REG_PLL_CTRL_SERDES
+    uint32_t PLL_CTRL_SERDES = reg_rb(regBuf,REG_PLL_CTRL_SERDES);
+    CyU3PDebugPrint (4, "REG_PLL_CTRL_SERDES:0x%x\r\n",PLL_CTRL_SERDES);
+
+    //0x8009  REG_SERDES_TEST_PATTERN
+    uint32_t SERDES_TEST_PATTERN = reg_rb(regBuf,REG_SERDES_TEST_PATTERN);
+    CyU3PDebugPrint (4, "REG_SERDES_TEST_PATTERN:0x%x\r\n",SERDES_TEST_PATTERN);
+
+    //0x800a  REG_MAC_TIMEOUT_CFG
+    uint32_t MAC_TIMEOUT_CFG = reg_rb(regBuf,REG_MAC_TIMEOUT_CFG);
+    CyU3PDebugPrint (4, "REG_MAC_TIMEOUT_CFG:0x%x\r\n",MAC_TIMEOUT_CFG);
+
+    //0x800b  REG_PHY_TIMEOUT_CFG
+    uint32_t PHY_TIMEOUT_CFG = reg_rb(regBuf,REG_PHY_TIMEOUT_CFG);
+    CyU3PDebugPrint (4, "REG_PHY_TIMEOUT_CFG:0x%x\r\n",PHY_TIMEOUT_CFG);
+
+    //0x800c  REG_MAC_RETX_LIMIT
+    uint32_t MAC_RETX_LIMIT = reg_rb(regBuf,REG_MAC_RETX_LIMIT);
+    CyU3PDebugPrint (4, "REG_MAC_RETX_LIMIT:0x%x\r\n",MAC_RETX_LIMIT);
+
+    //0x800e  REG_SERDES_TEST_CONFIG
+    uint32_t SERDES_TEST_CONFIG = reg_rb(regBuf,REG_SERDES_TEST_CONFIG);
+    CyU3PDebugPrint (4, "REG_SERDES_TEST_CONFIG:0x%x\r\n",SERDES_TEST_CONFIG);
+
+    //0x8024  REG_RF_RX_CONTROL_0
+    uint32_t RF_RX_CONTROL_0 = reg_rb(regBuf,REG_RF_RX_CONTROL_0);
+    CyU3PDebugPrint (4, "REG_RF_RX_CONTROL_0:0x%x\r\n",RF_RX_CONTROL_0);
+
+    //0x8025  REG_RF_RX_CONTROL_1
+    uint32_t RF_RX_CONTROL_1 = reg_rb(regBuf,REG_RF_RX_CONTROL_1);
+    CyU3PDebugPrint (4, "REG_RF_RX_CONTROL_1:0x%x\r\n",RF_RX_CONTROL_1);
+
+    //0x8026  REG_RF_TX_CONTROL_0
+    uint32_t RF_TX_CONTROL_0 = reg_rb(regBuf,REG_RF_TX_CONTROL_0);
+    CyU3PDebugPrint (4, "REG_RF_TX_CONTROL_0:0x%x\r\n",RF_TX_CONTROL_0);
+
+    //0x8027  REG_RF_CONTROL_0
+    uint32_t RF_CONTROL_0 = reg_rb(regBuf,REG_RF_CONTROL_0);
+    CyU3PDebugPrint (4, "REG_RF_CONTROL_0:0x%x\r\n",RF_CONTROL_0);
+
+    //0x8028  REG_RF_CONTROL_1
+    uint32_t RF_CONTROL_1 = reg_rb(regBuf,REG_RF_CONTROL_1);
+    CyU3PDebugPrint (4, "REG_RF_CONTROL_1:0x%x\r\n",RF_CONTROL_1);
+
+    //0x802a  REG_PLL_CONTROL_MONITOR
+    uint32_t PLL_CONTROL_MONITOR = reg_rb(regBuf,REG_PLL_CONTROL_MONITOR);
+    CyU3PDebugPrint (4, "REG_PLL_CONTROL_MONITOR:0x%x\r\n",PLL_CONTROL_MONITOR);
+
+    //0x802b  REG_SERDES_PLL_AFC
+    uint32_t SERDES_PLL_AFC = reg_rb(regBuf,REG_SERDES_PLL_AFC);
+    CyU3PDebugPrint (4, "REG_SERDES_PLL_AFC:0x%x\r\n",SERDES_PLL_AFC);
+
+    //0x802c  REG_SERDES_TRIM_1
+    uint32_t SERDES_TRIM_1 = reg_rb(regBuf,REG_SERDES_TRIM_1);
+    CyU3PDebugPrint (4, "REG_SERDES_TRIM_1:0x%x\r\n",SERDES_TRIM_1);
+
+    //0x802d  REG_SERDES_TRIM_2
+    uint32_t SERDES_TRIM_2 = reg_rb(regBuf,REG_SERDES_TRIM_2);
+    CyU3PDebugPrint (4, "REG_SERDES_TRIM_1:0x%x\r\n",SERDES_TRIM_2);
+
+    //0x802e  REG_SERDES_TRIM_3
+    uint32_t SERDES_TRIM_3 = reg_rb(regBuf,REG_SERDES_TRIM_3);
+    CyU3PDebugPrint (4, "REG_SERDES_TRIM_3:0x%x\r\n",SERDES_TRIM_3);
+
+    //0x802f  REG_SERDES_TRIM_4
+    uint32_t SERDES_TRIM_4 = reg_rb(regBuf,REG_SERDES_TRIM_4);
+    CyU3PDebugPrint (4, "REG_SERDES_TRIM_4:0x%x\r\n",SERDES_TRIM_4);
 }

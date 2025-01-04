@@ -40,5 +40,7 @@ char format(uint8_t index);
 char interference(uint32_t ppid, uint16_t deviceId, uint32_t rxid);
 char interferenceByDestIdDiff(uint32_t destIdDiff);
 char setBand(char choice);
+uint32_t reg_rb(uint8_t* regBuf, uint32_t address);
+void printRegisters(uint8_t* regBuf);
 
 #endif /* UTIL_H_ */
