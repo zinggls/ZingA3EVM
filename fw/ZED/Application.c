@@ -260,12 +260,11 @@ void ApplicationThread(uint32_t Value)
 	char runStatusVal;
 	char transType,ack,ppc,bnd;
 	uint32_t ppidVal,deviceIdVal,rxidVal,txidVal;
-
-	ppidVal = ppid();
-	deviceIdVal = deviceID();
 	uint16_t loopCount = 0;
 	while (1)
 	{
+        ppidVal = ppid();
+        deviceIdVal = deviceID();
         transType = TransferType(); //Transfer Type (1: Isochronous 2: Bulk)
         ack = AckMode();        //Ack mode (0:No Ack 1:Ack)
         ppc = ppcMode();        //PPC or DEV (0: DEV 1:PPC)
