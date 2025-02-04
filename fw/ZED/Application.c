@@ -67,6 +67,15 @@ void uartIntrCb(CyU3PUartEvt_t evt, CyU3PUartError_t error)
             CyU3PDeviceReset(CyFalse);
         }
 
+        if(buf[0]==0x4 && buf[1]==0x70) {   //ex. 4pABCD  4byte p:PPID ABCD:PPID 2bytes
+            uint32_t reg_val = (buf[2]<<8)|buf[3];
+            Status=Zing_RegWrite(REG_PPID,(uint8_t*)&reg_val,4);
+            if(Status==CY_U3P_SUCCESS)
+                CyU3PDebugPrint(4,"PPID set(0x%x)\n\r",reg_val);
+            else
+                CyU3PDebugPrint(4,"PPID set(0x%x) error(0x%x)\n\r",reg_val,Status);
+        }
+
         CyU3PDmaChannelDiscardBuffer (&glChHandleUARTtoCPU);
         CyU3PUartRxSetBlockXfer (UART_RX_UNIT);
     }
