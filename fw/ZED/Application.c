@@ -15,7 +15,6 @@
 #include "utility.h"
 
 CyBool_t IsApplnActive = CyFalse;		//Whether the application is active or not
-uint16_t gDataInCountPrev = 0;
 extern CyU3PDmaChannel glChHandleUARTtoCPU;
 static uint8_t regBuf[512];
 
@@ -208,12 +207,17 @@ void AppStop(void)
 
 static char RunStatus()
 {
-    if(Dma.DataOut_.Count_ == gDataInCountPrev)
-        return 'N';
-    else{
-        gDataInCountPrev = Dma.DataOut_.Count_;
-        return 'Y';
+    static uint32_t CountPrev = 0;  // Ensure it's initialized
+    static char prevStatus = 'N';   // Track the last returned status
+
+    if (Dma.DataOut_.Count_ != CountPrev) {
+        CountPrev = Dma.DataOut_.Count_;
+        prevStatus = 'Y';  // CNT changed, update status to 'Y'
+    } else {
+        prevStatus = 'N';  // CNT did not change, update status to 'N'
     }
+
+    return prevStatus;
 }
 
 void ApplicationThread(uint32_t Value)
