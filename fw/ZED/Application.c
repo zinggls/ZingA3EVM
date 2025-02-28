@@ -45,13 +45,13 @@ void uartIntrCb(CyU3PUartEvt_t evt, CyU3PUartError_t error)
             CyU3PDebugPrint(4,"gFrameIndex = \n\r");
         }
 
-        if(buf[0]==0x4 && buf[1]==0x62 && buf[3]==0x2e) {    //ex. 4b1.  4byte b:band (0:low or 1:high) .:padding
+        if(buf[0]==0x4 && buf[1]==0x62 && buf[3]==0x2e) {    //ex. 4b1.  4byte b:band (1:low or 2:high) .:padding
             CyU3PDebugPrint(4,"band = %d\n\r",buf[2]);
-            if(buf[2]==0) {
+            if(buf[2]==1) {
                 //low band
                 char b = setBand('L');
                 if(b=='L') CyU3PDebugPrint(4,"Low band set\n\r");
-            }else if(buf[2]==1) {
+            }else if(buf[2]==2) {
                 //High band
                 char b = setBand('H');
                 if(b=='H') CyU3PDebugPrint(4,"High band set\n\r");
