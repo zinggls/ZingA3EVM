@@ -37,15 +37,15 @@ void uartIntrCb(CyU3PUartEvt_t evt, CyU3PUartError_t error)
         for(int i=0;i<inBuf.count;i++) CyU3PDebugPrint(4,"%x ",buf[i]);
         CyU3PDebugPrint(4,"\n\r");
 
-        if(buf[0]==0x4 && buf[1]==0x66 && buf[3]==0x0) {    //ex. 4f10  4byte f:formatIndex 1:index 0:padding
+        if(buf[0]==0x4 && buf[1]==0x66 && buf[3]==0x2e) {    //ex. 4f1.  4byte f:formatIndex 1:index .:padding
             CyU3PDebugPrint(4,"gFormatIndex = \n\r");
         }
 
-        if(buf[0]==0x4 && buf[1]==0x72 && buf[3]==0x0) {    //ex. 4r10  4byte r:frameIndex 1:index 0:padding
+        if(buf[0]==0x4 && buf[1]==0x72 && buf[3]==0x2e) {    //ex. 4r1.  4byte r:frameIndex 1:index .:padding
             CyU3PDebugPrint(4,"gFrameIndex = \n\r");
         }
 
-        if(buf[0]==0x4 && buf[1]==0x62 && buf[3]==0x0) {    //ex. 4b10  4byte b:band (0:low or 1:high) 0:padding
+        if(buf[0]==0x4 && buf[1]==0x62 && buf[3]==0x2e) {    //ex. 4b1.  4byte b:band (0:low or 1:high) .:padding
             CyU3PDebugPrint(4,"band = %d\n\r",buf[2]);
             if(buf[2]==0) {
                 //low band
