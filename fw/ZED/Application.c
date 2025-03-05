@@ -238,6 +238,9 @@ void ApplicationThread(uint32_t Value)
 	CheckStatus("[App] ControlChThread_Create", ControlChThread_Create());
 	CheckStatus("[App] Zing_Init", Zing_Init());
 
+    char b = setBand('L');
+    CyU3PDebugPrint(4,"%c band set\n\r",b);
+
     CheckStatus("[App] Zing_RegRead",Zing_RegRead(0x8000, (uint8_t*)regBuf, sizeof(regBuf)));
     printRegisters(regBuf);
 
