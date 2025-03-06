@@ -93,7 +93,7 @@ typedef struct zing_header
 #define ZING_ATP_TIMEOUT						200	/* 200 ms temporal */
 #define ZING_SUPERFRAME_DURATION				50000	/* 5 ms (0.1us resolution) */
 #define REG_SUPERFRAME_INIT						REG_SUPERFRAME_B(ZING_SUPERFRAME_DURATION, 500)
-#define REG_PPID_INIT							0xABCD
+#define REG_PPID_INIT							0x5678
 #define REG_PHY_CONTROL_INIT					0xD6010
 #define REG_PLL_SERDES_INIT2					0x20013	/* 0x10 : RF I2C block clock gating off, 0x03 : Serdes Tx Amplify */
 #define REG_DEVID_B(ppcid,devid)				((ppcid&0xFF) | ((devid&0xFF) << 8) )
